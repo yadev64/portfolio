@@ -1,0 +1,286 @@
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import { Camera, CameraOff } from 'lucide-react';
+
+/* ── 5×3 digit patterns (rows top→bottom, cols left→right) ── */
+const DIGITS = {
+    '0': [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1],
+    '1': [0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1],
+    '2': [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1],
+    '3': [1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
+    '4': [1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1],
+    '5': [1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1],
+    '6': [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+    '7': [1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
+    '8': [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+    '9': [1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
+};
+
+// Square grid for circular display
+const GRID_SIZE = 27;  // 27×27 dots
+const DOT_SIZE = 5;
+const DOT_GAP = 2;
+const DISPLAY_PX = GRID_SIZE * (DOT_SIZE + DOT_GAP) - DOT_GAP; // total pixel size
+
+/**
+ * Precompute which cells are inside the circle (for masking).
+ */
+const buildCircleMask = () => {
+    const mask = new Array(GRID_SIZE * GRID_SIZE);
+    const center = (GRID_SIZE - 1) / 2;
+    const radius = GRID_SIZE / 2 - 0.5;
+    for (let y = 0; y < GRID_SIZE; y++) {
+        for (let x = 0; x < GRID_SIZE; x++) {
+            const dx = x - center;
+            const dy = y - center;
+            mask[y * GRID_SIZE + x] = (dx * dx + dy * dy) <= (radius * radius);
+        }
+    }
+    return mask;
+};
+
+const CIRCLE_MASK = buildCircleMask();
+
+/**
+ * Stamp a 5×3 digit pattern onto a flat grid array at (startCol, startRow).
+ */
+const stampDigit = (grid, char, startCol, startRow) => {
+    const pattern = DIGITS[char];
+    if (!pattern) return;
+    for (let r = 0; r < 5; r++) {
+        for (let c = 0; c < 3; c++) {
+            const gx = startCol + c;
+            const gy = startRow + r;
+            if (gx >= 0 && gx < GRID_SIZE && gy >= 0 && gy < GRID_SIZE) {
+                grid[gy * GRID_SIZE + gx] = pattern[r * 3 + c];
+            }
+        }
+    }
+};
+
+/**
+ * Stamp blinking colon dots.
+ */
+const stampColon = (grid, col, startRow, blink) => {
+    if (!blink) return;
+    const dot1 = (startRow + 1) * GRID_SIZE + col;
+    const dot2 = (startRow + 3) * GRID_SIZE + col;
+    if (dot1 < grid.length) grid[dot1] = 1;
+    if (dot2 < grid.length) grid[dot2] = 1;
+};
+
+/**
+ * Build the clock pixel grid. HH:MM centered, seconds smaller below.
+ */
+const buildClockGrid = (time) => {
+    const grid = new Array(GRID_SIZE * GRID_SIZE).fill(0);
+
+    const h = time.getHours().toString().padStart(2, '0');
+    const m = time.getMinutes().toString().padStart(2, '0');
+    const s = time.getSeconds().toString().padStart(2, '0');
+    const blink = s % 2 === 0;
+
+    // HH:MM = 3+1+3+1+3+1+3 = 15 cols wide
+    const totalW = 15;
+    const offsetX = Math.floor((GRID_SIZE - totalW) / 2);
+    const offsetY = Math.floor((GRID_SIZE - 5) / 2) - 2; // shift up to make room for seconds
+
+    stampDigit(grid, h[0], offsetX, offsetY);
+    stampDigit(grid, h[1], offsetX + 4, offsetY);
+    stampColon(grid, offsetX + 7, offsetY, blink);
+    stampDigit(grid, m[0], offsetX + 9, offsetY);
+    stampDigit(grid, m[1], offsetX + 13, offsetY);
+
+    // Seconds below, centered
+    const secW = 7; // 3+1+3
+    const secX = Math.floor((GRID_SIZE - secW) / 2);
+    const secY = offsetY + 7;
+    stampDigit(grid, s[0], secX, secY);
+    stampDigit(grid, s[1], secX + 4, secY);
+
+    return grid;
+};
+
+/**
+ * Circular Dot Matrix Display.
+ * Black bg, dense dark grey dots, active pixels white.
+ * Camera toggle in parent card corner.
+ */
+const DotMatrixDisplay = () => {
+    const [cameraMode, setCameraMode] = useState(false);
+    const [cameraGrid, setCameraGrid] = useState(null);
+    const [time, setTime] = useState(new Date());
+    const videoRef = useRef(null);
+    const canvasRef = useRef(null);
+    const streamRef = useRef(null);
+    const animFrameRef = useRef(null);
+
+    // Clock tick
+    useEffect(() => {
+        const interval = setInterval(() => setTime(new Date()), 1000);
+        return () => clearInterval(interval);
+    }, []);
+
+    // Camera lifecycle
+    useEffect(() => {
+        if (cameraMode) {
+            startCamera();
+        } else {
+            stopCamera();
+            setCameraGrid(null);
+        }
+        return () => stopCamera();
+    }, [cameraMode]);
+
+    const startCamera = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { width: GRID_SIZE * 4, height: GRID_SIZE * 4, facingMode: 'user' }
+            });
+            streamRef.current = stream;
+            if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+                videoRef.current.play();
+                sampleFrame();
+            }
+        } catch (err) {
+            console.warn('Camera access denied:', err);
+            setCameraMode(false);
+        }
+    };
+
+    const stopCamera = () => {
+        if (animFrameRef.current) {
+            cancelAnimationFrame(animFrameRef.current);
+            animFrameRef.current = null;
+        }
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach(t => t.stop());
+            streamRef.current = null;
+        }
+    };
+
+    const sampleFrame = useCallback(() => {
+        const video = videoRef.current;
+        const canvas = canvasRef.current;
+        if (!video || !canvas || !streamRef.current) return;
+
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        canvas.width = GRID_SIZE;
+        canvas.height = GRID_SIZE;
+
+        const draw = () => {
+            if (!streamRef.current) return;
+            ctx.save();
+            ctx.scale(-1, 1);
+            ctx.drawImage(video, -GRID_SIZE, 0, GRID_SIZE, GRID_SIZE);
+            ctx.restore();
+
+            const imageData = ctx.getImageData(0, 0, GRID_SIZE, GRID_SIZE);
+            const pixels = imageData.data;
+            const grid = new Array(GRID_SIZE * GRID_SIZE);
+
+            for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+                const idx = i * 4;
+                const brightness = (pixels[idx] * 0.299 + pixels[idx + 1] * 0.587 + pixels[idx + 2] * 0.114) / 255;
+                grid[i] = brightness;
+            }
+
+            setCameraGrid(grid);
+            animFrameRef.current = requestAnimationFrame(draw);
+        };
+
+        if (video.readyState >= 2) {
+            draw();
+        } else {
+            video.addEventListener('loadeddata', draw, { once: true });
+        }
+    }, []);
+
+    // Grid data
+    const displayGrid = useMemo(() => {
+        if (cameraMode && cameraGrid) return cameraGrid;
+        return buildClockGrid(time);
+    }, [cameraMode, cameraGrid, time]);
+
+    return (
+        <div className="relative" style={{ width: DISPLAY_PX + 20, height: DISPLAY_PX + 20 }}>
+            {/* Hidden media elements */}
+            <video ref={videoRef} className="hidden" playsInline muted />
+            <canvas ref={canvasRef} className="hidden" />
+
+            {/* Circular display */}
+            <div
+                style={{
+                    width: DISPLAY_PX + 20,
+                    height: DISPLAY_PX + 20,
+                    borderRadius: '50%',
+                    backgroundColor: '#0A0A0A',
+                    padding: 10,
+                    overflow: 'hidden',
+                    position: 'relative',
+                }}
+            >
+                <div
+                    className="grid"
+                    style={{
+                        gridTemplateColumns: `repeat(${GRID_SIZE}, ${DOT_SIZE}px)`,
+                        gap: `${DOT_GAP}px`,
+                    }}
+                >
+                    {displayGrid.map((val, i) => {
+                        const inCircle = CIRCLE_MASK[i];
+                        if (!inCircle) {
+                            // Outside circle — render transparent (let black bg show)
+                            return (
+                                <div key={i} style={{ width: DOT_SIZE, height: DOT_SIZE }} />
+                            );
+                        }
+
+                        const brightness = typeof val === 'number' ? val : 0;
+                        const isOn = brightness > 0.15;
+
+                        return (
+                            <div
+                                key={i}
+                                className="rounded-[1px]"
+                                style={{
+                                    width: DOT_SIZE,
+                                    height: DOT_SIZE,
+                                    backgroundColor: isOn
+                                        ? `rgba(255, 255, 255, ${Math.min(brightness * 1.2, 1)})`
+                                        : '#1A1A1A',
+                                    boxShadow: brightness > 0.5
+                                        ? `0 0 ${Math.round(brightness * 4)}px rgba(255, 255, 255, ${brightness * 0.3})`
+                                        : 'none',
+                                    transition: cameraMode ? 'none' : 'background-color 0.3s, box-shadow 0.3s',
+                                }}
+                            />
+                        );
+                    })}
+                </div>
+
+                {/* Mode label */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+                    <span className="font-mono text-[7px] uppercase tracking-[0.2em]" style={{ color: 'rgba(255,255,255,0.2)' }}>
+                        {cameraMode ? 'CAM' : 'IST'}
+                    </span>
+                </div>
+            </div>
+
+            {/* Camera toggle — bottom right of the CARD (outside circle) */}
+            <button
+                onClick={() => setCameraMode(prev => !prev)}
+                className="absolute bottom-0 right-0 w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-all duration-200 neu-flat !rounded-full"
+                style={{ zIndex: 2 }}
+                title={cameraMode ? 'Switch to clock' : 'Switch to camera'}
+            >
+                {cameraMode
+                    ? <CameraOff size={13} className="text-primary" />
+                    : <Camera size={13} className="text-textMuted" />
+                }
+            </button>
+        </div>
+    );
+};
+
+export default DotMatrixDisplay;

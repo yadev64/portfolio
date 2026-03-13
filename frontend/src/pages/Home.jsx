@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NeuCard, NeuButton, NeuToggle, NeuProgress, NeuLED, NeuIconButton, NeuTempSlider } from '../components/ui/NeumorphicPrimitives';
+import DotMatrixDisplay from '../components/ui/DotMatrixDisplay';
 import { ExternalLink, Github, Linkedin, Twitter, Mail, ChevronDown, ArrowUpRight, BookOpen, Briefcase, GraduationCap, Award, Sun, Moon, Flame, Snowflake, FolderOpen, Layers, MapPin, Clock, Coffee, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useAppStore from '../store/useAppStore';
@@ -77,21 +78,6 @@ const NAV_ITEMS = [
     { label: 'Blog', icon: <BookOpen size={14} />, href: '#blog' },
 ];
 
-/* ──────────────────────── DIGIT PATTERNS (5×3 dot matrix) ──────────────────────── */
-const DIGIT_MAP = {
-    '0': [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1],
-    '1': [0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1],
-    '2': [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1],
-    '3': [1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
-    '4': [1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1],
-    '5': [1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1],
-    '6': [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1],
-    '7': [1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
-    '8': [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
-    '9': [1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
-    ':': [0, 0, 1, 0, 0, 0, 1, 0, 0],  // special: 3 rows
-};
-
 /* ──────────────────────── HOOKS ──────────────────────── */
 const useTypingEffect = (strings, typingSpeed = 80, pauseTime = 2000) => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -126,79 +112,6 @@ const useLiveClock = () => {
     return time;
 };
 
-/* ──────────────────────── DOT MATRIX DIGIT COMPONENT ──────────────────────── */
-const DotDigit = ({ char, dotSize = 6, gap = 2 }) => {
-    const pattern = DIGIT_MAP[char];
-    if (!pattern) return null;
-
-    // Colon is special: 3 cols = 1, 5 rows but we use fewer cells
-    const isColon = char === ':';
-    const cols = isColon ? 1 : 3;
-    const rows = isColon ? 9 : 5;
-
-    if (isColon) {
-        // Custom colon layout: blank, dot, blank, blank, dot, blank (vertical)
-        return (
-            <div className="flex flex-col items-center justify-center gap-[2px] mx-1" style={{ gap: `${gap}px` }}>
-                <div style={{ width: dotSize, height: dotSize }} />
-                <div className="rounded-sm bg-primary opacity-90" style={{ width: dotSize, height: dotSize }} />
-                <div style={{ width: dotSize, height: dotSize }} />
-                <div style={{ width: dotSize, height: dotSize }} />
-                <div className="rounded-sm bg-primary opacity-90" style={{ width: dotSize, height: dotSize }} />
-            </div>
-        );
-    }
-
-    return (
-        <div
-            className="grid"
-            style={{
-                gridTemplateColumns: `repeat(${cols}, ${dotSize}px)`,
-                gap: `${gap}px`,
-            }}
-        >
-            {pattern.map((on, i) => (
-                <div
-                    key={i}
-                    className="rounded-sm transition-opacity duration-300"
-                    style={{
-                        width: dotSize,
-                        height: dotSize,
-                        backgroundColor: on ? 'var(--accent-primary)' : 'var(--bg-primary)',
-                        opacity: on ? 0.95 : 0.15,
-                        boxShadow: on ? '0 0 4px var(--accent-glow)' : 'none',
-                    }}
-                />
-            ))}
-        </div>
-    );
-};
-
-const DotMatrixClock = () => {
-    const clock = useLiveClock();
-    const hours = clock.getHours().toString().padStart(2, '0');
-    const minutes = clock.getMinutes().toString().padStart(2, '0');
-    const seconds = clock.getSeconds().toString().padStart(2, '0');
-
-    // Blink the colon dots every second
-    const showColon = clock.getSeconds() % 2 === 0;
-
-    return (
-        <div className="flex items-center justify-center gap-[6px]">
-            <DotDigit char={hours[0]} />
-            <DotDigit char={hours[1]} />
-            {showColon && <DotDigit char=":" />}
-            {!showColon && <div className="w-[10px]" />}
-            <DotDigit char={minutes[0]} />
-            <DotDigit char={minutes[1]} />
-            <div className="w-1" />
-            <div className="flex flex-col items-center gap-[2px] ml-1">
-                <DotDigit char={seconds[0]} dotSize={3} gap={1} />
-                <DotDigit char={seconds[1]} dotSize={3} gap={1} />
-            </div>
-        </div>
-    );
-};
 
 /* ──────────────────────── SUB-COMPONENTS ──────────────────────── */
 const SectionHeader = ({ label, number }) => (
@@ -308,15 +221,11 @@ const NeumorphicDashboard = () => {
                             </div>
                         </NeuCard>
 
-                        {/* CARDS 3a & 3b: Split — Dot Matrix Clock + Location/Calendar */}
-                        <div className="grid grid-cols-2 gap-6">
-                            {/* Left: Dot Matrix Clock */}
-                            <NeuCard className="!p-5 flex flex-col items-center justify-center">
-                                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-4 self-start">Local Time</p>
-                                <div className="neu-pressed rounded-xl p-4 w-full flex items-center justify-center">
-                                    <DotMatrixClock />
-                                </div>
-                                <span className="font-mono text-[10px] text-textMuted mt-3 uppercase tracking-widest">IST</span>
+                        {/* CARDS 3a & 3b: Glyph Display (fixed square) + Location (flexible) */}
+                        <div className="flex gap-6">
+                            {/* Left: Circular Dot Matrix Display — fixed size, stays square */}
+                            <NeuCard className="!p-4 flex items-center justify-center shrink-0">
+                                <DotMatrixDisplay />
                             </NeuCard>
 
                             {/* Right: Location + Calendar */}
