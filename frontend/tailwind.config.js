@@ -38,7 +38,7 @@ export default {
                 'neu-sm': '4px 4px 8px #161619, -4px -4px 8px #26262b', // Smaller elements (sliders, buttons)
                 'neu-pressed': 'inset 6px 6px 12px #161619, inset -6px -6px 12px #26262b', // Active/clicked
                 'neu-pressed-sm': 'inset 3px 3px 6px #161619, inset -3px -3px 6px #26262b', // Small pressed
-                'neu-glow': '0 0 15px rgba(255, 69, 0, 0.4)', // Orange active glow
+                'neu-glow': '0 0 15px var(--accent-glow, rgba(255, 69, 0, 0.4))', // Dynamic accent glow
             },
             fontFamily: {
                 display: ['"Space Grotesk"', 'sans-serif'], // Futuristic heading font

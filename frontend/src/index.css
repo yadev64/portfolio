@@ -15,6 +15,7 @@
     --bg-secondary: #1E1E22;
     --bg-card: #1E1E22;
     --accent-primary: #FF4500;
+    --accent-glow: rgba(255, 69, 0, 0.4);
     --accent-secondary: #00E5FF;
     --accent-tertiary: #333333;
     --text-primary: #E0E0E0;
@@ -31,6 +32,7 @@
     --bg-secondary: #E0E5EC;
     --bg-card: #E0E5EC;
     --accent-primary: #FF4500;
+    --accent-glow: rgba(255, 69, 0, 0.4);
     --accent-secondary: #00E5FF;
     --accent-tertiary: #A3B1C6;
     --text-primary: #2D3748;

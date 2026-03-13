@@ -5,7 +5,7 @@ const useAppStore = create(
     persist(
         (set) => ({
             // ── Theme ──
-            theme: 'dark', // 'dark' | 'light'
+            theme: 'dark',
             toggleTheme: () => set((state) => {
                 const newTheme = state.theme === 'dark' ? 'light' : 'dark';
                 if (newTheme === 'light') {
@@ -22,6 +22,21 @@ const useAppStore = create(
                     document.documentElement.classList.remove('light');
                 }
                 return { theme };
+            }),
+
+            // ── Color Temperature ──
+            // 0 = warm (orange), 100 = cool (blue)
+            colorTemp: 0,
+            setColorTemp: (temp) => set(() => {
+                const clamped = Math.max(0, Math.min(100, temp));
+                // Interpolate hue from 15 (warm orange) to 195 (icy blue)
+                const hue = 15 + (clamped / 100) * 180;
+                const sat = 100;
+                const light = 50;
+                document.documentElement.style.setProperty('--accent-primary', `hsl(${hue}, ${sat}%, ${light}%)`);
+                // Also adjust the glow shadow
+                document.documentElement.style.setProperty('--accent-glow', `hsla(${hue}, ${sat}%, ${light}%, 0.4)`);
+                return { colorTemp: clamped };
             }),
 
             // ── Gamification ──
@@ -50,6 +65,7 @@ const useAppStore = create(
             name: 'yadev-portfolio-storage',
             partialize: (state) => ({
                 theme: state.theme,
+                colorTemp: state.colorTemp,
                 xp: state.xp,
                 easterEggUnlocked: state.easterEggUnlocked,
                 authStatus: state.authStatus,
@@ -59,6 +75,12 @@ const useAppStore = create(
                     document.documentElement.classList.add('light');
                 } else {
                     document.documentElement.classList.remove('light');
+                }
+                // Re-apply color temperature on load
+                if (state && state.colorTemp !== undefined && state.colorTemp !== 0) {
+                    const hue = 15 + (state.colorTemp / 100) * 180;
+                    document.documentElement.style.setProperty('--accent-primary', `hsl(${hue}, 100%, 50%)`);
+                    document.documentElement.style.setProperty('--accent-glow', `hsla(${hue}, 100%, 50%, 0.4)`);
                 }
             }
         }

@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 
 // Basic Neumorphic Container (Extruded)
-export const NeuCard = ({ children, className = '', convex = false }) => {
-    // Convex gives it a slight gradient dome, flat is pure Dieter Rams
+export const NeuCard = ({ children, className = '', convex = false, onClick }) => {
     const shadowClass = convex ? 'neu-convex' : 'neu-flat';
     return (
-        <div className={`${shadowClass} p-6 md:p-8 ${className}`}>
+        <div onClick={onClick} className={`${shadowClass} p-6 md:p-8 ${className}`}>
             {children}
         </div>
     );
@@ -15,12 +14,9 @@ export const NeuCard = ({ children, className = '', convex = false }) => {
 // Neumorphic Button (Presses in on active)
 export const NeuButton = ({ children, onClick, active, disabled, className = '', variant = 'default' }) => {
     const isPrimary = variant === 'primary';
-
-    // Base shadow transitions
     const shadowStyle = active
-        ? 'neu-pressed-sm shadow-[inset_0_0_10px_rgba(255,69,0,0.2)]' // Pressed state (with slight orange inner glow if active)
-        : 'neu-sm hover:shadow-[4px_4px_8px_#161619,-4px_-4px_8px_#26262b,0_0_15px_rgba(255,69,0,0.3)]'; // Hover glow
-
+        ? 'neu-pressed-sm shadow-[inset_0_0_10px_rgba(255,69,0,0.2)]'
+        : 'neu-sm hover:shadow-[4px_4px_8px_#161619,-4px_-4px_8px_#26262b,0_0_15px_rgba(255,69,0,0.3)]';
     const textColor = isPrimary || active ? 'text-primary' : 'text-textMain';
 
     return (
@@ -51,7 +47,7 @@ export const NeuIconButton = ({ icon, onClick, active, size = 'md', className = 
         <button
             onClick={onClick}
             className={`
-                flex items-center justify-center rounded-full
+                flex items-center justify-center rounded-full cursor-pointer
                 transition-all duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)]
                 ${active ? 'neu-pressed text-primary' : 'neu-flat text-textMuted hover:text-white'}
                 ${sizeClasses[size]} ${className}
@@ -67,7 +63,7 @@ export const NeuLED = ({ active, color = 'primary' }) => {
     const colorMap = {
         primary: 'bg-primary shadow-neu-glow',
         secondary: 'bg-secondary shadow-[0_0_15px_rgba(0,229,255,0.4)]',
-        off: 'bg-[#111] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.8)]'
+        off: 'bg-[#333] shadow-[inset_2px_2px_4px_rgba(0,0,0,0.8)]'
     };
 
     return (
@@ -75,34 +71,28 @@ export const NeuLED = ({ active, color = 'primary' }) => {
     );
 };
 
-// Neumorphic Toggle Switch (Physical hardware feel)
+// Neumorphic Toggle Switch — Fixed shadow stability
 export const NeuToggle = ({ checked, onChange }) => {
     return (
         <div
             onClick={() => onChange(!checked)}
-            className={`
-                w-16 h-8 rounded-full flex items-center p-1 cursor-pointer
-                transition-colors duration-300 neu-pressed relative
-            `}
+            className="w-16 h-8 rounded-full flex items-center p-1 cursor-pointer neu-pressed relative"
         >
             <motion.div
-                layout
                 initial={false}
-                animate={{
-                    x: checked ? 32 : 0,
-                    backgroundColor: checked ? 'var(--accent-primary)' : '#444' // Neon Orange when on, dull grey when off
-                }}
-                className="w-6 h-6 rounded-full shadow-sm flex items-center justify-center"
+                animate={{ x: checked ? 32 : 0 }}
+                transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+                className="w-6 h-6 rounded-full shadow-md relative"
+                style={{ backgroundColor: checked ? 'var(--accent-primary)' : '#555' }}
             >
-                {/* Inner reflection to make the knob look 3D */}
-                <div className="w-2 h-2 rounded-full bg-white opacity-40 absolute top-1 left-2 blur-[1px]"></div>
+                <div className="w-2 h-2 rounded-full bg-white opacity-40 absolute top-1 left-2 blur-[1px]" />
             </motion.div>
         </div>
     );
 };
 
-// Neumorphic Progress Bar / Slider Track
-export const NeuProgress = ({ progress, label = '' }) => {
+// Neumorphic Progress Bar
+export const NeuProgress = ({ progress, label = '', color = 'bg-primary' }) => {
     return (
         <div className="flex flex-col gap-2 w-full">
             {label && (
@@ -114,14 +104,47 @@ export const NeuProgress = ({ progress, label = '' }) => {
             <div className="h-3 w-full rounded-full neu-pressed overflow-hidden p-[2px]">
                 <motion.div
                     initial={{ width: 0 }}
-                    animate={{ width: `${progress}%` }}
+                    whileInView={{ width: `${progress}%` }}
+                    viewport={{ once: true }}
                     transition={{ duration: 1.5, ease: "easeOut" }}
-                    className="h-full rounded-full bg-primary shadow-neu-glow relative"
+                    className={`h-full rounded-full ${color} shadow-neu-glow relative`}
                 >
-                    {/* Add a physical light reflection to the bar */}
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-white opacity-30 MixBlendMode-overlay" />
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-white opacity-30 mix-blend-overlay" />
                 </motion.div>
             </div>
+        </div>
+    );
+};
+
+// Neumorphic Slider (Range knob)
+export const NeuSlider = ({ value, onChange, min = 0, max = 100, className = '' }) => {
+    const percent = ((value - min) / (max - min)) * 100;
+
+    return (
+        <div className={`relative w-full ${className}`}>
+            <div className="h-3 w-full rounded-full neu-pressed overflow-hidden p-[2px] relative">
+                <div
+                    className="h-full rounded-full transition-all duration-150"
+                    style={{
+                        width: `${percent}%`,
+                        background: `linear-gradient(90deg, var(--accent-primary), var(--accent-secondary))`,
+                        boxShadow: '0 0 10px rgba(255, 69, 0, 0.3)',
+                    }}
+                />
+            </div>
+            <input
+                type="range"
+                min={min}
+                max={max}
+                value={value}
+                onChange={(e) => onChange(Number(e.target.value))}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            />
+            {/* Knob indicator */}
+            <div
+                className="absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full neu-convex border-2 border-background pointer-events-none transition-all duration-150"
+                style={{ left: `calc(${percent}% - 10px)` }}
+            />
         </div>
     );
 };
