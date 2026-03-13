@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { useAppStore } from '../../store/useAppStore'
+import useAppStore from '../../store/useAppStore'
 import { toast } from 'sonner'
 import { Lock } from 'lucide-react'
 

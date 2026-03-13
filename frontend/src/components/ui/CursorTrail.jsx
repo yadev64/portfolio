@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { motion, useSpring } from 'framer-motion'
-import { useAppStore } from '../../store/useAppStore'
+import useAppStore from '../../store/useAppStore'
 
 export const CursorTrail = () => {
     const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 })

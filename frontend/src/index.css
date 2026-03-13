@@ -1,31 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=Space+Mono:wght@400;700&display=swap');
-
 @layer base {
   :root {
-    /* Dark Neumorphic Theme (Dieter Rams) */
+    /* Base rgb values for shadow calculations */
+    --shadow-light: 255, 255, 255;
+    --shadow-dark: 16, 16, 19;
+
+    /* Dark Neumorphic Theme (Default) */
     --bg-primary: #1E1E22;
-    /* Soft dark gray/blue */
     --bg-secondary: #1E1E22;
-    /* Matches primary for Neumorphism illusion */
     --bg-card: #1E1E22;
     --accent-primary: #FF4500;
-    /* Neon Orange Indicator */
     --accent-secondary: #00E5FF;
-    /* Cyan Accent (Secondary) */
     --accent-tertiary: #333333;
     --text-primary: #E0E0E0;
-    /* Soft White */
     --text-secondary: #8A8D93;
-    /* Muted text */
     --border: rgba(255, 255, 255, 0.05);
   }
 
+  .light {
+    /* Light Neumorphic Theme */
+    --shadow-light: 255, 255, 255;
+    --shadow-dark: 163, 177, 198;
+
+    --bg-primary: #E0E5EC;
+    --bg-secondary: #E0E5EC;
+    --bg-card: #E0E5EC;
+    --accent-primary: #FF4500;
+    --accent-secondary: #00E5FF;
+    --accent-tertiary: #A3B1C6;
+    --text-primary: #2D3748;
+    --text-secondary: #718096;
+    --border: rgba(255, 255, 255, 0.4);
+  }
+
   body {
-    @apply bg-bg-primary text-text-primary font-body antialiased selection:bg-accent-primary selection:text-bg-primary overflow-x-hidden;
+    @apply bg-background text-textMain font-body antialiased selection:bg-primary selection:text-white overflow-x-hidden;
   }
 
   h1,
@@ -64,29 +78,65 @@
   background: var(--text-secondary);
 }
 
-/* Neumorphic Shape Utilities */
+/* Neumorphic Shape Utilities using CSS Variables for Theme Support */
 .neu-flat {
   background-color: var(--bg-primary);
-  box-shadow: 8px 8px 16px #161619, -8px -8px 16px #26262b;
+  box-shadow:
+    8px 8px 16px rgba(var(--shadow-dark), 0.6),
+    -8px -8px 16px rgba(var(--shadow-light), 0.05);
   border-radius: 1rem;
+}
+
+.light .neu-flat {
+  box-shadow:
+    8px 8px 16px rgba(var(--shadow-dark), 0.5),
+    -8px -8px 16px rgba(var(--shadow-light), 1);
 }
 
 .neu-pressed {
   background-color: var(--bg-primary);
-  box-shadow: inset 6px 6px 12px #161619, inset -6px -6px 12px #26262b;
+  box-shadow:
+    inset 6px 6px 12px rgba(var(--shadow-dark), 0.6),
+    inset -6px -6px 12px rgba(var(--shadow-light), 0.05);
   border-radius: 1rem;
+}
+
+.light .neu-pressed {
+  box-shadow:
+    inset 6px 6px 12px rgba(var(--shadow-dark), 0.4),
+    inset -6px -6px 12px rgba(var(--shadow-light), 1);
 }
 
 .neu-convex {
-  background: linear-gradient(145deg, #202024, #1b1b1f);
-  box-shadow: 8px 8px 16px #161619, -8px -8px 16px #26262b;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.02), rgba(0, 0, 0, 0.1));
+  background-color: var(--bg-primary);
+  box-shadow:
+    8px 8px 16px rgba(var(--shadow-dark), 0.6),
+    -8px -8px 16px rgba(var(--shadow-light), 0.05);
   border-radius: 1rem;
 }
 
+.light .neu-convex {
+  background: linear-gradient(145deg, #ffffff, #caced3);
+  box-shadow:
+    8px 8px 16px rgba(var(--shadow-dark), 0.5),
+    -8px -8px 16px rgba(var(--shadow-light), 1);
+}
+
 .neu-concave {
-  background: linear-gradient(145deg, #1b1b1f, #202024);
-  box-shadow: inset 6px 6px 12px #161619, inset -6px -6px 12px #26262b;
+  background: linear-gradient(145deg, rgba(0, 0, 0, 0.1), rgba(255, 255, 255, 0.02));
+  background-color: var(--bg-primary);
+  box-shadow:
+    inset 6px 6px 12px rgba(var(--shadow-dark), 0.6),
+    inset -6px -6px 12px rgba(var(--shadow-light), 0.05);
   border-radius: 1rem;
+}
+
+.light .neu-concave {
+  background: linear-gradient(145deg, #caced3, #ffffff);
+  box-shadow:
+    inset 6px 6px 12px rgba(var(--shadow-dark), 0.4),
+    inset -6px -6px 12px rgba(var(--shadow-light), 1);
 }
 
 /* Custom Cursor Effect */

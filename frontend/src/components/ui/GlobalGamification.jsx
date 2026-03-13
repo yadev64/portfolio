@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import confetti from 'canvas-confetti'
 import { toast } from 'sonner'
-import { useAppStore } from '../../store/useAppStore'
+import useAppStore from '../../store/useAppStore'
 
 const KONAMI_CODE = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a']
 

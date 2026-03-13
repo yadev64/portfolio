@@ -1,11 +1,16 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { NeuCard, NeuButton, NeuToggle, NeuProgress, NeuLED } from '../components/ui/NeumorphicPrimitives';
-import { Terminal, Code, Cpu, Shield, Zap, Layout } from 'lucide-react';
+import { Terminal, Code, Cpu, Shield, Zap, Layout, Moon, Sun } from 'lucide-react';
+import useAppStore from '../store/useAppStore';
 
 const NeumorphicDashboard = () => {
     const [systemPower, setSystemPower] = useState(true);
     const [networkLink, setNetworkLink] = useState(false);
+
+    // Global Theme State
+    const { theme, toggleTheme } = useAppStore();
+    const isDark = theme === 'dark';
 
     return (
         <div className="min-h-screen bg-background text-textMain font-body p-6 md:p-12 lg:p-16 flex items-center justify-center selection:bg-primary selection:text-white">
@@ -16,12 +21,26 @@ const NeumorphicDashboard = () => {
                     <div className="flex justify-between items-start mb-12">
                         <div>
                             <p className="font-mono text-xs uppercase tracking-[0.3em] text-textMuted mb-4">Identity Matrix</p>
-                            <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tighter text-white">Yadev.dev</h1>
+                            <h1 className="text-5xl md:text-7xl font-display font-bold tracking-tighter text-textMain">Yadev.dev</h1>
                             <h2 className="text-xl md:text-2xl font-display text-textMuted mt-2">Frontend Systems Engineer</h2>
                         </div>
-                        <div className="flex flex-col items-center gap-2">
-                            <NeuLED active={systemPower} color="primary" />
-                            <span className="font-mono text-[10px] uppercase text-textMuted">PWR</span>
+                        <div className="flex gap-6 items-start">
+                            {/* Physical Light Switch */}
+                            <div className="flex flex-col items-center gap-2">
+                                <button
+                                    onClick={toggleTheme}
+                                    className={`w-12 h-16 rounded-xl flex flex-col items-center justify-between p-2 pb-3 transition-all duration-300 ${isDark ? 'neu-pressed' : 'neu-flat'}`}
+                                >
+                                    <div className={`w-full h-1/2 rounded-md transition-colors ${!isDark ? 'bg-primary shadow-neu-glow' : 'bg-transparent'}`}></div>
+                                    <div className={`w-full h-1/2 rounded-md transition-colors ${isDark ? 'bg-primary shadow-neu-glow' : 'bg-transparent'}`}></div>
+                                </button>
+                                <span className="font-mono text-[10px] uppercase text-textMuted">{isDark ? 'DARK' : 'LIGHT'}</span>
+                            </div>
+
+                            <div className="flex flex-col items-center gap-2">
+                                <NeuLED active={systemPower} color="primary" />
+                                <span className="font-mono text-[10px] uppercase text-textMuted">PWR</span>
+                            </div>
                         </div>
                     </div>
 
@@ -76,7 +95,7 @@ const NeumorphicDashboard = () => {
                 {/* Timeline / Experience Mini Widgets (4 Cols) */}
                 <div className="col-span-1 md:col-span-4 grid grid-rows-2 gap-8 md:gap-10">
                     <NeuCard className="flex flex-col justify-center items-center text-center p-0">
-                        <h3 className="text-4xl font-display font-bold text-white mb-2">4+</h3>
+                        <h3 className="text-4xl font-display font-bold text-textMain mb-2">4+</h3>
                         <p className="font-mono text-xs text-textMuted uppercase tracking-widest">Years Active Duty</p>
                     </NeuCard>
                     <NeuCard className="flex justify-between items-center px-10">
@@ -105,12 +124,12 @@ const NeumorphicDashboard = () => {
                 <NeuCard className="col-span-1 md:col-span-4 flex flex-col">
                     <p className="font-mono text-xs uppercase tracking-[0.3em] text-textMuted mb-6 pb-4 border-b border-border/50">Active Directive</p>
 
-                    <div className="flex-1 rounded-xl bg-[#1a1a1e] shadow-[inset_4px_4px_8px_rgba(0,0,0,0.6)] p-6 mb-6 overflow-hidden relative border border-border/20">
-                        <h3 className="text-2xl font-display font-bold text-white relative z-10">Restaurant OS</h3>
+                    <div className="flex-1 rounded-xl bg-opacity-5 shadow-[inset_4px_4px_8px_rgba(var(--shadow-dark),0.6)] p-6 mb-6 overflow-hidden relative border border-border/20">
+                        <h3 className="text-2xl font-display font-bold text-textMain relative z-10">Restaurant OS</h3>
                         <p className="text-sm text-textMuted mt-2 relative z-10">Full-stack multi-tenant platform.</p>
 
                         {/* Decorative blueprint grids */}
-                        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
+                        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'linear-gradient(var(--text-primary) 1px, transparent 1px), linear-gradient(90deg, var(--text-primary) 1px, transparent 1px)', backgroundSize: '20px 20px' }} />
                         <div className="absolute top-4 right-4"><NeuLED active /></div>
                     </div>
 

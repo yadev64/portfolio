@@ -1,6 +1,6 @@
 import React from 'react'
 import { Routes, Route, Link, Outlet, useNavigate, useLocation } from 'react-router-dom'
-import { useAppStore } from '../../store/useAppStore'
+import useAppStore from '../../store/useAppStore'
 // Icons
 import { LayoutDashboard, FileText, Image as ImageIcon, GitMerge, BookOpen, Settings, LogOut } from 'lucide-react'
 
