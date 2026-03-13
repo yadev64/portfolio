@@ -1,17 +1,18 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-// Direct interpolation: orange rgb(255, 69, 0) → blue rgb(0, 120, 255)
+// Direct interpolation: blue rgb(0, 120, 255) → orange rgb(255, 69, 0)
+// Slider 0 = cold (blue), 100 = warm (orange)
 const lerpColor = (t) => {
-    const r = Math.round(255 + t * (0 - 255));
-    const g = Math.round(69 + t * (120 - 69));
-    const b = Math.round(0 + t * (255 - 0));
+    const r = Math.round(0 + t * (255 - 0));
+    const g = Math.round(120 + t * (69 - 120));
+    const b = Math.round(255 + t * (0 - 255));
     return { r, g, b };
 };
 
 const useAppStore = create(
     persist(
-        (set) => ({
+        (set, get) => ({
             // ── Theme ──
             theme: 'dark',
             toggleTheme: () => set((state) => {
@@ -33,15 +34,31 @@ const useAppStore = create(
             }),
 
             // ── Color Temperature ──
-            // 0 = warm (orange), 100 = cool (blue) — direct RGB lerp, no in-between hues
-            colorTemp: 0,
-            setColorTemp: (temp) => set(() => {
+            // 0 = cold (blue), 100 = warm (orange)
+            colorTemp: 100,  // default warm
+            tempDisplayValue: null,  // null = show clock, number = show temp on glyph
+            _tempTimeout: null,
+
+            setColorTemp: (temp) => set((state) => {
                 const clamped = Math.max(0, Math.min(100, temp));
                 const { r, g, b } = lerpColor(clamped / 100);
                 document.documentElement.style.setProperty('--accent-primary', `rgb(${r}, ${g}, ${b})`);
                 document.documentElement.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, 0.4)`);
-                return { colorTemp: clamped };
+
+                // Show temperature on glyph display: map 0→0°C, 100→50°C
+                const degC = Math.round((clamped / 100) * 50);
+
+                // Clear previous timeout
+                if (state._tempTimeout) clearTimeout(state._tempTimeout);
+                const timeout = setTimeout(() => {
+                    // Hide temp display after 2 seconds of no sliding
+                    get().clearTempDisplay();
+                }, 2000);
+
+                return { colorTemp: clamped, tempDisplayValue: degC, _tempTimeout: timeout };
             }),
+
+            clearTempDisplay: () => set({ tempDisplayValue: null, _tempTimeout: null }),
 
             // ── Gamification ──
             xp: 0,
@@ -80,7 +97,7 @@ const useAppStore = create(
                 } else {
                     document.documentElement.classList.remove('light');
                 }
-                if (state && state.colorTemp !== undefined && state.colorTemp !== 0) {
+                if (state && state.colorTemp !== undefined) {
                     const { r, g, b } = lerpColor(state.colorTemp / 100);
                     document.documentElement.style.setProperty('--accent-primary', `rgb(${r}, ${g}, ${b})`);
                     document.documentElement.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, 0.4)`);

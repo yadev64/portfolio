@@ -126,7 +126,7 @@ export const NeuTempSlider = ({ value, onChange, min = 0, max = 100 }) => {
                     className="h-full rounded-full transition-all duration-100"
                     style={{
                         width: `${Math.max(percent, 4)}%`,
-                        background: 'linear-gradient(90deg, #FF4500, #0078FF)',
+                        background: 'linear-gradient(90deg, #0078FF, #FF4500)',
                     }}
                 />
             </div>

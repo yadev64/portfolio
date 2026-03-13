@@ -129,7 +129,7 @@ const fadeUp = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transi
    MAIN DASHBOARD
    ══════════════════════════════════════════════════════════════ */
 const NeumorphicDashboard = () => {
-    const { theme, toggleTheme, colorTemp, setColorTemp } = useAppStore();
+    const { theme, toggleTheme, colorTemp, setColorTemp, tempDisplayValue } = useAppStore();
     const isDark = theme === 'dark';
     const typedRole = useTypingEffect(ROLES);
     const clock = useLiveClock();
@@ -195,9 +195,9 @@ const NeumorphicDashboard = () => {
                                 <span className="font-mono text-xs text-textMuted uppercase">Ambient</span>
                             </div>
                             <div className="flex items-center gap-3">
-                                <Flame size={16} className="text-[#FF4500] shrink-0" />
-                                <NeuTempSlider value={colorTemp} onChange={setColorTemp} min={0} max={100} />
                                 <Snowflake size={16} className="text-[#0078FF] shrink-0" />
+                                <NeuTempSlider value={colorTemp} onChange={setColorTemp} min={0} max={100} />
+                                <Flame size={16} className="text-[#FF4500] shrink-0" />
                             </div>
 
                             {/* PWR LED */}
@@ -225,11 +225,11 @@ const NeumorphicDashboard = () => {
                         <div className="flex gap-6">
                             {/* Left: Circular Dot Matrix Display — fixed size, stays square */}
                             <NeuCard className="!p-4 flex items-center justify-center shrink-0">
-                                <DotMatrixDisplay />
+                                <DotMatrixDisplay tempDisplayValue={tempDisplayValue} />
                             </NeuCard>
 
-                            {/* Right: Location + Calendar */}
-                            <NeuCard className="!p-5 flex flex-col justify-between">
+                            {/* Right: Location + Calendar — fills remaining space */}
+                            <NeuCard className="!p-5 flex flex-col justify-between flex-1 min-w-0">
                                 <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-4">Location</p>
 
                                 <div className="flex items-center gap-2 mb-4">

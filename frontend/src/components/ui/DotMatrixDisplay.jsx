@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { Camera, CameraOff } from 'lucide-react';
 
-/* ── 5×3 digit patterns (rows top→bottom, cols left→right) ── */
+/* ── 5×3 digit patterns ── */
 const DIGITS = {
     '0': [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1],
     '1': [0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1],
@@ -13,17 +13,18 @@ const DIGITS = {
     '7': [1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
     '8': [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
     '9': [1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
+    // degree symbol (3×3)
+    '°': [0, 1, 0, 1, 0, 1, 0, 1, 0],
+    // C character (3×5)
+    'C': [1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1],
 };
 
-// Square grid for circular display
-const GRID_SIZE = 27;  // 27×27 dots
+const GRID_SIZE = 27;
 const DOT_SIZE = 5;
 const DOT_GAP = 2;
-const DISPLAY_PX = GRID_SIZE * (DOT_SIZE + DOT_GAP) - DOT_GAP; // total pixel size
+const DISPLAY_PX = GRID_SIZE * (DOT_SIZE + DOT_GAP) - DOT_GAP;
 
-/**
- * Precompute which cells are inside the circle (for masking).
- */
+/** Precompute circle mask */
 const buildCircleMask = () => {
     const mask = new Array(GRID_SIZE * GRID_SIZE);
     const center = (GRID_SIZE - 1) / 2;
@@ -37,29 +38,26 @@ const buildCircleMask = () => {
     }
     return mask;
 };
-
 const CIRCLE_MASK = buildCircleMask();
 
-/**
- * Stamp a 5×3 digit pattern onto a flat grid array at (startCol, startRow).
- */
+/** Stamp a 5×3 digit */
 const stampDigit = (grid, char, startCol, startRow) => {
     const pattern = DIGITS[char];
     if (!pattern) return;
-    for (let r = 0; r < 5; r++) {
-        for (let c = 0; c < 3; c++) {
+    const cols = (char === '°') ? 3 : 3;
+    const rows = (char === '°') ? 3 : 5;
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
             const gx = startCol + c;
             const gy = startRow + r;
             if (gx >= 0 && gx < GRID_SIZE && gy >= 0 && gy < GRID_SIZE) {
-                grid[gy * GRID_SIZE + gx] = pattern[r * 3 + c];
+                grid[gy * GRID_SIZE + gx] = pattern[r * cols + c];
             }
         }
     }
 };
 
-/**
- * Stamp blinking colon dots.
- */
+/** Stamp colon */
 const stampColon = (grid, col, startRow, blink) => {
     if (!blink) return;
     const dot1 = (startRow + 1) * GRID_SIZE + col;
@@ -68,21 +66,17 @@ const stampColon = (grid, col, startRow, blink) => {
     if (dot2 < grid.length) grid[dot2] = 1;
 };
 
-/**
- * Build the clock pixel grid. HH:MM centered, seconds smaller below.
- */
+/** Build clock grid: HH:MM centered, SS below */
 const buildClockGrid = (time) => {
     const grid = new Array(GRID_SIZE * GRID_SIZE).fill(0);
-
     const h = time.getHours().toString().padStart(2, '0');
     const m = time.getMinutes().toString().padStart(2, '0');
     const s = time.getSeconds().toString().padStart(2, '0');
     const blink = s % 2 === 0;
 
-    // HH:MM = 3+1+3+1+3+1+3 = 15 cols wide
     const totalW = 15;
     const offsetX = Math.floor((GRID_SIZE - totalW) / 2);
-    const offsetY = Math.floor((GRID_SIZE - 5) / 2) - 2; // shift up to make room for seconds
+    const offsetY = Math.floor((GRID_SIZE - 5) / 2) - 2;
 
     stampDigit(grid, h[0], offsetX, offsetY);
     stampDigit(grid, h[1], offsetX + 4, offsetY);
@@ -90,22 +84,52 @@ const buildClockGrid = (time) => {
     stampDigit(grid, m[0], offsetX + 9, offsetY);
     stampDigit(grid, m[1], offsetX + 13, offsetY);
 
-    // Seconds below, centered
-    const secW = 7; // 3+1+3
+    const secW = 7;
     const secX = Math.floor((GRID_SIZE - secW) / 2);
     const secY = offsetY + 7;
     stampDigit(grid, s[0], secX, secY);
     stampDigit(grid, s[1], secX + 4, secY);
+    return grid;
+};
+
+/** Build temperature grid: "XX°C" centered */
+const buildTempGrid = (degC) => {
+    const grid = new Array(GRID_SIZE * GRID_SIZE).fill(0);
+    const tempStr = degC.toString();
+    const isDoubleDigit = tempStr.length >= 2;
+
+    // Layout: [D1?] [D2] [°] [C]
+    // Widths:   3+1   3+1  3+1 3 = 15 for double, 11 for single
+    const totalW = isDoubleDigit ? 15 : 11;
+    const offsetX = Math.floor((GRID_SIZE - totalW) / 2);
+    const offsetY = Math.floor((GRID_SIZE - 5) / 2) - 1;
+
+    let x = offsetX;
+    if (isDoubleDigit) {
+        stampDigit(grid, tempStr[0], x, offsetY);
+        x += 4;
+        stampDigit(grid, tempStr[1], x, offsetY);
+        x += 4;
+    } else {
+        stampDigit(grid, tempStr[0], x, offsetY);
+        x += 4;
+    }
+    // degree symbol (3×3, aligned to top of digit)
+    stampDigit(grid, '°', x, offsetY);
+    x += 4;
+    // C character
+    stampDigit(grid, 'C', x, offsetY);
 
     return grid;
 };
 
+
 /**
  * Circular Dot Matrix Display.
- * Black bg, dense dark grey dots, active pixels white.
- * Camera toggle in parent card corner.
+ * Props:
+ *   tempDisplayValue: number | null — when set, shows temperature instead of clock
  */
-const DotMatrixDisplay = () => {
+const DotMatrixDisplay = ({ tempDisplayValue = null }) => {
     const [cameraMode, setCameraMode] = useState(false);
     const [cameraGrid, setCameraGrid] = useState(null);
     const [time, setTime] = useState(new Date());
@@ -119,6 +143,17 @@ const DotMatrixDisplay = () => {
         const interval = setInterval(() => setTime(new Date()), 1000);
         return () => clearInterval(interval);
     }, []);
+
+    // Turn off camera when user leaves window
+    useEffect(() => {
+        const handleVisibilityChange = () => {
+            if (document.hidden && cameraMode) {
+                setCameraMode(false);
+            }
+        };
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+    }, [cameraMode]);
 
     // Camera lifecycle
     useEffect(() => {
@@ -196,17 +231,31 @@ const DotMatrixDisplay = () => {
         }
     }, []);
 
-    // Grid data
+    // Determine which grid to display
     const displayGrid = useMemo(() => {
         if (cameraMode && cameraGrid) return cameraGrid;
+        if (tempDisplayValue !== null && !cameraMode) return buildTempGrid(tempDisplayValue);
         return buildClockGrid(time);
-    }, [cameraMode, cameraGrid, time]);
+    }, [cameraMode, cameraGrid, tempDisplayValue, time]);
+
+    // Mode label
+    const modeLabel = cameraMode ? 'CAM' : (tempDisplayValue !== null ? '°C' : 'IST');
 
     return (
         <div className="relative" style={{ width: DISPLAY_PX + 20, height: DISPLAY_PX + 20 }}>
-            {/* Hidden media elements */}
             <video ref={videoRef} className="hidden" playsInline muted />
             <canvas ref={canvasRef} className="hidden" />
+
+            {/* Green active indicator — top right of container */}
+            {cameraMode && (
+                <div
+                    className="absolute -top-1 -right-1 w-3 h-3 rounded-full z-10"
+                    style={{
+                        backgroundColor: '#22C55E',
+                        boxShadow: '0 0 6px rgba(34, 197, 94, 0.6)',
+                    }}
+                />
+            )}
 
             {/* Circular display */}
             <div
@@ -230,15 +279,10 @@ const DotMatrixDisplay = () => {
                     {displayGrid.map((val, i) => {
                         const inCircle = CIRCLE_MASK[i];
                         if (!inCircle) {
-                            // Outside circle — render transparent (let black bg show)
-                            return (
-                                <div key={i} style={{ width: DOT_SIZE, height: DOT_SIZE }} />
-                            );
+                            return <div key={i} style={{ width: DOT_SIZE, height: DOT_SIZE }} />;
                         }
-
                         const brightness = typeof val === 'number' ? val : 0;
                         const isOn = brightness > 0.15;
-
                         return (
                             <div
                                 key={i}
@@ -262,21 +306,25 @@ const DotMatrixDisplay = () => {
                 {/* Mode label */}
                 <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
                     <span className="font-mono text-[7px] uppercase tracking-[0.2em]" style={{ color: 'rgba(255,255,255,0.2)' }}>
-                        {cameraMode ? 'CAM' : 'IST'}
+                        {modeLabel}
                     </span>
                 </div>
             </div>
 
-            {/* Camera toggle — bottom right of the CARD (outside circle) */}
+            {/* Camera toggle — bottom right, inside card but outside circle */}
             <button
                 onClick={() => setCameraMode(prev => !prev)}
-                className="absolute bottom-0 right-0 w-8 h-8 rounded-lg flex items-center justify-center cursor-pointer transition-all duration-200 neu-flat !rounded-full"
-                style={{ zIndex: 2 }}
+                className="absolute bottom-0 right-0 w-8 h-8 flex items-center justify-center cursor-pointer transition-all duration-200 rounded-full"
+                style={{
+                    zIndex: 2,
+                    backgroundColor: '#0A0A0A',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                }}
                 title={cameraMode ? 'Switch to clock' : 'Switch to camera'}
             >
                 {cameraMode
-                    ? <CameraOff size={13} className="text-primary" />
-                    : <Camera size={13} className="text-textMuted" />
+                    ? <CameraOff size={13} color="#22C55E" />
+                    : <Camera size={13} color="rgba(255,255,255,0.35)" />
                 }
             </button>
         </div>
