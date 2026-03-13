@@ -40,11 +40,11 @@ const buildCircleMask = () => {
 };
 const CIRCLE_MASK = buildCircleMask();
 
-/** Stamp a 5×3 digit */
+/** Stamp a digit at 1x scale */
 const stampDigit = (grid, char, startCol, startRow) => {
     const pattern = DIGITS[char];
     if (!pattern) return;
-    const cols = (char === '°') ? 3 : 3;
+    const cols = 3;
     const rows = (char === '°') ? 3 : 5;
     for (let r = 0; r < rows; r++) {
         for (let c = 0; c < cols; c++) {
@@ -52,6 +52,28 @@ const stampDigit = (grid, char, startCol, startRow) => {
             const gy = startRow + r;
             if (gx >= 0 && gx < GRID_SIZE && gy >= 0 && gy < GRID_SIZE) {
                 grid[gy * GRID_SIZE + gx] = pattern[r * cols + c];
+            }
+        }
+    }
+};
+
+/** Stamp a digit at 2x scale (each pixel becomes a 2×2 block) */
+const stampDigit2x = (grid, char, startCol, startRow) => {
+    const pattern = DIGITS[char];
+    if (!pattern) return;
+    const cols = 3;
+    const rows = (char === '°') ? 3 : 5;
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            const val = pattern[r * cols + c];
+            for (let dy = 0; dy < 2; dy++) {
+                for (let dx = 0; dx < 2; dx++) {
+                    const gx = startCol + c * 2 + dx;
+                    const gy = startRow + r * 2 + dy;
+                    if (gx >= 0 && gx < GRID_SIZE && gy >= 0 && gy < GRID_SIZE) {
+                        grid[gy * GRID_SIZE + gx] = val;
+                    }
+                }
             }
         }
     }
@@ -92,33 +114,34 @@ const buildClockGrid = (time) => {
     return grid;
 };
 
-/** Build temperature grid: "XX°C" centered */
+/** Build temperature grid: "XX°C" centered at 2x scale */
 const buildTempGrid = (degC) => {
     const grid = new Array(GRID_SIZE * GRID_SIZE).fill(0);
     const tempStr = degC.toString();
     const isDoubleDigit = tempStr.length >= 2;
 
-    // Layout: [D1?] [D2] [°] [C]
-    // Widths:   3+1   3+1  3+1 3 = 15 for double, 11 for single
-    const totalW = isDoubleDigit ? 15 : 11;
+    // At 2x: each digit is 6 wide, each gap is 1
+    // Layout: [D1?](6+1) [D2](6+1) [°](6+1) [C](6)
+    // Double: 7+7+7+6 = 27, Single: 7+7+6 = 20
+    const totalW = isDoubleDigit ? 25 : 19;
     const offsetX = Math.floor((GRID_SIZE - totalW) / 2);
-    const offsetY = Math.floor((GRID_SIZE - 5) / 2) - 1;
+    const offsetY = Math.floor((GRID_SIZE - 10) / 2);
 
     let x = offsetX;
     if (isDoubleDigit) {
-        stampDigit(grid, tempStr[0], x, offsetY);
-        x += 4;
-        stampDigit(grid, tempStr[1], x, offsetY);
-        x += 4;
+        stampDigit2x(grid, tempStr[0], x, offsetY);
+        x += 7;
+        stampDigit2x(grid, tempStr[1], x, offsetY);
+        x += 7;
     } else {
-        stampDigit(grid, tempStr[0], x, offsetY);
-        x += 4;
+        stampDigit2x(grid, tempStr[0], x, offsetY);
+        x += 7;
     }
-    // degree symbol (3×3, aligned to top of digit)
+    // degree symbol at 1x scale (small), top-aligned
     stampDigit(grid, '°', x, offsetY);
     x += 4;
-    // C character
-    stampDigit(grid, 'C', x, offsetY);
+    // C at 2x
+    stampDigit2x(grid, 'C', x, offsetY);
 
     return grid;
 };
@@ -144,16 +167,19 @@ const DotMatrixDisplay = ({ tempDisplayValue = null }) => {
         return () => clearInterval(interval);
     }, []);
 
-    // Turn off camera when user leaves window
+    // Turn off camera when user leaves window (tab switch or window blur)
     useEffect(() => {
         const handleVisibilityChange = () => {
-            if (document.hidden && cameraMode) {
-                setCameraMode(false);
-            }
+            if (document.hidden) setCameraMode(false);
         };
+        const handleWindowBlur = () => setCameraMode(false);
         document.addEventListener('visibilitychange', handleVisibilityChange);
-        return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-    }, [cameraMode]);
+        window.addEventListener('blur', handleWindowBlur);
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            window.removeEventListener('blur', handleWindowBlur);
+        };
+    }, []);
 
     // Camera lifecycle
     useEffect(() => {
@@ -311,20 +337,19 @@ const DotMatrixDisplay = ({ tempDisplayValue = null }) => {
                 </div>
             </div>
 
-            {/* Camera toggle — bottom right, inside card but outside circle */}
+            {/* Camera toggle — bottom right, neumorphic with lighter shadows */}
             <button
                 onClick={() => setCameraMode(prev => !prev)}
-                className="absolute bottom-0 right-0 w-8 h-8 flex items-center justify-center cursor-pointer transition-all duration-200 rounded-full"
+                className="absolute bottom-0 right-0 w-8 h-8 flex items-center justify-center cursor-pointer transition-all duration-200 rounded-full bg-background"
                 style={{
                     zIndex: 2,
-                    backgroundColor: '#0A0A0A',
-                    border: '1px solid rgba(255,255,255,0.08)',
+                    boxShadow: '2px 2px 5px rgba(0,0,0,0.25), -2px -2px 5px rgba(255,255,255,0.03)',
                 }}
                 title={cameraMode ? 'Switch to clock' : 'Switch to camera'}
             >
                 {cameraMode
-                    ? <CameraOff size={13} color="#22C55E" />
-                    : <Camera size={13} color="rgba(255,255,255,0.35)" />
+                    ? <CameraOff size={13} className="text-green-400" />
+                    : <Camera size={13} className="text-textMuted" />
                 }
             </button>
         </div>

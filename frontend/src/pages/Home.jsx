@@ -8,9 +8,9 @@ import useAppStore from '../store/useAppStore';
 
 /* ──────────────────────── STATIC DATA ──────────────────────── */
 const ROLES = [
-    'Senior Software Engineer_',
+    'Software Engineer_',
     'Builder of Tools_',
-    'Cloud Architect_',
+    'Maker_',
     'UI Craftsman_',
 ];
 
