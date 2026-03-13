@@ -1,68 +1,66 @@
 import React, { useRef, useMemo, useState } from 'react'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { Text, CameraControls, Sphere, Html, MeshDistortMaterial, Environment, Sparkles } from '@react-three/drei'
+import { Text, CameraControls, Icosahedron, Html, MeshReflectorMaterial, Sparkles } from '@react-three/drei'
+import { EffectComposer, Bloom, Noise } from '@react-three/postprocessing'
 import * as THREE from 'three'
 
-// The interactive nodes as fluidic crystal blobs
-const NavNode = ({ position, label, onClick, color, isHovered, onHover, speed }) => {
+// The interactive nodes as sharp, brutalist geometries (Icosahedron wireframes)
+const NavNode = ({ position, label, onClick, isHovered, onHover, speed }) => {
     const meshRef = useRef()
 
     useFrame((state, delta) => {
         if (meshRef.current) {
-            // Fluid levitation on the mesh ONLY, keeping text stationary
-            meshRef.current.position.y = Math.sin(state.clock.elapsedTime * speed) * 0.5
-            meshRef.current.rotation.x += delta * (speed * 0.5)
+            // Mechanical levitation and rigid rotation
+            meshRef.current.position.y = position[1] + Math.sin(state.clock.elapsedTime * speed) * 0.2
+            meshRef.current.rotation.x += delta * (speed * 0.8)
             meshRef.current.rotation.y += delta * speed
-            // Breathing scale for extra fluid vibe
-            const t = state.clock.elapsedTime * speed
-            meshRef.current.scale.set(
-                1 + Math.sin(t * 1.5) * 0.1,
-                1 + Math.sin(t * 2.0) * 0.1,
-                1 + Math.cos(t * 1.2) * 0.1
-            )
         }
     })
 
     return (
         <group position={position}>
             <group ref={meshRef}>
-                <Sphere
-                    args={[1.5, 64, 64]}
+                <Icosahedron
+                    args={[1.2, 1]}
                     onClick={(e) => { e.stopPropagation(); onClick() }}
                     onPointerOver={(e) => { e.stopPropagation(); document.body.style.cursor = 'pointer'; onHover(true) }}
                     onPointerOut={(e) => { e.stopPropagation(); document.body.style.cursor = 'auto'; onHover(false) }}
                 >
-                    {/* True 3D Fluid Blob Material */}
-                    <MeshDistortMaterial
-                        color={color}
-                        emissive={color}
-                        emissiveIntensity={isHovered ? 0.8 : 0.2}
-                        distort={isHovered ? 0.6 : 0.4}
-                        speed={isHovered ? 4 : 2}
-                        roughness={0.1}
-                        metalness={0.9}
-                        clearcoat={1}
-                        clearcoatRoughness={0.1}
+                    {/* Dark metallic wireframe material */}
+                    <meshStandardMaterial
+                        color={isHovered ? '#ff0000' : '#444444'}
+                        emissive={isHovered ? '#ff0000' : '#000000'}
+                        emissiveIntensity={isHovered ? 2 : 0}
+                        wireframe={true}
+                        roughness={0.2}
+                        metalness={0.8}
                     />
-                </Sphere>
+                </Icosahedron>
+                <Icosahedron args={[0.8, 0]}>
+                    <meshStandardMaterial
+                        color="#111111"
+                        roughness={0.1}
+                        metalness={1.0}
+                    />
+                </Icosahedron>
             </group>
 
             <Text
                 position={[0, -2.5, 0]}
                 fontSize={0.9}
-                color={isHovered ? '#6B21A8' : '#8B8A95'} // Dark purple on hover
+                color={isHovered ? '#ffffff' : '#555555'} // Stark white on hover
                 anchorX="center"
                 anchorY="middle"
-                outlineWidth={isHovered ? 0.02 : 0}
-                outlineColor="#D4AF37" // Gold edge
+                outlineWidth={isHovered ? 0.04 : 0.02}
+                outlineColor={isHovered ? '#ff0000' : '#000000'} // Red glow
             >
                 {label}
             </Text>
 
             {isHovered && (
                 <Html position={[0, 2.8, 0]} center zIndexRange={[100, 0]}>
-                    <div className="bg-white/80 backdrop-blur-md border border-[#D4AF37] px-4 py-1 rounded-full text-sm font-display text-[#6B21A8] shadow-[0_0_20px_rgba(212,175,55,0.4)] whitespace-nowrap uppercase tracking-widest">
-                        Access {label}
+                    <div className="bg-black/80 backdrop-blur-md border border-red-600 px-4 py-1 text-sm font-display text-white shadow-[0_0_15px_rgba(255,0,0,0.6)] whitespace-nowrap uppercase tracking-widest">
+                        ACCESS: {label}
                     </div>
                 </Html>
             )}
@@ -71,26 +69,34 @@ const NavNode = ({ position, label, onClick, color, isHovered, onHover, speed })
 }
 
 const BackgroundArt = () => {
-    const ref = useRef()
-    useFrame((state, delta) => {
-        if (ref.current) {
-            ref.current.rotation.x += delta * 0.05
-            ref.current.rotation.y += delta * 0.1
-            ref.current.rotation.z -= delta * 0.05
-        }
-    })
     return (
-        <group ref={ref} position={[0, 0, -40]}>
-            <mesh>
-                <torusKnotGeometry args={[20, 3, 256, 64]} />
-                <meshStandardMaterial
-                    color="#D4AF37"
-                    metalness={0.8}
-                    roughness={0.3}
-                    emissive="#6B21A8"
-                    emissiveIntensity={0.2}
-                />
-            </mesh>
+        <group position={[0, 5, -30]}>
+            {/* Massive Ghost Typography for heavy architectural depth */}
+            <Text
+                fontSize={24}
+                color="#000000" // Invisible fill
+                anchorX="center"
+                anchorY="middle"
+                outlineWidth={0.2}
+                outlineColor="#333333" // Grey wireframe
+                fillOpacity={0}
+                fontWeight="bold"
+            >
+                YADEV 3D
+            </Text>
+            <Text
+                position={[0, -20, -10]}
+                fontSize={28}
+                color="#000000"
+                anchorX="center"
+                anchorY="middle"
+                outlineWidth={0.3}
+                outlineColor="#ff0000" // Red shadow deeper down
+                fillOpacity={0}
+                fontWeight="bold"
+            >
+                SYSTEM
+            </Text>
         </group>
     )
 }
@@ -98,18 +104,36 @@ const BackgroundArt = () => {
 const Constellation = ({ setActiveOverlay }) => {
     const [hoveredNode, setHoveredNode] = useState(null)
 
-    // Vibrant crystal colors 
+    // Layout configuration
     const nodes = [
-        { id: 'about', label: 'Identity', position: [-8, 2, -10], color: '#FF1493', speed: 1.2 }, // Ruby Pink
-        { id: 'projects', label: 'Works', position: [0, 4, -15], color: '#00FFFF', speed: 0.8 }, // Sapphire Cyan
-        { id: 'skills', label: 'Arsenal', position: [8, 0, -12], color: '#9932CC', speed: 1.5 }, // Amethyst Purple
-        { id: 'journey', label: 'Timeline', position: [-5, -4, -8], color: '#00FA9A', speed: 0.5 }, // Emerald Green
-        { id: 'media', label: 'Archives', position: [6, -5, -14], color: '#FFD700', speed: 1.1 }, // Topaz Gold
-        { id: 'blog', label: 'Transmissions', position: [0, -6, -5], color: '#FF4500', speed: 1.4 } // Opal Orange
+        { id: 'about', label: 'IDENTITY', position: [-8, 2, -10], speed: 1.2 },
+        { id: 'projects', label: 'WORKS', position: [0, 4, -15], speed: 0.8 },
+        { id: 'skills', label: 'ARSENAL', position: [8, 0, -12], speed: 1.5 },
+        { id: 'journey', label: 'TIMELINE', position: [-5, -4, -8], speed: 0.5 },
+        { id: 'media', label: 'ARCHIVES', position: [6, -5, -14], speed: 1.1 },
+        { id: 'blog', label: 'TRANSMISSIONS', position: [0, -6, -5], speed: 1.4 }
     ]
 
     return (
         <group>
+            {/* The Adidas Chile 20 Wet Floor Reflection */}
+            <mesh position={[0, -10, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+                <planeGeometry args={[200, 200]} />
+                <MeshReflectorMaterial
+                    blur={[400, 100]} // Blur ground reflections (width, height)
+                    resolution={1024} // Reflectivity resolution
+                    mixBlur={1} // How much blur mixes with surface roughness
+                    mixStrength={15} // Strength of the reflections
+                    roughness={1}
+                    depthScale={1.2} // Scale the depth factor (0 = no depth)
+                    minDepthThreshold={0.4} // Lower edge for the depthTexture interpolation
+                    maxDepthThreshold={1.4} // Upper edge for the depthTexture interpolation
+                    color="#050505"
+                    metalness={0.8}
+                    mirror={1} // Mirror perfection, 0 = no mirror, 1 = perfect mirror
+                />
+            </mesh>
+
             <BackgroundArt />
 
             {nodes.map((node) => (
@@ -117,7 +141,6 @@ const Constellation = ({ setActiveOverlay }) => {
                     key={node.id}
                     position={node.position}
                     label={node.label}
-                    color={node.color}
                     speed={node.speed}
                     isHovered={hoveredNode === node.id}
                     onHover={(state) => setHoveredNode(state ? node.id : null)}
@@ -125,18 +148,15 @@ const Constellation = ({ setActiveOverlay }) => {
                 />
             ))}
 
-            {/* Ambient Pearl Environment */}
-            <Environment preset="studio" />
-            <ambientLight intensity={0.5} color="#ffffff" />
+            {/* Cinematic Spotlights */}
+            <ambientLight intensity={0.2} color="#ffffff" />
+            <spotLight position={[10, 20, 10]} angle={0.3} penumbra={1} intensity={200} color="#ffffff" castShadow />
+            <spotLight position={[-10, 15, -10]} angle={0.4} penumbra={1} intensity={300} color="#ff0000" castShadow />
+            <pointLight position={[0, -5, -15]} intensity={100} color="#ffffff" distance={30} />
 
-            {/* Gold and Purple edge lighting for metallic reflections */}
-            <directionalLight position={[10, 10, 5]} intensity={2.5} color="#D4AF37" />
-            <directionalLight position={[-10, -10, -5]} intensity={2.5} color="#6B21A8" />
-            <pointLight position={[0, 0, 0]} intensity={1.5} color="#ffffff" distance={20} />
-
-            {/* Ambient Dust Motes instead of Stars */}
-            <Sparkles count={500} scale={40} size={10} speed={0.4} opacity={0.6} color="#D4AF37" />
-            <Sparkles count={300} scale={30} size={12} speed={0.2} opacity={0.4} color="#6B21A8" />
+            {/* Gritty floating debris (Ash/Embers) instead of Sparkles */}
+            <Sparkles count={800} scale={40} size={15} speed={0.2} opacity={0.5} color="#444444" noise={1} />
+            <Sparkles count={200} scale={30} size={25} speed={0.5} opacity={0.8} color="#ff0000" noise={2} />
         </group>
     )
 }
@@ -183,22 +203,27 @@ const CameraManager = ({ activeOverlay }) => {
                 one: 32, // ACTION.TOUCH_ROTATE
                 two: 1024 // ACTION.TOUCH_DOLLY_TRUCK
             }}
-            smoothTime={0.8}
+            smoothTime={0.8} // Smooth sweeping transitons
         />
     )
 }
 
 export const HeroCanvas = ({ activeOverlay, setActiveOverlay }) => {
     return (
-        // Metallic Pearl background base
-        <div className="absolute inset-0 w-full h-full bg-gradient-to-br from-[#e0e5ec] to-[#f4f7f6] select-none">
-            <Canvas camera={{ position: [0, 0, 15], fov: 60 }}>
-                {/* Pearl/Silver fog */}
-                <fog attach="fog" args={['#e0e5ec', 15, 60]} />
+        // Pure Black Base Void
+        <div className="absolute inset-0 w-full h-full bg-[#000000] select-none">
+            <Canvas camera={{ position: [0, 0, 15], fov: 60 }} gl={{ antialias: false, toneMapping: THREE.ReinhardToneMapping }}>
+                {/* Deep pitch black fog mask */}
+                <fog attach="fog" args={['#000000', 10, 50]} />
 
                 <Constellation setActiveOverlay={setActiveOverlay} />
                 <CameraManager activeOverlay={activeOverlay} />
 
+                {/* Urban Brutalism Cinematic Post-Processing */}
+                <EffectComposer>
+                    <Noise opacity={0.05} />
+                    <Bloom luminanceThreshold={1} mipmapBlur intensity={1.5} />
+                </EffectComposer>
             </Canvas>
         </div>
     )

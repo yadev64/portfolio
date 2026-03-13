@@ -6,18 +6,22 @@
 
 @layer base {
   :root {
-    /* Metallic Pearl Theme */
-    --bg-primary: #e0e5ec;
-    --bg-secondary: #f4f7f6;
-    --bg-card: rgba(255, 255, 255, 0.4);
-    --accent-primary: #D4AF37;
-    /* Gold */
-    --accent-secondary: #6B21A8;
-    /* Dark Purple */
-    --accent-tertiary: #b19cd9;
-    --text-primary: #1a1a1a;
-    --text-secondary: #4a4a4a;
-    --border: rgba(212, 175, 55, 0.2);
+    /* Dark Neumorphic Theme (Dieter Rams) */
+    --bg-primary: #1E1E22;
+    /* Soft dark gray/blue */
+    --bg-secondary: #1E1E22;
+    /* Matches primary for Neumorphism illusion */
+    --bg-card: #1E1E22;
+    --accent-primary: #FF4500;
+    /* Neon Orange Indicator */
+    --accent-secondary: #00E5FF;
+    /* Cyan Accent (Secondary) */
+    --accent-tertiary: #333333;
+    --text-primary: #E0E0E0;
+    /* Soft White */
+    --text-secondary: #8A8D93;
+    /* Muted text */
+    --border: rgba(255, 255, 255, 0.05);
   }
 
   body {
@@ -32,6 +36,57 @@
   h6 {
     @apply font-display font-bold tracking-tight;
   }
+
+  .glass-panel {
+    @apply bg-background border border-border shadow-neu rounded-2xl;
+  }
+
+  .nav-item {
+    @apply uppercase tracking-[0.2em] text-xs font-display text-textMuted hover:text-primary transition-colors duration-300;
+  }
+}
+
+/* Custom Scrollbar for Dashboard */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--accent-tertiary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* Neumorphic Shape Utilities */
+.neu-flat {
+  background-color: var(--bg-primary);
+  box-shadow: 8px 8px 16px #161619, -8px -8px 16px #26262b;
+  border-radius: 1rem;
+}
+
+.neu-pressed {
+  background-color: var(--bg-primary);
+  box-shadow: inset 6px 6px 12px #161619, inset -6px -6px 12px #26262b;
+  border-radius: 1rem;
+}
+
+.neu-convex {
+  background: linear-gradient(145deg, #202024, #1b1b1f);
+  box-shadow: 8px 8px 16px #161619, -8px -8px 16px #26262b;
+  border-radius: 1rem;
+}
+
+.neu-concave {
+  background: linear-gradient(145deg, #1b1b1f, #202024);
+  box-shadow: inset 6px 6px 12px #161619, inset -6px -6px 12px #26262b;
+  border-radius: 1rem;
 }
 
 /* Custom Cursor Effect */
@@ -50,8 +105,8 @@
 .custom-cursor-ring {
   width: 40px;
   height: 40px;
-  border: 1px solid rgba(212, 175, 55, 0.5);
-  /* Gold ring */
+  border: 1px solid rgba(255, 0, 0, 0.5);
+  /* Red ring */
   border-radius: 50%;
   position: fixed;
   pointer-events: none;
@@ -64,7 +119,7 @@
   width: 12px;
   height: 12px;
   background-color: var(--accent-secondary);
-  /* Purple hover */
+  /* White hover */
 }
 
 .cursor-hover .custom-cursor-ring {
