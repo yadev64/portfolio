@@ -24,9 +24,9 @@ export default {
                 border: 'var(--border)',
             },
             fontFamily: {
-                display: ['Syne', 'sans-serif'],
+                display: ['"Space Grotesk"', 'sans-serif'], // Futuristic heading font
                 body: ['DM Sans', 'sans-serif'],
-                mono: ['JetBrains Mono', 'monospace'],
+                mono: ['"Space Mono"', 'monospace'],
             },
         },
     },
