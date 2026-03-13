@@ -1,0 +1,16 @@
+name = "yadev-portfolio-api"
+main = "src/index.js"
+compatibility_date = "2024-03-14"
+
+# Define secrets instead of raw DB URLs, but this provides the structure
+# [vars]
+# MONGODB_API_KEY = "your-api-key"
+# MONGODB_APP_ID = "your-app-id"
+# MONGODB_CLUSTER = "your-cluster-name"
+# JWT_SECRET = "your-jwt-secret"
+# ADMIN_PASSWORD_HASH = "your-admin-password-hash"
+
+# Configure R2 bucket
+# [[r2_buckets]]
+# binding = "MY_BUCKET"
+# bucket_name = "yadev-portfolio-media"
