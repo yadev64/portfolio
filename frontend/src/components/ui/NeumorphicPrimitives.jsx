@@ -11,12 +11,9 @@ export const NeuCard = ({ children, className = '', convex = false, onClick }) =
     );
 };
 
-// Neumorphic Button (Presses in on active)
+// Neumorphic Button — clean lift on hover, no orange glow, no black shadows
 export const NeuButton = ({ children, onClick, active, disabled, className = '', variant = 'default' }) => {
     const isPrimary = variant === 'primary';
-    const shadowStyle = active
-        ? 'neu-pressed-sm shadow-[inset_0_0_10px_rgba(255,69,0,0.2)]'
-        : 'neu-sm hover:shadow-[4px_4px_8px_#161619,-4px_-4px_8px_#26262b,0_0_15px_rgba(255,69,0,0.3)]';
     const textColor = isPrimary || active ? 'text-primary' : 'text-textMain';
 
     return (
@@ -26,7 +23,8 @@ export const NeuButton = ({ children, onClick, active, disabled, className = '',
             className={`
                 px-6 py-3 rounded-full font-bold tracking-wider uppercase text-sm font-display
                 transition-all duration-300 ease-in-out
-                ${shadowStyle} ${textColor} ${className}
+                ${active ? 'neu-pressed-sm' : 'neu-btn'}
+                ${textColor} ${className}
                 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
             `}
         >
@@ -49,7 +47,7 @@ export const NeuIconButton = ({ icon, onClick, active, size = 'md', className = 
             className={`
                 flex items-center justify-center rounded-full cursor-pointer
                 transition-all duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)]
-                ${active ? 'neu-pressed text-primary' : 'neu-flat text-textMuted hover:text-white'}
+                ${active ? 'neu-pressed text-primary' : 'neu-flat text-textMuted hover:text-textMain'}
                 ${sizeClasses[size]} ${className}
             `}
         >
@@ -71,7 +69,7 @@ export const NeuLED = ({ active, color = 'primary' }) => {
     );
 };
 
-// Neumorphic Toggle Switch — Fixed shadow stability
+// Neumorphic Toggle Switch — stable shadow
 export const NeuToggle = ({ checked, onChange }) => {
     return (
         <div
@@ -116,22 +114,23 @@ export const NeuProgress = ({ progress, label = '', color = 'bg-primary' }) => {
     );
 };
 
-// Neumorphic Slider (Range knob)
-export const NeuSlider = ({ value, onChange, min = 0, max = 100, className = '' }) => {
+// Neumorphic Temperature Slider (Car AC style: hot → cold)
+export const NeuTempSlider = ({ value, onChange, min = 0, max = 100 }) => {
     const percent = ((value - min) / (max - min)) * 100;
 
     return (
-        <div className={`relative w-full ${className}`}>
+        <div className="relative w-full">
+            {/* Track with gradient from orange to blue */}
             <div className="h-3 w-full rounded-full neu-pressed overflow-hidden p-[2px] relative">
                 <div
-                    className="h-full rounded-full transition-all duration-150"
+                    className="h-full rounded-full transition-all duration-100"
                     style={{
-                        width: `${percent}%`,
-                        background: `linear-gradient(90deg, var(--accent-primary), var(--accent-secondary))`,
-                        boxShadow: '0 0 10px rgba(255, 69, 0, 0.3)',
+                        width: `${Math.max(percent, 4)}%`,
+                        background: 'linear-gradient(90deg, #FF4500, #0078FF)',
                     }}
                 />
             </div>
+            {/* Hidden range input for interaction */}
             <input
                 type="range"
                 min={min}
@@ -140,10 +139,13 @@ export const NeuSlider = ({ value, onChange, min = 0, max = 100, className = '' 
                 onChange={(e) => onChange(Number(e.target.value))}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
             />
-            {/* Knob indicator */}
+            {/* Physical knob */}
             <div
-                className="absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full neu-convex border-2 border-background pointer-events-none transition-all duration-150"
-                style={{ left: `calc(${percent}% - 10px)` }}
+                className="absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full neu-convex border-2 pointer-events-none transition-all duration-100"
+                style={{
+                    left: `calc(${percent}% - 10px)`,
+                    borderColor: 'var(--bg-primary)',
+                }}
             />
         </div>
     );

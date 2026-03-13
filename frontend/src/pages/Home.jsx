@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { NeuCard, NeuButton, NeuToggle, NeuProgress, NeuLED, NeuIconButton, NeuSlider } from '../components/ui/NeumorphicPrimitives';
-import { Terminal, ExternalLink, Github, Linkedin, Twitter, Mail, ChevronDown, ArrowUpRight, BookOpen, Briefcase, GraduationCap, Award, Thermometer, Sun, Moon, Hash, Layers, Video, FolderOpen, MapPin, Clock, Coffee } from 'lucide-react';
+import { NeuCard, NeuButton, NeuToggle, NeuProgress, NeuLED, NeuIconButton, NeuTempSlider } from '../components/ui/NeumorphicPrimitives';
+import { ExternalLink, Github, Linkedin, Twitter, Mail, ChevronDown, ArrowUpRight, BookOpen, Briefcase, GraduationCap, Award, Sun, Moon, Flame, Snowflake, FolderOpen, Layers, MapPin, Clock, Coffee, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useAppStore from '../store/useAppStore';
 
@@ -77,6 +77,21 @@ const NAV_ITEMS = [
     { label: 'Blog', icon: <BookOpen size={14} />, href: '#blog' },
 ];
 
+/* ──────────────────────── DIGIT PATTERNS (5×3 dot matrix) ──────────────────────── */
+const DIGIT_MAP = {
+    '0': [1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 1],
+    '1': [0, 1, 0, 1, 1, 0, 0, 1, 0, 0, 1, 0, 1, 1, 1],
+    '2': [1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1],
+    '3': [1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
+    '4': [1, 0, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 0, 0, 1],
+    '5': [1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1],
+    '6': [1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+    '7': [1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
+    '8': [1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
+    '9': [1, 1, 1, 1, 0, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
+    ':': [0, 0, 1, 0, 0, 0, 1, 0, 0],  // special: 3 rows
+};
+
 /* ──────────────────────── HOOKS ──────────────────────── */
 const useTypingEffect = (strings, typingSpeed = 80, pauseTime = 2000) => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -111,6 +126,80 @@ const useLiveClock = () => {
     return time;
 };
 
+/* ──────────────────────── DOT MATRIX DIGIT COMPONENT ──────────────────────── */
+const DotDigit = ({ char, dotSize = 6, gap = 2 }) => {
+    const pattern = DIGIT_MAP[char];
+    if (!pattern) return null;
+
+    // Colon is special: 3 cols = 1, 5 rows but we use fewer cells
+    const isColon = char === ':';
+    const cols = isColon ? 1 : 3;
+    const rows = isColon ? 9 : 5;
+
+    if (isColon) {
+        // Custom colon layout: blank, dot, blank, blank, dot, blank (vertical)
+        return (
+            <div className="flex flex-col items-center justify-center gap-[2px] mx-1" style={{ gap: `${gap}px` }}>
+                <div style={{ width: dotSize, height: dotSize }} />
+                <div className="rounded-sm bg-primary opacity-90" style={{ width: dotSize, height: dotSize }} />
+                <div style={{ width: dotSize, height: dotSize }} />
+                <div style={{ width: dotSize, height: dotSize }} />
+                <div className="rounded-sm bg-primary opacity-90" style={{ width: dotSize, height: dotSize }} />
+            </div>
+        );
+    }
+
+    return (
+        <div
+            className="grid"
+            style={{
+                gridTemplateColumns: `repeat(${cols}, ${dotSize}px)`,
+                gap: `${gap}px`,
+            }}
+        >
+            {pattern.map((on, i) => (
+                <div
+                    key={i}
+                    className="rounded-sm transition-opacity duration-300"
+                    style={{
+                        width: dotSize,
+                        height: dotSize,
+                        backgroundColor: on ? 'var(--accent-primary)' : 'var(--bg-primary)',
+                        opacity: on ? 0.95 : 0.15,
+                        boxShadow: on ? '0 0 4px var(--accent-glow)' : 'none',
+                    }}
+                />
+            ))}
+        </div>
+    );
+};
+
+const DotMatrixClock = () => {
+    const clock = useLiveClock();
+    const hours = clock.getHours().toString().padStart(2, '0');
+    const minutes = clock.getMinutes().toString().padStart(2, '0');
+    const seconds = clock.getSeconds().toString().padStart(2, '0');
+
+    // Blink the colon dots every second
+    const showColon = clock.getSeconds() % 2 === 0;
+
+    return (
+        <div className="flex items-center justify-center gap-[6px]">
+            <DotDigit char={hours[0]} />
+            <DotDigit char={hours[1]} />
+            {showColon && <DotDigit char=":" />}
+            {!showColon && <div className="w-[10px]" />}
+            <DotDigit char={minutes[0]} />
+            <DotDigit char={minutes[1]} />
+            <div className="w-1" />
+            <div className="flex flex-col items-center gap-[2px] ml-1">
+                <DotDigit char={seconds[0]} dotSize={3} gap={1} />
+                <DotDigit char={seconds[1]} dotSize={3} gap={1} />
+            </div>
+        </div>
+    );
+};
+
 /* ──────────────────────── SUB-COMPONENTS ──────────────────────── */
 const SectionHeader = ({ label, number }) => (
     <div className="flex items-center gap-4 mb-10">
@@ -137,8 +226,10 @@ const NeumorphicDashboard = () => {
         ? SKILLS
         : SKILLS.filter(s => s.category === activeSkillCategory);
 
-    // Temperature label
-    const tempLabel = colorTemp < 33 ? 'WARM' : colorTemp < 66 ? 'NEUTRAL' : 'COOL';
+    // Current date info for the calendar card
+    const dayName = clock.toLocaleDateString('en-US', { weekday: 'short' });
+    const monthName = clock.toLocaleDateString('en-US', { month: 'short' });
+    const dayNum = clock.getDate();
 
     return (
         <div className="min-h-screen bg-background text-textMain font-body selection:bg-primary selection:text-white">
@@ -170,14 +261,14 @@ const NeumorphicDashboard = () => {
                         </div>
                     </div>
 
-                    {/* Right: Card Stack (The Remote) */}
+                    {/* Right: Card Stack */}
                     <div className="lg:col-span-5 flex flex-col gap-6">
 
-                        {/* CARD 1: Remote Control */}
+                        {/* CARD 1: Remote Control (Car AC style) */}
                         <NeuCard className="!p-5">
                             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-5 pb-3 border-b border-border/30">System Remote</p>
 
-                            {/* Dark / Light switch row */}
+                            {/* Dark / Light switch */}
                             <div className="flex items-center justify-between mb-5">
                                 <div className="flex items-center gap-3">
                                     {isDark ? <Moon size={14} className="text-textMuted" /> : <Sun size={14} className="text-primary" />}
@@ -186,15 +277,15 @@ const NeumorphicDashboard = () => {
                                 <NeuToggle checked={!isDark} onChange={() => toggleTheme()} />
                             </div>
 
-                            {/* Temperature slider row */}
+                            {/* Temperature slider — Car AC style */}
                             <div className="flex items-center justify-between mb-3">
-                                <div className="flex items-center gap-3">
-                                    <Thermometer size={14} className="text-textMuted" />
-                                    <span className="font-mono text-xs text-textMuted uppercase">Ambient</span>
-                                </div>
-                                <span className="font-mono text-[10px] text-primary">{tempLabel}</span>
+                                <span className="font-mono text-xs text-textMuted uppercase">Ambient</span>
                             </div>
-                            <NeuSlider value={colorTemp} onChange={setColorTemp} min={0} max={100} />
+                            <div className="flex items-center gap-3">
+                                <Flame size={16} className="text-[#FF4500] shrink-0" />
+                                <NeuTempSlider value={colorTemp} onChange={setColorTemp} min={0} max={100} />
+                                <Snowflake size={16} className="text-[#0078FF] shrink-0" />
+                            </div>
 
                             {/* PWR LED */}
                             <div className="flex items-center gap-3 mt-5 pt-4 border-t border-border/30">
@@ -217,33 +308,42 @@ const NeumorphicDashboard = () => {
                             </div>
                         </NeuCard>
 
-                        {/* CARD 3: Live Status / Fun Info */}
-                        <NeuCard className="!p-5">
-                            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-4 pb-3 border-b border-border/30">Live Status</p>
-                            <div className="flex items-center justify-between mb-3">
-                                <div className="flex items-center gap-2.5">
-                                    <Clock size={14} className="text-primary" />
-                                    <span className="font-mono text-sm text-textMain tabular-nums">
-                                        {clock.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-                                    </span>
+                        {/* CARDS 3a & 3b: Split — Dot Matrix Clock + Location/Calendar */}
+                        <div className="grid grid-cols-2 gap-6">
+                            {/* Left: Dot Matrix Clock */}
+                            <NeuCard className="!p-5 flex flex-col items-center justify-center">
+                                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-4 self-start">Local Time</p>
+                                <div className="neu-pressed rounded-xl p-4 w-full flex items-center justify-center">
+                                    <DotMatrixClock />
                                 </div>
-                                <span className="font-mono text-[10px] text-textMuted">IST</span>
-                            </div>
-                            <div className="flex items-center justify-between mb-3">
-                                <div className="flex items-center gap-2.5">
-                                    <MapPin size={14} className="text-textMuted" />
-                                    <span className="font-mono text-xs text-textMuted">Bangalore, India</span>
+                                <span className="font-mono text-[10px] text-textMuted mt-3 uppercase tracking-widest">IST</span>
+                            </NeuCard>
+
+                            {/* Right: Location + Calendar */}
+                            <NeuCard className="!p-5 flex flex-col justify-between">
+                                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-4">Location</p>
+
+                                <div className="flex items-center gap-2 mb-4">
+                                    <MapPin size={14} className="text-primary" />
+                                    <span className="font-mono text-xs text-textMain">Bangalore, IN</span>
                                 </div>
-                                <NeuLED active color="secondary" />
-                            </div>
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center gap-2.5">
-                                    <Coffee size={14} className="text-textMuted" />
-                                    <span className="font-mono text-xs text-textMuted">Open to collaborate</span>
+
+                                {/* Mini Calendar */}
+                                <div className="neu-pressed rounded-xl p-3 flex items-center gap-3">
+                                    <Calendar size={16} className="text-primary shrink-0" />
+                                    <div className="flex flex-col">
+                                        <span className="font-mono text-[10px] text-textMuted uppercase">{dayName}</span>
+                                        <span className="font-display text-lg font-bold text-textMain leading-tight">{monthName} {dayNum}</span>
+                                    </div>
                                 </div>
-                                <span className="text-xs">🟢</span>
-                            </div>
-                        </NeuCard>
+
+                                <div className="flex items-center gap-2 mt-3">
+                                    <Coffee size={12} className="text-textMuted" />
+                                    <span className="font-mono text-[10px] text-textMuted uppercase">Open to collab</span>
+                                    <span className="ml-auto text-xs">🟢</span>
+                                </div>
+                            </NeuCard>
+                        </div>
                     </div>
                 </motion.div>
 
@@ -253,8 +353,7 @@ const NeumorphicDashboard = () => {
                 </motion.div>
             </section>
 
-            {/* ═══════════════ PROJECTS ═══════════════
-                 UX Priority: #1 — HR/founders want to see WHAT you've built first */}
+            {/* ═══════════════ PROJECTS ═══════════════ */}
             <section id="projects" className="px-6 md:px-16 lg:px-24 py-20 max-w-[1600px] mx-auto">
                 <SectionHeader label="Selected Work" number={1} />
                 <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
@@ -262,19 +361,13 @@ const NeumorphicDashboard = () => {
                         <motion.div key={project.slug} variants={fadeUp}>
                             <Link to={`/projects/${project.slug}`}>
                                 <NeuCard className="group cursor-pointer hover:shadow-neu-glow transition-shadow duration-500 h-full flex flex-col !p-0 overflow-hidden">
-                                    {/* Project Image */}
                                     <div className="w-full h-48 overflow-hidden relative">
-                                        <img
-                                            src={project.image}
-                                            alt={project.title}
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                                        />
+                                        <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
                                         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
                                         <div className="absolute top-4 right-4">
                                             <ArrowUpRight size={18} className="text-white/60 group-hover:text-primary transition-colors" />
                                         </div>
                                     </div>
-                                    {/* Project Info */}
                                     <div className="p-6 md:p-8 flex flex-col flex-1">
                                         <div className="flex items-center gap-2 mb-3">
                                             <NeuLED active color="primary" />
@@ -295,8 +388,7 @@ const NeumorphicDashboard = () => {
                 </motion.div>
             </section>
 
-            {/* ═══════════════ EXPERIENCE / JOURNEY ═══════════════
-                 UX Priority: #2 — Career trajectory gives credibility */}
+            {/* ═══════════════ EXPERIENCE ═══════════════ */}
             <section id="experience" className="px-6 md:px-16 lg:px-24 py-20 max-w-[1600px] mx-auto">
                 <SectionHeader label="Experience" number={2} />
                 <div className="relative">
@@ -323,8 +415,7 @@ const NeumorphicDashboard = () => {
                 </div>
             </section>
 
-            {/* ═══════════════ SKILLS ═══════════════
-                 UX Priority: #3 — Technical depth for engineering managers */}
+            {/* ═══════════════ SKILLS ═══════════════ */}
             <section id="skills" className="px-6 md:px-16 lg:px-24 py-20 max-w-[1600px] mx-auto">
                 <SectionHeader label="Technical Skills" number={3} />
                 <div className="flex flex-wrap gap-3 mb-10">
@@ -346,8 +437,7 @@ const NeumorphicDashboard = () => {
                 </div>
             </section>
 
-            {/* ═══════════════ BLOG ═══════════════
-                 UX Priority: #4 — Thought leadership */}
+            {/* ═══════════════ BLOG ═══════════════ */}
             <section id="blog" className="px-6 md:px-16 lg:px-24 py-20 max-w-[1600px] mx-auto">
                 <SectionHeader label="Writing" number={4} />
                 <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">

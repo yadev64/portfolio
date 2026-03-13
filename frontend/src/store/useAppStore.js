@@ -1,6 +1,14 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
+// Direct interpolation: orange rgb(255, 69, 0) → blue rgb(0, 120, 255)
+const lerpColor = (t) => {
+    const r = Math.round(255 + t * (0 - 255));
+    const g = Math.round(69 + t * (120 - 69));
+    const b = Math.round(0 + t * (255 - 0));
+    return { r, g, b };
+};
+
 const useAppStore = create(
     persist(
         (set) => ({
@@ -25,17 +33,13 @@ const useAppStore = create(
             }),
 
             // ── Color Temperature ──
-            // 0 = warm (orange), 100 = cool (blue)
+            // 0 = warm (orange), 100 = cool (blue) — direct RGB lerp, no in-between hues
             colorTemp: 0,
             setColorTemp: (temp) => set(() => {
                 const clamped = Math.max(0, Math.min(100, temp));
-                // Interpolate hue from 15 (warm orange) to 195 (icy blue)
-                const hue = 15 + (clamped / 100) * 180;
-                const sat = 100;
-                const light = 50;
-                document.documentElement.style.setProperty('--accent-primary', `hsl(${hue}, ${sat}%, ${light}%)`);
-                // Also adjust the glow shadow
-                document.documentElement.style.setProperty('--accent-glow', `hsla(${hue}, ${sat}%, ${light}%, 0.4)`);
+                const { r, g, b } = lerpColor(clamped / 100);
+                document.documentElement.style.setProperty('--accent-primary', `rgb(${r}, ${g}, ${b})`);
+                document.documentElement.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, 0.4)`);
                 return { colorTemp: clamped };
             }),
 
@@ -76,11 +80,10 @@ const useAppStore = create(
                 } else {
                     document.documentElement.classList.remove('light');
                 }
-                // Re-apply color temperature on load
                 if (state && state.colorTemp !== undefined && state.colorTemp !== 0) {
-                    const hue = 15 + (state.colorTemp / 100) * 180;
-                    document.documentElement.style.setProperty('--accent-primary', `hsl(${hue}, 100%, 50%)`);
-                    document.documentElement.style.setProperty('--accent-glow', `hsla(${hue}, 100%, 50%, 0.4)`);
+                    const { r, g, b } = lerpColor(state.colorTemp / 100);
+                    document.documentElement.style.setProperty('--accent-primary', `rgb(${r}, ${g}, ${b})`);
+                    document.documentElement.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, 0.4)`);
                 }
             }
         }
