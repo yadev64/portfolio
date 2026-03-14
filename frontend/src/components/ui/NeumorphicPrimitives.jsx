@@ -34,7 +34,8 @@ export const NeuButton = ({ children, onClick, active, disabled, className = '',
 };
 
 // Neumorphic Icon Button (Circular)
-export const NeuIconButton = ({ icon, onClick, active, size = 'md', className = '' }) => {
+export const NeuIconButton = ({ icon, onClick, active, size = 'md', className = '', hoverColor }) => {
+    const [hovered, setHovered] = React.useState(false);
     const sizeClasses = {
         sm: 'w-10 h-10',
         md: 'w-14 h-14',
@@ -44,12 +45,15 @@ export const NeuIconButton = ({ icon, onClick, active, size = 'md', className = 
     return (
         <button
             onClick={onClick}
+            onMouseEnter={() => setHovered(true)}
+            onMouseLeave={() => setHovered(false)}
             className={`
                 flex items-center justify-center rounded-full cursor-pointer
                 transition-all duration-300 ease-[cubic-bezier(0.25,0.8,0.25,1)]
-                ${active ? 'neu-pressed text-primary' : 'neu-flat text-textMuted hover:text-textMain'}
+                ${active ? 'neu-pressed text-primary' : `neu-flat text-textMuted ${!hoverColor ? 'hover:text-textMain' : ''}`}
                 ${sizeClasses[size]} ${className}
             `}
+            style={hovered && hoverColor ? { color: hoverColor } : undefined}
         >
             {icon}
         </button>

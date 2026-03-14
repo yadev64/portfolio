@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NeuCard, NeuButton, NeuToggle, NeuProgress, NeuLED, NeuIconButton, NeuTempSlider } from '../components/ui/NeumorphicPrimitives';
 import DotMatrixDisplay from '../components/ui/DotMatrixDisplay';
-import { ExternalLink, Github, Linkedin, Twitter, Mail, ChevronDown, ArrowUpRight, BookOpen, Briefcase, GraduationCap, Award, Sun, Moon, Flame, Snowflake, FolderOpen, Layers, MapPin, Clock, Coffee, Calendar } from 'lucide-react';
+import { ExternalLink, Github, Linkedin, Mail, ChevronDown, ArrowUpRight, BookOpen, Briefcase, GraduationCap, Award, Sun, Moon, Flame, Snowflake, FolderOpen, Layers, MapPin, Clock, Coffee, Calendar } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import useAppStore from '../store/useAppStore';
 
@@ -168,9 +168,9 @@ const NeumorphicDashboard = () => {
                             <a href="mailto:yadev@example.com"><NeuButton>Say Hello</NeuButton></a>
                         </div>
                         <div className="flex gap-4 mt-8">
-                            <NeuIconButton size="sm" icon={<Github size={16} />} />
-                            <NeuIconButton size="sm" icon={<Linkedin size={16} />} />
-                            <NeuIconButton size="sm" icon={<Twitter size={16} />} />
+                            <a href="https://github.com/yadev64" target="_blank" rel="noopener noreferrer"><NeuIconButton size="sm" hoverColor="#c54af9ff" icon={<Github size={16} />} /></a>
+                            <a href="https://www.linkedin.com/in/yadev-jayachandran/" target="_blank" rel="noopener noreferrer"><NeuIconButton size="sm" hoverColor="#0077ffff" icon={<Linkedin size={16} />} /></a>
+                            <a href="https://www.behance.net/yadev64" target="_blank" rel="noopener noreferrer"><NeuIconButton size="sm" hoverColor="#1769FF" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12.5a5 5 0 0 1 5-5h1a5 5 0 0 1 0 10H1V4h6a4 4 0 0 1 0 8" /><path d="M14 13h7" /><path d="M14 8.5h7" /><ellipse cx="17.5" cy="13" rx="3.5" ry="4.5" /></svg>} /></a>
                         </div>
                     </div>
 
@@ -381,10 +381,10 @@ const NeumorphicDashboard = () => {
                         <p className="font-mono text-xs text-textMuted mt-2">Designed & built by Yadev. Powered by curiosity and Coca-Cola.</p>
                     </div>
                     <div className="flex gap-4">
-                        <NeuIconButton icon={<Github size={18} />} />
-                        <NeuIconButton icon={<Linkedin size={18} />} />
-                        <NeuIconButton icon={<Twitter size={18} />} />
-                        <NeuIconButton icon={<Mail size={18} />} />
+                        <a href="https://github.com/yadev64" target="_blank" rel="noopener noreferrer"><NeuIconButton hoverColor="#8B5CF6" icon={<Github size={18} />} /></a>
+                        <a href="https://www.linkedin.com/in/yadev-jayachandran/" target="_blank" rel="noopener noreferrer"><NeuIconButton hoverColor="#0A66C2" icon={<Linkedin size={18} />} /></a>
+                        <a href="https://www.behance.net/yadev64" target="_blank" rel="noopener noreferrer"><NeuIconButton hoverColor="#1769FF" icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12.5a5 5 0 0 1 5-5h1a5 5 0 0 1 0 10H1V4h6a4 4 0 0 1 0 8" /><path d="M14 13h7" /><path d="M14 8.5h7" /><ellipse cx="17.5" cy="13" rx="3.5" ry="4.5" /></svg>} /></a>
+                        <a href="mailto:yadev@example.com"><NeuIconButton icon={<Mail size={18} />} /></a>
                     </div>
                 </NeuCard>
             </footer>
