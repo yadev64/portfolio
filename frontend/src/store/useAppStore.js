@@ -36,27 +36,33 @@ const useAppStore = create(
             // ── Color Temperature ──
             // 0 = cold (blue), 100 = warm (orange)
             colorTemp: 100,  // default warm
-            tempDisplayValue: null,  // null = show clock, number = show temp on glyph
+            tempDisplayValue: null,
             _tempTimeout: null,
+            _commitTimeout: null,
 
-            setColorTemp: (temp) => set((state) => {
+            // Lightweight: updates CSS vars directly, no React re-render
+            setColorTempLive: (temp) => {
                 const clamped = Math.max(0, Math.min(100, temp));
                 const { r, g, b } = lerpColor(clamped / 100);
                 document.documentElement.style.setProperty('--accent-primary', `rgb(${r}, ${g}, ${b})`);
                 document.documentElement.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, 0.4)`);
 
-                // Show temperature on glyph display: map 0→0°C, 100→50°C
-                const degC = Math.round((clamped / 100) * 50);
+                // Debounce the React state update
+                const state = get();
+                if (state._commitTimeout) clearTimeout(state._commitTimeout);
+                const commitTimeout = setTimeout(() => {
+                    set({ colorTemp: clamped });
+                }, 100);
 
-                // Clear previous timeout
+                // Update temp display on glyph
+                const degC = Math.round((clamped / 100) * 50);
                 if (state._tempTimeout) clearTimeout(state._tempTimeout);
-                const timeout = setTimeout(() => {
-                    // Hide temp display after 2 seconds of no sliding
-                    get().clearTempDisplay();
+                const tempTimeout = setTimeout(() => {
+                    set({ tempDisplayValue: null, _tempTimeout: null });
                 }, 2000);
 
-                return { colorTemp: clamped, tempDisplayValue: degC, _tempTimeout: timeout };
-            }),
+                set({ tempDisplayValue: degC, _tempTimeout: tempTimeout, _commitTimeout: commitTimeout });
+            },
 
             clearTempDisplay: () => set({ tempDisplayValue: null, _tempTimeout: null }),
 

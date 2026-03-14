@@ -114,37 +114,62 @@ export const NeuProgress = ({ progress, label = '', color = 'bg-primary' }) => {
     );
 };
 
-// Neumorphic Temperature Slider (Car AC style: hot → cold)
+// Neumorphic Temperature Slider
+// Props: min, max, value, onChange(value)
 export const NeuTempSlider = ({ value, onChange, min = 0, max = 100 }) => {
-    const percent = ((value - min) / (max - min)) * 100;
+    const trackRef = React.useRef(null);
+    const knobRef = React.useRef(null);
+    const inputRef = React.useRef(null);
+
+    const toPct = React.useCallback((val) => ((val - min) / (max - min)) * 100, [min, max]);
+
+    const updateVisuals = React.useCallback((val) => {
+        const pct = toPct(val);
+        // 4px padding at both edges: at 0% → 4px, at 100% → calc(100% - 24px)
+        if (knobRef.current) {
+            knobRef.current.style.left = `calc(${pct}% - ${pct * 0.28 - 4}px)`;
+        }
+    }, [toPct]);
+
+    React.useEffect(() => { updateVisuals(value); }, [value, updateVisuals]);
+
+    const handleInput = React.useCallback((e) => {
+        const val = Number(e.target.value);
+        updateVisuals(val);
+        onChange(val);
+    }, [onChange, updateVisuals]);
+
+    const initPct = toPct(value);
 
     return (
-        <div className="relative w-full">
-            {/* Track with gradient from orange to blue */}
-            <div className="h-3 w-full rounded-full neu-pressed overflow-hidden p-[2px] relative">
-                <div
-                    className="h-full rounded-full transition-all duration-100"
-                    style={{
-                        width: `${Math.max(percent, 4)}%`,
-                        background: 'linear-gradient(90deg, #0078FF, #FF4500)',
-                    }}
-                />
-            </div>
-            {/* Hidden range input for interaction */}
+        <div className="relative w-full h-7">
+            {/* Track — full gradient always visible, thick enough to contain the knob */}
+            <div
+                ref={trackRef}
+                className="absolute inset-0 rounded-full overflow-hidden"
+                style={{
+                    background: 'linear-gradient(90deg, #0078FF, #FF4500)',
+                    boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 2px rgba(255,255,255,0.1)',
+                }}
+            />
+            {/* Hidden range input — covers entire track for interaction */}
             <input
+                ref={inputRef}
                 type="range"
                 min={min}
                 max={max}
-                value={value}
-                onChange={(e) => onChange(Number(e.target.value))}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                defaultValue={value}
+                onInput={handleInput}
+                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
             />
-            {/* Physical knob */}
+            {/* Knob — round, sits inside the track */}
             <div
-                className="absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full neu-convex border-2 pointer-events-none transition-all duration-100"
+                ref={knobRef}
+                className="absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full pointer-events-none z-20"
                 style={{
-                    left: `calc(${percent}% - 10px)`,
-                    borderColor: 'var(--bg-primary)',
+                    left: `calc(${initPct}% - ${initPct * 0.28 - 4}px)`,
+                    background: 'var(--bg-primary)',
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.15)',
                 }}
             />
         </div>

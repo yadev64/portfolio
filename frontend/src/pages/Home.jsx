@@ -129,7 +129,7 @@ const fadeUp = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transi
    MAIN DASHBOARD
    ══════════════════════════════════════════════════════════════ */
 const NeumorphicDashboard = () => {
-    const { theme, toggleTheme, colorTemp, setColorTemp, tempDisplayValue } = useAppStore();
+    const { theme, toggleTheme, colorTemp, setColorTempLive, tempDisplayValue } = useAppStore();
     const isDark = theme === 'dark';
     const typedRole = useTypingEffect(ROLES);
     const clock = useLiveClock();
@@ -196,7 +196,7 @@ const NeumorphicDashboard = () => {
                             </div>
                             <div className="flex items-center gap-3">
                                 <Snowflake size={16} className="text-[#0078FF] shrink-0" />
-                                <NeuTempSlider value={colorTemp} onChange={setColorTemp} min={0} max={100} />
+                                <NeuTempSlider value={colorTemp} onChange={setColorTempLive} min={0} max={100} />
                                 <Flame size={16} className="text-[#FF4500] shrink-0" />
                             </div>
 
