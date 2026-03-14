@@ -239,7 +239,7 @@ const NeumorphicDashboard = () => {
 
                                 {/* Mini Calendar */}
                                 <div className="neu-pressed rounded-xl p-3 flex items-center gap-3">
-                                    <Calendar size={16} className="text-primary shrink-0" />
+                                    <Calendar size={16} className="text-primary shrink-0 " />
                                     <div className="flex flex-col">
                                         <span className="font-mono text-[10px] text-textMuted uppercase">{dayName}</span>
                                         <span className="font-display text-lg font-bold text-textMain leading-tight">{monthName} {dayNum}</span>
@@ -249,7 +249,7 @@ const NeumorphicDashboard = () => {
                                 <div className="flex items-center gap-2 mt-3">
                                     <Coffee size={12} className="text-textMuted" />
                                     <span className="font-mono text-[10px] text-textMuted uppercase">Open to collab</span>
-                                    <span className="ml-auto text-xs">🟢</span>
+                                    {/* <span className="ml-auto text-xs">🟢</span> */}
                                 </div>
                             </NeuCard>
                         </div>
@@ -378,14 +378,15 @@ const NeumorphicDashboard = () => {
                 <NeuCard className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
                     <div>
                         <h2 className="text-2xl font-display font-bold text-textMain">Yadev<span className="text-primary">.</span>dev</h2>
-                        <p className="font-mono text-xs text-textMuted mt-2">Designed & built by Yadev. Powered by curiosity and Coca-Cola.</p>
+                        <p className="font-mono text-xs text-textMuted mt-2">Designed & built by Yadev. Powered by curiosity and coffee.</p>
                     </div>
                     <div className="flex gap-4">
                         <a href="https://github.com/yadev64" target="_blank" rel="noopener noreferrer"><NeuIconButton hoverColor="#8B5CF6" icon={<Github size={18} />} /></a>
                         <a href="https://www.linkedin.com/in/yadev-jayachandran/" target="_blank" rel="noopener noreferrer"><NeuIconButton hoverColor="#0A66C2" icon={<Linkedin size={18} />} /></a>
                         <a href="https://www.behance.net/yadev64" target="_blank" rel="noopener noreferrer"><NeuIconButton hoverColor="#1769FF" icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12.5a5 5 0 0 1 5-5h1a5 5 0 0 1 0 10H1V4h6a4 4 0 0 1 0 8" /><path d="M14 13h7" /><path d="M14 8.5h7" /><ellipse cx="17.5" cy="13" rx="3.5" ry="4.5" /></svg>} /></a>
-                        <a href="mailto:yadev@example.com"><NeuIconButton icon={<Mail size={18} />} /></a>
-                    </div>
+                        <a href="mailto:yadev64@gmail.com" target="_blank" rel="noopener noreferrer">
+                            <NeuIconButton hoverColor="#995d5dff" icon={<Mail size={18} />} />
+                        </a>                    </div>
                 </NeuCard>
             </footer>
 

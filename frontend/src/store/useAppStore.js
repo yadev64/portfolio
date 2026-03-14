@@ -14,7 +14,7 @@ const useAppStore = create(
     persist(
         (set, get) => ({
             // ── Theme ──
-            theme: 'dark',
+            theme: 'light',
             toggleTheme: () => set((state) => {
                 const newTheme = state.theme === 'dark' ? 'light' : 'dark';
                 if (newTheme === 'light') {

@@ -201,7 +201,7 @@ The home page is a **single vertical scroll experience**, with sections that eac
 #### 1h. Footer
 
 - Minimal — dark background, name, links to GitHub / LinkedIn / Twitter, and a contact email.
-- A small fun line: `"Built by Yadev. Powered by curiosity and too much Coca-Cola."`
+- A small fun line: `"Built by Yadev. Powered by curiosity and too much coffee."`
 
 ---
 

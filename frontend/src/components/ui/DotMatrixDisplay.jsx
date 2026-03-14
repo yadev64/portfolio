@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Camera, CameraOff } from 'lucide-react';
+import { Camera, CameraOff, Smile } from 'lucide-react';
 
 /* ── 5×3 digit patterns ── */
 const DIGITS = {
@@ -264,6 +264,52 @@ const DotMatrixDisplay = ({ tempDisplayValue = null }) => {
         return buildClockGrid(time);
     }, [cameraMode, cameraGrid, tempDisplayValue, time]);
 
+    // Capture current dot matrix as image and download
+    const captureAndDownload = useCallback(() => {
+        if (!cameraGrid) return;
+        const scale = 4; // each dot becomes 4×4 px
+        const totalPx = GRID_SIZE * (DOT_SIZE * scale + DOT_GAP) - DOT_GAP;
+        const offscreen = document.createElement('canvas');
+        offscreen.width = totalPx;
+        offscreen.height = totalPx;
+        const ctx = offscreen.getContext('2d');
+
+        // Black background
+        ctx.fillStyle = '#0A0A0A';
+        ctx.fillRect(0, 0, totalPx, totalPx);
+
+        // Clip to circle
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(totalPx / 2, totalPx / 2, totalPx / 2, 0, Math.PI * 2);
+        ctx.clip();
+
+        // Draw dots
+        const grid = cameraGrid;
+        for (let i = 0; i < GRID_SIZE * GRID_SIZE; i++) {
+            if (!CIRCLE_MASK[i]) continue;
+            const x = i % GRID_SIZE;
+            const y = Math.floor(i / GRID_SIZE);
+            const brightness = typeof grid[i] === 'number' ? grid[i] : 0;
+            const px = x * (DOT_SIZE * scale + DOT_GAP);
+            const py = y * (DOT_SIZE * scale + DOT_GAP);
+
+            if (brightness > 0.15) {
+                ctx.fillStyle = `rgba(255, 255, 255, ${Math.min(brightness * 1.2, 1)})`;
+            } else {
+                ctx.fillStyle = '#1A1A1A';
+            }
+            ctx.fillRect(px, py, DOT_SIZE * scale, DOT_SIZE * scale);
+        }
+        ctx.restore();
+
+        // Download
+        const link = document.createElement('a');
+        link.download = 'dotmatrix-selfie.png';
+        link.href = offscreen.toDataURL('image/png');
+        link.click();
+    }, [cameraGrid]);
+
     // Mode label
     const modeLabel = cameraMode ? 'CAM' : (tempDisplayValue !== null ? '°C' : 'IST');
 
@@ -336,6 +382,21 @@ const DotMatrixDisplay = ({ tempDisplayValue = null }) => {
                     </span>
                 </div>
             </div>
+
+            {/* Capture button — bottom left, only when camera is active */}
+            {cameraMode && cameraGrid && (
+                <button
+                    onClick={captureAndDownload}
+                    className="absolute bottom-0 left-0 w-8 h-8 flex items-center justify-center cursor-pointer transition-all duration-200 rounded-full bg-background"
+                    style={{
+                        zIndex: 2,
+                        boxShadow: '2px 2px 5px rgba(0,0,0,0.25), -2px -2px 5px rgba(255,255,255,0.03)',
+                    }}
+                    title="Capture dot matrix selfie"
+                >
+                    <Smile size={20} className="text-yellow-600" />
+                </button>
+            )}
 
             {/* Camera toggle — bottom right, neumorphic with lighter shadows */}
             <button
