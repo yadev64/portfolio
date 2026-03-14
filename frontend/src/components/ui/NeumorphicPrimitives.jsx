@@ -117,52 +117,96 @@ export const NeuProgress = ({ progress, label = '', color = 'bg-primary' }) => {
 // Neumorphic Temperature Slider
 // Props: min, max, value, onChange(value)
 export const NeuTempSlider = ({ value, onChange, min = 0, max = 100 }) => {
-    const trackRef = React.useRef(null);
     const knobRef = React.useRef(null);
-    const inputRef = React.useRef(null);
+    const isDragging = React.useRef(false);
+    const lastEmitted = React.useRef(value);
 
     const toPct = React.useCallback((val) => ((val - min) / (max - min)) * 100, [min, max]);
 
-    const updateVisuals = React.useCallback((val) => {
-        const pct = toPct(val);
-        // 4px padding at both edges: at 0% → 4px, at 100% → calc(100% - 24px)
+    const positionKnob = React.useCallback((pct) => {
         if (knobRef.current) {
             knobRef.current.style.left = `calc(${pct}% - ${pct * 0.28 - 4}px)`;
         }
-    }, [toPct]);
+    }, []);
 
-    React.useEffect(() => { updateVisuals(value); }, [value, updateVisuals]);
+    // Sync visuals from prop — but NOT during active drag
+    React.useEffect(() => {
+        if (!isDragging.current) {
+            positionKnob(toPct(value));
+        }
+    }, [value, positionKnob, toPct]);
+
+    const handleStart = React.useCallback(() => {
+        isDragging.current = true;
+        if (knobRef.current) knobRef.current.style.transition = 'none';
+        // Lazily create audio context on first user gesture
+        if (!audioCtx.current) {
+            audioCtx.current = new (window.AudioContext || window.webkitAudioContext)();
+        }
+    }, []);
+
+    // Short tick sound — iOS picker style
+    const audioCtx = React.useRef(null);
+    const playTick = React.useCallback(() => {
+        const ctx = audioCtx.current;
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = 800;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.06, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.03);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.03);
+    }, []);
 
     const handleInput = React.useCallback((e) => {
-        const val = Number(e.target.value);
-        updateVisuals(val);
-        onChange(val);
-    }, [onChange, updateVisuals]);
+        const raw = Number(e.target.value);
+        positionKnob(toPct(raw));
+        const snapped = Math.round(raw / 5) * 5;
+        if (snapped !== lastEmitted.current) {
+            lastEmitted.current = snapped;
+            playTick();
+            onChange(snapped);
+        }
+    }, [onChange, positionKnob, toPct, playTick]);
+
+    const handleEnd = React.useCallback(() => {
+        isDragging.current = false;
+        // Restore easing transition for programmatic updates
+        if (knobRef.current) knobRef.current.style.transition = 'left 0.15s ease-out';
+        // Snap to final emitted value
+        positionKnob(toPct(lastEmitted.current));
+    }, [positionKnob, toPct]);
 
     const initPct = toPct(value);
 
     return (
         <div className="relative w-full h-7">
-            {/* Track — full gradient always visible, thick enough to contain the knob */}
+            {/* Track — full gradient */}
             <div
-                ref={trackRef}
                 className="absolute inset-0 rounded-full overflow-hidden"
                 style={{
                     background: 'linear-gradient(90deg, #0078FF, #FF4500)',
                     boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.3), inset 0 -1px 2px rgba(255,255,255,0.1)',
                 }}
             />
-            {/* Hidden range input — covers entire track for interaction */}
+            {/* Hidden range input */}
             <input
-                ref={inputRef}
                 type="range"
                 min={min}
                 max={max}
                 defaultValue={value}
                 onInput={handleInput}
+                onMouseDown={handleStart}
+                onTouchStart={handleStart}
+                onMouseUp={handleEnd}
+                onTouchEnd={handleEnd}
                 className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
             />
-            {/* Knob — round, sits inside the track */}
+            {/* Knob */}
             <div
                 ref={knobRef}
                 className="absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full pointer-events-none z-20"
@@ -170,6 +214,7 @@ export const NeuTempSlider = ({ value, onChange, min = 0, max = 100 }) => {
                     left: `calc(${initPct}% - ${initPct * 0.28 - 4}px)`,
                     background: 'var(--bg-primary)',
                     boxShadow: '0 1px 4px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.15)',
+                    transition: 'left 0.15s ease-out',
                 }}
             />
         </div>

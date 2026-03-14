@@ -40,28 +40,36 @@ const useAppStore = create(
             _tempTimeout: null,
             _commitTimeout: null,
 
-            // Lightweight: updates CSS vars directly, no React re-render
+            // Lightweight: CSS vars update instantly, store updates are fully debounced
             setColorTempLive: (temp) => {
                 const clamped = Math.max(0, Math.min(100, temp));
                 const { r, g, b } = lerpColor(clamped / 100);
+                // Instant DOM update — no React involved
                 document.documentElement.style.setProperty('--accent-primary', `rgb(${r}, ${g}, ${b})`);
                 document.documentElement.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b}, 0.4)`);
 
-                // Debounce the React state update
                 const state = get();
+
+                // Debounce colorTemp persist
                 if (state._commitTimeout) clearTimeout(state._commitTimeout);
                 const commitTimeout = setTimeout(() => {
-                    set({ colorTemp: clamped });
-                }, 100);
+                    set({ colorTemp: clamped, _commitTimeout: null });
+                }, 150);
 
-                // Update temp display on glyph
+                // Debounce temp display on glyph
                 const degC = Math.round((clamped / 100) * 50);
                 if (state._tempTimeout) clearTimeout(state._tempTimeout);
-                const tempTimeout = setTimeout(() => {
-                    set({ tempDisplayValue: null, _tempTimeout: null });
-                }, 2000);
+                const showTimeout = setTimeout(() => {
+                    set({ tempDisplayValue: degC });
+                    // Auto-hide after 2s of no activity
+                    const hideTimeout = setTimeout(() => {
+                        set({ tempDisplayValue: null, _tempTimeout: null });
+                    }, 2000);
+                    set({ _tempTimeout: hideTimeout });
+                }, 300);
 
-                set({ tempDisplayValue: degC, _tempTimeout: tempTimeout, _commitTimeout: commitTimeout });
+                // Only store timeout refs — no tempDisplayValue here, avoids re-render
+                set({ _commitTimeout: commitTimeout, _tempTimeout: showTimeout });
             },
 
             clearTempDisplay: () => set({ tempDisplayValue: null, _tempTimeout: null }),
