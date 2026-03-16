@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Camera, CameraOff, Smile } from 'lucide-react';
+import { Camera, CameraOff, Aperture } from 'lucide-react';
 
 /* ── 5×3 digit patterns ── */
 const DIGITS = {
@@ -394,7 +394,7 @@ const DotMatrixDisplay = ({ tempDisplayValue = null }) => {
                     }}
                     title="Capture dot matrix selfie"
                 >
-                    <Smile size={20} className="text-yellow-600" />
+                    <Aperture size={15} className="text-textMuted" />
                 </button>
             )}
 

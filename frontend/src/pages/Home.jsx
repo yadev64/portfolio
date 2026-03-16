@@ -177,51 +177,21 @@ const NeumorphicDashboard = () => {
                     {/* Right: Card Stack */}
                     <div className="lg:col-span-5 flex flex-col gap-6">
 
-                        {/* CARD 1: Remote Control (Car AC style) */}
-                        <NeuCard className="!p-5">
-                            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-5 pb-3 border-b border-border/30">System Remote</p>
-
-                            {/* Dark / Light switch */}
-                            <div className="flex items-center justify-between mb-5">
-                                <div className="flex items-center gap-3">
-                                    {isDark ? <Moon size={14} className="text-textMuted" /> : <Sun size={14} className="text-primary" />}
-                                    <span className="font-mono text-xs text-textMuted uppercase">{isDark ? 'Dark Mode' : 'Light Mode'}</span>
-                                </div>
-                                <NeuToggle checked={!isDark} onChange={() => toggleTheme()} />
-                            </div>
-
-                            {/* Temperature slider — Car AC style */}
-                            <div className="flex items-center justify-between mb-3">
-                                <span className="font-mono text-xs text-textMuted uppercase">Ambient</span>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <Snowflake size={16} className="text-[#0078FF] shrink-0" />
-                                <NeuTempSlider value={colorTemp} onChange={setColorTempLive} min={0} max={100} />
-                                <Flame size={16} className="text-[#FF4500] shrink-0" />
-                            </div>
-
-                            {/* PWR LED */}
-                            <div className="flex items-center gap-3 mt-5 pt-4 border-t border-border/30">
-                                <NeuLED active color="primary" />
-                                <span className="font-mono text-[10px] text-textMuted uppercase tracking-widest">System Online</span>
-                            </div>
-                        </NeuCard>
-
-                        {/* CARD 2: Quick Navigation */}
-                        <NeuCard className="!p-5">
-                            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-4 pb-3 border-b border-border/30">Quick Jump</p>
+                        {/* CARD 1: Quick Navigation (Pressed IN) */}
+                        <NeuCard className="!p-5 neu-pressed border-none">
+                            <p className="font-mono text-[10px] uppercase tracking-[0.3em] font-bold mb-4 pb-3 border-b border-border/10">Quick Jump</p>
                             <div className="grid grid-cols-2 gap-3">
                                 {NAV_ITEMS.map(item => (
                                     <a key={item.label} href={item.href}
-                                        className="flex items-center gap-2.5 px-4 py-3 rounded-xl neu-flat text-textMuted hover:text-primary font-mono text-xs uppercase tracking-wider transition-colors duration-200 cursor-pointer">
+                                        className="flex items-center gap-2.5 px-4 py-3 rounded-xl neu-flat text-textMuted hover:text-primary font-mono text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer">
                                         {item.icon}
-                                        {item.label}
+                                        <span className="font-semibold">{item.label}</span>
                                     </a>
                                 ))}
                             </div>
                         </NeuCard>
 
-                        {/* CARDS 3a & 3b: Glyph Display (fixed square) + Location (flexible) */}
+                        {/* CARDS 2a & 2b: Glyph Display (fixed square) + Location (flexible) */}
                         <div className="flex gap-6">
                             {/* Left: Circular Dot Matrix Display — fixed size, stays square */}
                             <NeuCard className="!p-4 flex items-center justify-center shrink-0">
@@ -253,6 +223,36 @@ const NeumorphicDashboard = () => {
                                 </div>
                             </NeuCard>
                         </div>
+
+                        {/* CARD 3: Remote Control (Car AC style) */}
+                        <NeuCard className="!p-5">
+                            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-5 pb-3 border-b border-border/30">System Remote</p>
+
+                            {/* Dark / Light switch */}
+                            <div className="flex items-center justify-between mb-5">
+                                <div className="flex items-center gap-3">
+                                    {isDark ? <Moon size={14} className="text-textMuted" /> : <Sun size={14} className="text-primary" />}
+                                    <span className="font-mono text-xs text-textMuted uppercase">{isDark ? 'Dark Mode' : 'Light Mode'}</span>
+                                </div>
+                                <NeuToggle checked={!isDark} onChange={() => toggleTheme()} />
+                            </div>
+
+                            {/* Temperature slider — Car AC style */}
+                            <div className="flex items-center justify-between mb-3">
+                                <span className="font-mono text-xs text-textMuted uppercase">Ambient</span>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <Snowflake size={16} className="text-[#0078FF] shrink-0" />
+                                <NeuTempSlider value={colorTemp} onChange={setColorTempLive} min={0} max={100} />
+                                <Flame size={16} className="text-[#FF4500] shrink-0" />
+                            </div>
+
+                            {/* PWR LED */}
+                            <div className="flex items-center gap-3 mt-5 pt-4 border-t border-border/30">
+                                <NeuLED active color="primary" />
+                                <span className="font-mono text-[10px] text-textMuted uppercase tracking-widest">System Online</span>
+                            </div>
+                        </NeuCard>
                     </div>
                 </motion.div>
 
