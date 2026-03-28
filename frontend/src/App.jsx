@@ -2,10 +2,9 @@ import React from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Toaster } from 'sonner'
 import Home from './pages/Home'
+import { ProjectDetail } from './pages/ProjectDetail'
+import { BlogPost } from './pages/BlogPost'
 
-// We will implement these empty pages later
-const ProjectDetail = () => <div className="p-20">Project Detail</div>
-const BlogPost = () => <div className="p-20">Blog Post</div>
 
 import { CursorTrail } from './components/ui/CursorTrail'
 import { GlobalGamification } from './components/ui/GlobalGamification'

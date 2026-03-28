@@ -1,60 +1,165 @@
-import React from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
-import { motion, useScroll, useSpring } from 'framer-motion'
-import { format } from 'date-fns'
+import React from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ArrowLeft, ArrowUpRight, Clock, Calendar } from 'lucide-react';
+import Header from '../components/ui/Header';
+import WRITING_DATA from '../data/writing.json';
 
 export const BlogPost = () => {
-    const { slug } = useParams()
-    const navigate = useNavigate()
-    const { scrollYProgress } = useScroll()
-    const pathLength = useSpring(scrollYProgress, { stiffness: 400, damping: 90 })
+    const { slug } = useParams();
+    const navigate = useNavigate();
 
-    const blog = {
-        title: 'Why I left GCP for AWS, and never looked back',
-        mood: 'Thoughts',
-        published_at: '2025-11-20',
-        content: "<h2>The Tipping Point</h2><p>It was a cold tuesday when I realized IAM on GCP was not the same.</p><p>We had scaling issues, and AWS provided a more granular set of tools...</p><blockquote>The shift wasn't easy, but the documentation delta was massive.</blockquote>",
-        read_time: '8 min read'
+    const post = WRITING_DATA.find(w => (w.slug || w._id) === slug);
+    const otherPosts = WRITING_DATA.filter(w => (w.slug || w._id) !== slug).slice(0, 3);
+
+    if (!post) {
+        return (
+            <div className="min-h-screen bg-background flex items-center justify-center">
+                <div className="text-center">
+                    <h1 className="text-4xl font-display font-bold text-textMain mb-4">Post not found</h1>
+                    <button onClick={() => navigate('/')} className="text-primary font-mono text-sm">← Back to home</button>
+                </div>
+            </div>
+        );
     }
+
+    const coverSrc = post.coverImage?.startsWith('/uploads')
+        ? post.coverImage
+        : post.coverImage;
 
     return (
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="min-h-screen bg-bg-primary text-text-primary font-body pb-32"
+            className="min-h-screen bg-background text-textMain font-body"
         >
-            <motion.div
-                className="fixed top-0 left-0 right-0 h-1 z-50 origin-left"
-                style={{ scaleX: pathLength, backgroundColor: 'var(--accent-secondary)' }}
-            />
+            <Header />
 
-            <div className="max-w-3xl mx-auto px-4 pt-32">
+            {/* Cover Image */}
+            {coverSrc && (
+                <div className="w-full h-[40vh] md:h-[50vh] relative overflow-hidden">
+                    <img
+                        src={coverSrc}
+                        alt={post.title}
+                        className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                </div>
+            )}
+
+            {/* Content */}
+            <div className={`max-w-3xl mx-auto px-6 md:px-12 ${coverSrc ? '-mt-20 relative z-10' : 'pt-24'}`}>
+                {/* Back button */}
                 <button
                     onClick={() => navigate(-1)}
-                    className="text-text-secondary hover:text-white font-mono text-sm mb-12 flex items-center"
+                    className="flex items-center gap-2 text-textMuted hover:text-primary transition-colors font-mono text-xs uppercase tracking-widest mb-6"
                 >
-                    ← Back to Writings
+                    <ArrowLeft size={14} /> Back
                 </button>
 
-                <div className="flex items-center gap-4 mb-8">
-                    <span className="text-sm font-mono text-text-secondary uppercase tracking-widest px-3 py-1 bg-white/5 rounded-full border border-border">
-                        {blog.mood}
-                    </span>
-                    <span className="text-sm font-mono text-text-secondary">
-                        {format(new Date(blog.published_at), 'MMMM dd, yyyy')} • {blog.read_time}
-                    </span>
+                {/* Metadata row */}
+                <div className="flex flex-wrap items-center gap-4 mb-4">
+                    {post.mood && (
+                        <span className="text-2xl">{post.mood}</span>
+                    )}
+                    {post.date && (
+                        <span className="flex items-center gap-1.5 font-mono text-xs text-textMuted">
+                            <Calendar size={12} /> {post.date}
+                        </span>
+                    )}
+                    {post.readTime && (
+                        <span className="flex items-center gap-1.5 font-mono text-xs text-textMuted">
+                            <Clock size={12} /> {post.readTime}
+                        </span>
+                    )}
                 </div>
 
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-display font-bold mb-16 leading-tight">
-                    {blog.title}
+                {/* Tags */}
+                {post.tags?.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-5">
+                        {post.tags.map(tag => (
+                            <span key={tag} className="px-3 py-1 text-[10px] font-mono uppercase tracking-wider bg-surface text-textMuted rounded-full shadow-[2px_2px_5px_var(--shadow-dark),-2px_-2px_5px_var(--shadow-light)]">
+                                {tag}
+                            </span>
+                        ))}
+                    </div>
+                )}
+
+                {/* Title */}
+                <h1 className="text-3xl md:text-5xl font-display font-bold text-textMain mb-3 leading-tight">
+                    {post.title}
                 </h1>
 
-                <article
-                    className="prose prose-invert prose-lg prose-p:text-text-secondary prose-headings:font-display prose-headings:text-text-primary prose-a:text-accent-secondary max-w-none"
-                    dangerouslySetInnerHTML={{ __html: blog.content }}
-                />
+                {/* Subtitle */}
+                {post.subtitle && (
+                    <p className="text-lg text-textMuted leading-relaxed mb-10 max-w-2xl">
+                        {post.subtitle}
+                    </p>
+                )}
+
+                {/* Rich Content from CMS */}
+                {post.content && (
+                    <article
+                        className="prose prose-lg max-w-none mb-16
+                            prose-headings:font-display prose-headings:text-textMain prose-headings:font-bold
+                            prose-p:text-textMuted prose-p:leading-relaxed
+                            prose-a:text-primary prose-a:no-underline hover:prose-a:underline
+                            prose-blockquote:border-l-primary prose-blockquote:text-textMuted prose-blockquote:italic
+                            prose-code:text-primary prose-code:bg-surface prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
+                            prose-pre:bg-[#1a1a2e] prose-pre:text-[#e0e0e0] prose-pre:rounded-xl
+                            prose-img:rounded-xl prose-img:shadow-lg
+                            prose-strong:text-textMain
+                            prose-li:text-textMuted
+                            prose-hr:border-border"
+                        dangerouslySetInnerHTML={{ __html: post.content }}
+                    />
+                )}
+
+                {!post.content && (
+                    <div className="py-16 text-center">
+                        <p className="text-textMuted font-mono text-sm">Content coming soon...</p>
+                    </div>
+                )}
             </div>
+
+            {/* ─── Suggestions: Other Posts ─── */}
+            {otherPosts.length > 0 && (
+                <div className="max-w-[1400px] mx-auto px-6 md:px-12 pb-20 mt-8">
+                    <div className="border-t border-border/50 pt-12">
+                        <h3 className="font-mono text-xs uppercase tracking-[0.3em] text-textMuted mb-8">More Writing</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            {otherPosts.map(p => {
+                                const pSlug = p.slug || p._id;
+                                const pCover = p.coverImage;
+                                return (
+                                    <Link
+                                        key={p._id}
+                                        to={`/blog/${pSlug}`}
+                                        className="group bg-surface rounded-2xl overflow-hidden shadow-[4px_4px_10px_var(--shadow-dark),-4px_-4px_10px_var(--shadow-light)] hover:shadow-[6px_6px_14px_var(--shadow-dark),-6px_-6px_14px_var(--shadow-light)] transition-shadow"
+                                    >
+                                        {pCover && (
+                                            <img src={pCover} alt={p.title} className="w-full h-36 object-cover" />
+                                        )}
+                                        <div className="p-5">
+                                            <div className="flex items-center gap-2 mb-2">
+                                                {p.mood && <span className="text-lg">{p.mood}</span>}
+                                                <span className="font-mono text-[10px] text-textMuted">{p.readTime || '5 min'}</span>
+                                            </div>
+                                            <h4 className="font-display font-bold text-textMain group-hover:text-primary transition-colors mb-1 line-clamp-2">
+                                                {p.title}
+                                            </h4>
+                                            <p className="text-sm text-textMuted line-clamp-2">{p.subtitle}</p>
+                                            <div className="flex items-center gap-1 mt-3 text-primary font-mono text-xs opacity-0 group-hover:opacity-100 transition-opacity">
+                                                Read <ArrowUpRight size={12} />
+                                            </div>
+                                        </div>
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    </div>
+                </div>
+            )}
         </motion.div>
-    )
-}
+    );
+};
