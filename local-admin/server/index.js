@@ -2,13 +2,37 @@ const express = require('express');
 const fs = require('fs/promises');
 const path = require('path');
 const cors = require('cors');
+const multer = require('multer');
 
 const app = express();
 const PORT = 4000;
 
-app.use(cors());
-app.use(express.json());
+// Path to frontend uploads directory
+const UPLOADS_DIR = path.join(__dirname, '../../frontend/public/uploads');
 
+// Configure multer for image uploads
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, UPLOADS_DIR),
+    filename: (req, file, cb) => {
+        const ext = path.extname(file.originalname);
+        const name = path.basename(file.originalname, ext).replace(/[^a-z0-9]/gi, '-').toLowerCase();
+        cb(null, `${name}-${Date.now()}${ext}`);
+    }
+});
+const upload = multer({
+    storage,
+    limits: { fileSize: 10 * 1024 * 1024 }, // 10MB max
+    fileFilter: (req, file, cb) => {
+        if (file.mimetype.startsWith('image/')) cb(null, true);
+        else cb(new Error('Only images are allowed'));
+    }
+});
+
+app.use(cors());
+app.use(express.json({ limit: '50mb' }));
+
+// Serve uploaded images statically
+app.use('/uploads', express.static(UPLOADS_DIR));
 // Path to the frontend data directory
 const DATA_DIR = path.join(__dirname, '../../frontend/src/data');
 
@@ -30,6 +54,13 @@ const readData = async (collection) => {
 const writeData = async (collection, data) => {
     await fs.writeFile(getFilePath(collection), JSON.stringify(data, null, 2));
 };
+
+// --- Image Upload Route (MUST be before generic :collection routes) ---
+app.post('/api/upload', upload.single('image'), (req, res) => {
+    if (!req.file) return res.status(400).json({ error: 'No image provided' });
+    const url = `/uploads/${req.file.filename}`;
+    res.json({ success: true, url });
+});
 
 // --- CRUD Routes ---
 
@@ -69,6 +100,8 @@ app.delete('/api/:collection/:id', async (req, res) => {
     await writeData(collection, filteredItems);
     res.json({ success: true, deletedCount: 1 });
 });
+
+
 
 app.listen(PORT, () => {
     console.log(`\n======================================`);

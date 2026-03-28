@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { toast } from 'sonner';
-import WysiwygEditor from '../../components/admin/WysiwygEditor';
+import MediumEditor from '../../components/admin/MediumEditor';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
@@ -10,10 +10,12 @@ const WritingAdmin = () => {
     const [subtitle, setSubtitle] = useState('');
     const [content, setContent] = useState('');
     const [coverImage, setCoverImage] = useState('');
+    const [coverPreview, setCoverPreview] = useState('');
     const [tagsInput, setTagsInput] = useState('');
     const [readTime, setReadTime] = useState('');
     const [mood, setMood] = useState('📝');
     const [isSaving, setIsSaving] = useState(false);
+    const coverInputRef = useRef(null);
 
     const fetchPosts = async () => {
         try {
@@ -25,9 +27,28 @@ const WritingAdmin = () => {
 
     useEffect(() => { fetchPosts(); }, []);
 
+    const handleCoverUpload = useCallback(async (file) => {
+        const formData = new FormData();
+        formData.append('image', file);
+        try {
+            const res = await fetch(`${API}/api/upload`, { method: 'POST', body: formData });
+            const data = await res.json();
+            if (data.url) {
+                setCoverImage(data.url);
+                setCoverPreview(`${API}${data.url}`);
+            }
+        } catch { toast.error('Cover upload failed'); }
+    }, []);
+
+    const handleCoverDrop = useCallback((e) => {
+        e.preventDefault();
+        const file = e.dataTransfer.files?.[0];
+        if (file && file.type.startsWith('image/')) handleCoverUpload(file);
+    }, [handleCoverUpload]);
+
     const handlePublish = async (e) => {
         e.preventDefault();
-        if (!title || !content) return toast.error("Title and Content are required.");
+        if (!title) return toast.error("Title is required.");
         setIsSaving(true);
 
         try {
@@ -44,7 +65,7 @@ const WritingAdmin = () => {
             });
             if (res.ok) {
                 toast.success('Post Published!');
-                setTitle(''); setSubtitle(''); setContent(''); setCoverImage(''); setTagsInput(''); setReadTime(''); setMood('📝');
+                setTitle(''); setSubtitle(''); setContent(''); setCoverImage(''); setCoverPreview(''); setTagsInput(''); setReadTime(''); setMood('📝');
                 fetchPosts();
             } else toast.error('Failed');
         } catch { toast.error('Network Error'); }
@@ -60,37 +81,68 @@ const WritingAdmin = () => {
         <div className="space-y-8 max-w-5xl mx-auto">
             <h1 className="text-2xl font-display font-bold text-textMain tracking-wider">WRITING</h1>
 
-            <div className="neu-flat p-6 space-y-5">
-                <h2 className="text-lg font-bold text-textMain border-b border-border pb-3">Draft New Post</h2>
-                <form onSubmit={handlePublish} className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input className="neu-input" placeholder="Post Title" value={title} onChange={e => setTitle(e.target.value)} required />
-                        <input className="neu-input" placeholder="Subtitle / Excerpt" value={subtitle} onChange={e => setSubtitle(e.target.value)} />
-                        <input className="neu-input" placeholder="Cover Image URL" value={coverImage} onChange={e => setCoverImage(e.target.value)} />
-                        <div className="flex gap-3">
-                            <input className="neu-input flex-1" placeholder="Tags (e.g. Code, Life)" value={tagsInput} onChange={e => setTagsInput(e.target.value)} />
-                            <input className="neu-input w-24" placeholder="5 min" value={readTime} onChange={e => setReadTime(e.target.value)} />
-                            <input className="neu-input w-16 text-center text-xl" placeholder="📝" value={mood} onChange={e => setMood(e.target.value)} title="Mood emoji" />
+            <form onSubmit={handlePublish} className="space-y-5">
+                {/* Cover Image */}
+                <div>
+                    <label className="block font-mono text-[10px] uppercase text-textMuted mb-2 tracking-widest">Cover Image</label>
+                    <input ref={coverInputRef} type="file" accept="image/*" className="hidden"
+                        onChange={(e) => { const f = e.target.files?.[0]; if (f) handleCoverUpload(f); }} />
+                    {coverPreview ? (
+                        <div className="relative group">
+                            <img src={coverPreview} alt="Cover" className="cover-image-preview" />
+                            <button type="button" onClick={() => { setCoverImage(''); setCoverPreview(''); }}
+                                className="absolute top-3 right-3 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-sm">✕</button>
                         </div>
-                    </div>
-                    <div className="pt-2">
-                        <label className="block font-mono text-[10px] uppercase text-textMuted mb-2 tracking-widest">Post Content</label>
-                        <WysiwygEditor value={content} onChange={setContent} placeholder="Start writing..." />
-                    </div>
-                    <div className="flex justify-end pt-3">
-                        <button type="submit" className="neu-btn px-8 py-3 font-mono text-xs uppercase tracking-wider text-primary font-bold">
-                            {isSaving ? 'Publishing...' : 'Publish Post'}
-                        </button>
-                    </div>
-                </form>
-            </div>
+                    ) : (
+                        <div className="cover-upload-zone"
+                            onClick={() => coverInputRef.current?.click()}
+                            onDragOver={(e) => e.preventDefault()}
+                            onDrop={handleCoverDrop}>
+                            📷 Drop cover image here or click to upload
+                        </div>
+                    )}
+                </div>
+
+                {/* Title — large, Medium-style */}
+                <input className="w-full bg-transparent text-3xl font-display font-bold placeholder:text-textMuted/50 outline-none border-none py-2"
+                    placeholder="Post Title" value={title} onChange={e => setTitle(e.target.value)} required />
+
+                <input className="w-full bg-transparent text-lg placeholder:text-textMuted/40 outline-none border-none"
+                    placeholder="Subtitle / excerpt" value={subtitle} onChange={e => setSubtitle(e.target.value)} />
+
+                {/* Metadata row */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <input className="neu-input" placeholder="Tags (e.g. Code, Life)" value={tagsInput} onChange={e => setTagsInput(e.target.value)} />
+                    <input className="neu-input" placeholder="Read time (e.g. 5 min)" value={readTime} onChange={e => setReadTime(e.target.value)} />
+                    <input className="neu-input text-center text-xl" placeholder="📝" value={mood} onChange={e => setMood(e.target.value)} title="Mood emoji" />
+                </div>
+
+                {/* Medium-style content editor */}
+                <div>
+                    <label className="block font-mono text-[10px] uppercase text-textMuted mb-2 tracking-widest">Post Content</label>
+                    <MediumEditor value={content} onChange={setContent} placeholder="Start writing your story..." />
+                </div>
+
+                <div className="flex justify-end pt-3">
+                    <button type="submit" className="neu-btn px-8 py-3 font-mono text-xs uppercase tracking-wider text-primary font-bold">
+                        {isSaving ? 'Publishing...' : 'Publish Post'}
+                    </button>
+                </div>
+            </form>
 
             <div>
                 <h3 className="font-mono text-[10px] uppercase tracking-widest text-textMuted mb-4">Published Posts ({posts.length})</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {posts.map(p => (
                         <div key={p._id} className="neu-flat p-4">
-                            <h4 className="font-bold text-textMain">{p.title}</h4>
+                            {p.coverImage && <img src={p.coverImage.startsWith('/') ? `${API}${p.coverImage}` : p.coverImage} className="w-full h-32 object-cover rounded-lg mb-3" alt="" />}
+                            <div className="flex items-start justify-between">
+                                <div>
+                                    <span className="text-lg mr-2">{p.mood}</span>
+                                    <h4 className="font-bold text-textMain inline">{p.title}</h4>
+                                </div>
+                                <span className="font-mono text-[10px] text-textMuted shrink-0">{p.readTime}</span>
+                            </div>
                             <p className="text-sm text-textMuted line-clamp-2 mt-1">{p.subtitle}</p>
                             <div className="flex items-center justify-between mt-3">
                                 <span className="font-mono text-[10px] text-textMuted">{p.date}</span>

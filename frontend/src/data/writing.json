@@ -5,7 +5,10 @@
     "subtitle": "The journey from WebGL chaos to Dieter Rams simplicity.",
     "content": "",
     "coverImage": "",
-    "tags": ["Design", "Web"],
+    "tags": [
+      "Design",
+      "Web"
+    ],
     "readTime": "5 min",
     "published": true,
     "date": "Mar 1, 2026",
@@ -19,7 +22,10 @@
     "subtitle": "Architecting Restaurant OS with isolated data and shared billing.",
     "content": "",
     "coverImage": "",
-    "tags": ["Code", "Architecture"],
+    "tags": [
+      "Code",
+      "Architecture"
+    ],
     "readTime": "12 min",
     "published": true,
     "date": "Feb 15, 2026",
@@ -33,12 +39,34 @@
     "subtitle": "Why this lightweight pairing beats Redux for 90% of apps.",
     "content": "",
     "coverImage": "",
-    "tags": ["Code", "React"],
+    "tags": [
+      "Code",
+      "React"
+    ],
     "readTime": "4 min",
     "published": true,
     "date": "Jan 20, 2026",
     "slug": "zustand-tanstack",
     "mood": "⚡",
     "createdAt": "2026-01-20T00:00:00.000Z"
+  },
+  {
+    "_id": "1774679281483",
+    "createdAt": "2026-03-28T06:28:01.483Z",
+    "title": "Neumorphism Pro max",
+    "subtitle": "",
+    "content": "<p>Woah!!</p>",
+    "coverImage": "/uploads/original-170abbd4eb16b340430f0a2c9ee9cc81-1774679234496.jpeg",
+    "readTime": "5 mins",
+    "mood": "📝",
+    "tags": [
+      "code",
+      "design",
+      "uiux",
+      "neumorphism"
+    ],
+    "slug": "neumorphism-pro-max",
+    "published": true,
+    "date": "Mar 28, 2026"
   }
 ]
