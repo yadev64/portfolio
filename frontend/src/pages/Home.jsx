@@ -6,7 +6,12 @@ import { ExternalLink, Github, Linkedin, Mail, ChevronDown, ArrowUpRight, BookOp
 import { Link } from 'react-router-dom';
 import useAppStore from '../store/useAppStore';
 
-/* ──────────────────────── STATIC DATA ──────────────────────── */
+/* ──────────────────────── DATA FROM LOCAL CMS ──────────────────────── */
+import PROJECTS_DATA from '../data/projects.json';
+import CAREER_DATA from '../data/career.json';
+import SKILLS_DATA from '../data/skills.json';
+import WRITING_DATA from '../data/writing.json';
+
 const ROLES = [
     'Software Engineer_',
     'Builder of Tools_',
@@ -14,62 +19,40 @@ const ROLES = [
     'UI Craftsman_',
 ];
 
-const PROJECTS = [
-    {
-        title: 'Restaurant OS',
-        tagline: 'Full-stack multi-tenant SaaS platform for hotel chain management. Isolated databases, real-time orders, shared billing.',
-        tech: ['React', 'Node.js', 'MongoDB', 'Express'],
-        image: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=340&fit=crop',
-        slug: 'restaurant-os',
-    },
-    {
-        title: 'RequestLab',
-        tagline: 'Postman meets diff tool — open-source API testing with visual request comparison.',
-        tech: ['React', 'Electron', 'TypeScript'],
-        image: 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=340&fit=crop',
-        slug: 'requestlab',
-    },
-    {
-        title: 'MacBar',
-        tagline: 'Aesthetic macOS status bar replacement with customizable Liquid Glass widgets.',
-        tech: ['SwiftUI', 'AppKit', 'Combine'],
-        image: 'https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&h=340&fit=crop',
-        slug: 'macbar',
-    },
-    {
-        title: 'Portfolio v3',
-        tagline: 'This site. Neumorphic design system inspired by Dieter Rams.',
-        tech: ['React', 'Tailwind', 'Framer Motion'],
-        image: 'https://images.unsplash.com/photo-1545235617-9465d2a55698?w=600&h=340&fit=crop',
-        slug: 'portfolio-v3',
-    },
-];
+// Map JSON data to the shapes this component expects
+const PROJECTS = PROJECTS_DATA.map(p => ({
+    title: p.title,
+    tagline: p.description,
+    tech: p.tags || [],
+    image: p.coverImage,
+    slug: p.slug || p._id,
+}));
 
-const SKILLS = [
-    { name: 'React / Next.js', category: 'frontend', proficiency: 95 },
-    { name: 'TypeScript', category: 'frontend', proficiency: 88 },
-    { name: 'Tailwind / CSS', category: 'frontend', proficiency: 90 },
-    { name: 'Node.js / Express', category: 'backend', proficiency: 85 },
-    { name: 'Python', category: 'backend', proficiency: 72 },
-    { name: 'MongoDB', category: 'database', proficiency: 88 },
-    { name: 'AWS / GCP', category: 'cloud', proficiency: 80 },
-    { name: 'Docker / CI-CD', category: 'tools', proficiency: 78 },
-    { name: 'Three.js / WebGL', category: 'frontend', proficiency: 75 },
-    { name: 'PostgreSQL', category: 'database', proficiency: 70 },
-];
+// Map skills — normalize category to lowercase for filtering
+const SKILLS = SKILLS_DATA.map(s => ({
+    name: s.name,
+    category: (s.category || '').toLowerCase().replace('other technologies', 'cloud').replace('people and community', 'tools'),
+    proficiency: s.proficiency || 80,
+}));
 
-const JOURNEY = [
-    { type: 'job', title: 'Senior Software Engineer', org: 'Tricog Health', period: '2023 — Present', description: 'Leading frontend architecture and cloud-native tooling for healthcare AI.', highlight: true },
-    { type: 'milestone', title: 'Launched RequestLab', org: 'Open Source', period: '2022', description: 'Built and publicly released an API testing tool with visual diffing.', highlight: true },
-    { type: 'job', title: 'Full Stack Developer', org: 'Freelance', period: '2021 — 2023', description: 'Shipped 10+ production apps for startups across fintech and e-commerce.', highlight: false },
-    { type: 'education', title: 'B.Tech Computer Science', org: 'University', period: '2017 — 2021', description: 'Graduated with specialization in distributed systems and web technologies.', highlight: false },
-];
+// Map career/journey
+const JOURNEY = CAREER_DATA.map(c => ({
+    type: c.type || 'job',
+    title: c.designation,
+    org: c.company,
+    period: c.isPresent ? `${c.fromDate} — Present` : `${c.fromDate} — ${c.toDate}`,
+    description: c.details,
+    highlight: c.highlight ?? false,
+}));
 
-const BLOG_POSTS = [
-    { title: 'Why I Ditched 3D for Neumorphism', mood: '💡', readTime: '5 min', excerpt: 'The journey from WebGL chaos to Dieter Rams simplicity.', slug: 'ditched-3d-for-neumorphism' },
-    { title: 'Building a Multi-Tenant SaaS from Zero', mood: '🔧', readTime: '12 min', excerpt: 'Architecting Restaurant OS with isolated data and shared billing.', slug: 'multi-tenant-saas' },
-    { title: 'The Zustand + TanStack Combo', mood: '⚡', readTime: '4 min', excerpt: 'Why this lightweight pairing beats Redux for 90% of apps.', slug: 'zustand-tanstack' },
-];
+// Map blog posts
+const BLOG_POSTS = WRITING_DATA.map(w => ({
+    title: w.title,
+    mood: w.mood || '📝',
+    readTime: w.readTime || '5 min',
+    excerpt: w.subtitle,
+    slug: w.slug || w._id,
+}));
 
 const NAV_ITEMS = [
     { label: 'Projects', icon: <FolderOpen size={14} />, href: '#projects' },

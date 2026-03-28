@@ -1,0 +1,82 @@
+[
+  {
+    "_id": "seed_s1",
+    "name": "React / Next.js",
+    "category": "Frontend",
+    "iconClass": "devicon-react-original",
+    "proficiency": 95,
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "_id": "seed_s2",
+    "name": "TypeScript",
+    "category": "Frontend",
+    "iconClass": "devicon-typescript-plain",
+    "proficiency": 88,
+    "createdAt": "2026-01-02T00:00:00.000Z"
+  },
+  {
+    "_id": "seed_s3",
+    "name": "Tailwind / CSS",
+    "category": "Frontend",
+    "iconClass": "devicon-tailwindcss-plain",
+    "proficiency": 90,
+    "createdAt": "2026-01-03T00:00:00.000Z"
+  },
+  {
+    "_id": "seed_s4",
+    "name": "Node.js / Express",
+    "category": "Backend",
+    "iconClass": "devicon-nodejs-plain",
+    "proficiency": 85,
+    "createdAt": "2026-01-04T00:00:00.000Z"
+  },
+  {
+    "_id": "seed_s5",
+    "name": "Python",
+    "category": "Backend",
+    "iconClass": "devicon-python-plain",
+    "proficiency": 72,
+    "createdAt": "2026-01-05T00:00:00.000Z"
+  },
+  {
+    "_id": "seed_s6",
+    "name": "MongoDB",
+    "category": "Backend",
+    "iconClass": "devicon-mongodb-plain",
+    "proficiency": 88,
+    "createdAt": "2026-01-06T00:00:00.000Z"
+  },
+  {
+    "_id": "seed_s7",
+    "name": "AWS / GCP",
+    "category": "Other Technologies",
+    "iconClass": "devicon-amazonwebservices-original",
+    "proficiency": 80,
+    "createdAt": "2026-01-07T00:00:00.000Z"
+  },
+  {
+    "_id": "seed_s8",
+    "name": "Docker / CI-CD",
+    "category": "Other Technologies",
+    "iconClass": "devicon-docker-plain",
+    "proficiency": 78,
+    "createdAt": "2026-01-08T00:00:00.000Z"
+  },
+  {
+    "_id": "seed_s9",
+    "name": "Three.js / WebGL",
+    "category": "Frontend",
+    "iconClass": "devicon-threejs-original",
+    "proficiency": 75,
+    "createdAt": "2026-01-09T00:00:00.000Z"
+  },
+  {
+    "_id": "seed_s10",
+    "name": "PostgreSQL",
+    "category": "Backend",
+    "iconClass": "devicon-postgresql-plain",
+    "proficiency": 70,
+    "createdAt": "2026-01-10T00:00:00.000Z"
+  }
+]

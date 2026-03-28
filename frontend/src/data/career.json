@@ -1,0 +1,62 @@
+[
+  {
+    "_id": "seed_c1",
+    "designation": "Senior Software Engineer",
+    "company": "Tricog Health",
+    "fromDate": "2023-01",
+    "toDate": "",
+    "isPresent": true,
+    "details": "Leading frontend architecture and cloud-native tooling for healthcare AI.",
+    "type": "job",
+    "highlight": true,
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "_id": "seed_c2",
+    "designation": "Launched RequestLab",
+    "company": "Open Source",
+    "fromDate": "2022-01",
+    "toDate": "2022-12",
+    "isPresent": false,
+    "details": "Built and publicly released an API testing tool with visual diffing.",
+    "type": "milestone",
+    "highlight": true,
+    "createdAt": "2026-01-02T00:00:00.000Z"
+  },
+  {
+    "_id": "1774676478800",
+    "designation": "Full stack developer",
+    "company": "Krews",
+    "fromDate": "2021-06",
+    "toDate": "2022-10",
+    "isPresent": false,
+    "details": "",
+    "type": "job",
+    "highlight": false,
+    "createdAt": "2026-03-28T05:41:18.800Z"
+  },
+  {
+    "_id": "seed_c3",
+    "designation": "Full Stack Developer",
+    "company": "Freelance",
+    "fromDate": "2021-01",
+    "toDate": "2023-01",
+    "isPresent": false,
+    "details": "Shipped 10+ production apps for startups across fintech and e-commerce.",
+    "type": "job",
+    "highlight": false,
+    "createdAt": "2026-01-03T00:00:00.000Z"
+  },
+  {
+    "_id": "1774677372081",
+    "createdAt": "2026-03-28T05:56:12.081Z",
+    "designation": "Fullstack developer",
+    "company": "Krews",
+    "fromDate": "2021-06",
+    "toDate": "2022-10",
+    "isPresent": false,
+    "details": "",
+    "type": "job",
+    "highlight": false
+  }
+]

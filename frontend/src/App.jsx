@@ -7,9 +7,6 @@ import Home from './pages/Home'
 const ProjectDetail = () => <div className="p-20">Project Detail</div>
 const BlogPost = () => <div className="p-20">Blog Post</div>
 
-// Dashboard
-const DashboardLayout = () => <div className="p-20">Dashboard Setup Pending</div>
-
 import { CursorTrail } from './components/ui/CursorTrail'
 import { GlobalGamification } from './components/ui/GlobalGamification'
 
@@ -25,9 +22,6 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/projects/:slug" element={<ProjectDetail />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
-
-        {/* Dashboard Routes */}
-        <Route path="/dashboard/*" element={<DashboardLayout />} />
       </Routes>
     </BrowserRouter>
   )

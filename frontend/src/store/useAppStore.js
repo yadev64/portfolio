@@ -13,7 +13,19 @@ const lerpColor = (t) => {
 const useAppStore = create(
     persist(
         (set, get) => ({
-            // ── Theme ──
+            // --- Auth State ---
+            authStatus: {
+                isAuthenticated: false,
+                token: null,
+            },
+            setAuth: (token) => set({
+                authStatus: { isAuthenticated: true, token }
+            }),
+            logout: () => set({
+                authStatus: { isAuthenticated: false, token: null }
+            }),
+
+            // --- Theme State ---
             theme: 'light',
             toggleTheme: () => set((state) => {
                 const newTheme = state.theme === 'dark' ? 'light' : 'dark';

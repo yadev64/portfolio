@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-bg: #ececec;
+  --color-surface: #e0e0e0;
+  --color-border: #d1d1d1;
+  --color-primary: #ff5e00;
+  --color-text-main: #333333;
+  --color-text-muted: #666666;
+  --shadow-dark: #b8b8b8;
+  --shadow-light: #ffffff;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Neumorphic utilities */
+.neu-flat {
+  background: var(--color-surface);
+  border-radius: 16px;
+  box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light);
+}
+
+.neu-pressed {
+  background: var(--color-surface);
+  border-radius: 16px;
+  box-shadow: inset 4px 4px 8px var(--shadow-dark), inset -4px -4px 8px var(--shadow-light);
+}
+
+.neu-btn {
+  background: var(--color-surface);
+  border-radius: 12px;
+  box-shadow: 4px 4px 8px var(--shadow-dark), -4px -4px 8px var(--shadow-light);
+  transition: all 0.15s ease;
+  cursor: pointer;
+  border: none;
+}
+.neu-btn:active {
+  box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+}
+
+.neu-input {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--color-text-main);
+  box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light);
+  outline: none;
+  width: 100%;
+}
+.neu-input:focus {
+  border-color: var(--color-primary);
+}
+.neu-input::placeholder {
+  color: var(--color-text-muted);
+}
+
+/* Quill overrides */
+.ql-toolbar.ql-snow { background: var(--color-surface); border-color: var(--color-border) !important; border-radius: 12px 12px 0 0; }
+.ql-container.ql-snow { border-color: var(--color-border) !important; border-radius: 0 0 12px 12px; min-height: 250px; background: var(--color-surface); }
+.ql-editor { font-family: 'Inter', sans-serif; font-size: 15px; color: var(--color-text-main); }
+.ql-editor.ql-blank::before { color: var(--color-text-muted); font-style: normal; }

@@ -1,0 +1,50 @@
+[
+  {
+    "_id": "seed_1",
+    "title": "Restaurant OS",
+    "description": "Full-stack multi-tenant SaaS platform for hotel chain management. Isolated databases, real-time orders, shared billing.",
+    "content": "",
+    "coverImage": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=340&fit=crop",
+    "externalLink": "",
+    "tags": ["React", "Node.js", "MongoDB", "Express"],
+    "published": true,
+    "slug": "restaurant-os",
+    "createdAt": "2026-01-01T00:00:00.000Z"
+  },
+  {
+    "_id": "seed_2",
+    "title": "RequestLab",
+    "description": "Postman meets diff tool — open-source API testing with visual request comparison.",
+    "content": "",
+    "coverImage": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=340&fit=crop",
+    "externalLink": "",
+    "tags": ["React", "Electron", "TypeScript"],
+    "published": true,
+    "slug": "requestlab",
+    "createdAt": "2026-01-02T00:00:00.000Z"
+  },
+  {
+    "_id": "seed_3",
+    "title": "MacBar",
+    "description": "Aesthetic macOS status bar replacement with customizable Liquid Glass widgets.",
+    "content": "",
+    "coverImage": "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&h=340&fit=crop",
+    "externalLink": "",
+    "tags": ["SwiftUI", "AppKit", "Combine"],
+    "published": true,
+    "slug": "macbar",
+    "createdAt": "2026-01-03T00:00:00.000Z"
+  },
+  {
+    "_id": "seed_4",
+    "title": "Portfolio v3",
+    "description": "This site. Neumorphic design system inspired by Dieter Rams.",
+    "content": "",
+    "coverImage": "https://images.unsplash.com/photo-1545235617-9465d2a55698?w=600&h=340&fit=crop",
+    "externalLink": "",
+    "tags": ["React", "Tailwind", "Framer Motion"],
+    "published": true,
+    "slug": "portfolio-v3",
+    "createdAt": "2026-01-04T00:00:00.000Z"
+  }
+]

@@ -1,0 +1,44 @@
+[
+  {
+    "_id": "seed_w1",
+    "title": "Why I Ditched 3D for Neumorphism",
+    "subtitle": "The journey from WebGL chaos to Dieter Rams simplicity.",
+    "content": "",
+    "coverImage": "",
+    "tags": ["Design", "Web"],
+    "readTime": "5 min",
+    "published": true,
+    "date": "Mar 1, 2026",
+    "slug": "ditched-3d-for-neumorphism",
+    "mood": "💡",
+    "createdAt": "2026-03-01T00:00:00.000Z"
+  },
+  {
+    "_id": "seed_w2",
+    "title": "Building a Multi-Tenant SaaS from Zero",
+    "subtitle": "Architecting Restaurant OS with isolated data and shared billing.",
+    "content": "",
+    "coverImage": "",
+    "tags": ["Code", "Architecture"],
+    "readTime": "12 min",
+    "published": true,
+    "date": "Feb 15, 2026",
+    "slug": "multi-tenant-saas",
+    "mood": "🔧",
+    "createdAt": "2026-02-15T00:00:00.000Z"
+  },
+  {
+    "_id": "seed_w3",
+    "title": "The Zustand + TanStack Combo",
+    "subtitle": "Why this lightweight pairing beats Redux for 90% of apps.",
+    "content": "",
+    "coverImage": "",
+    "tags": ["Code", "React"],
+    "readTime": "4 min",
+    "published": true,
+    "date": "Jan 20, 2026",
+    "slug": "zustand-tanstack",
+    "mood": "⚡",
+    "createdAt": "2026-01-20T00:00:00.000Z"
+  }
+]
