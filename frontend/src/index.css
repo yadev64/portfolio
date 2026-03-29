@@ -95,6 +95,51 @@
     -8px -8px 16px rgba(var(--shadow-light), 1);
 }
 
+/* Inverted horizontal shadow for right-side compressed cards */
+.neu-flat-invert-x {
+  background-color: var(--bg-primary);
+  box-shadow:
+    -8px 8px 16px rgba(var(--shadow-dark), 0.6),
+    8px -8px 16px rgba(var(--shadow-light), 0.05);
+  border-radius: 1rem;
+}
+
+.light .neu-flat-invert-x {
+  box-shadow:
+    -8px 8px 16px rgba(var(--shadow-dark), 0.5),
+    8px -8px 16px rgba(var(--shadow-light), 1);
+}
+
+/* Project/Writing Cards: neumorphic lift on hover (same feel as View My Work) */
+.neu-project-card {
+  transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+.neu-project-card:hover {
+  box-shadow:
+    8px 8px 20px rgba(var(--shadow-dark), 0.8),
+    -8px -8px 20px rgba(var(--shadow-light), 0.08);
+  transform: translateY(-3px);
+}
+.neu-project-card:active {
+  box-shadow:
+    inset 3px 3px 6px rgba(var(--shadow-dark), 0.6),
+    inset -3px -3px 6px rgba(var(--shadow-light), 0.05);
+  transform: translateY(0);
+}
+.light .neu-project-card:hover {
+  box-shadow:
+    8px 8px 20px rgba(var(--shadow-dark), 0.6),
+    -8px -8px 20px rgba(var(--shadow-light), 1);
+  transform: translateY(-3px);
+}
+.light .neu-project-card:active {
+  box-shadow:
+    inset 3px 3px 6px rgba(var(--shadow-dark), 0.4),
+    inset -3px -3px 6px rgba(var(--shadow-light), 1);
+  transform: translateY(0);
+}
+
+
 /* Button: clean neumorphic lift on hover, no colored glow */
 .neu-btn {
   background-color: var(--bg-primary);

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { NeuCard, NeuButton, NeuToggle, NeuProgress, NeuLED, NeuIconButton, NeuTempSlider } from '../components/ui/NeumorphicPrimitives';
 import DotMatrixDisplay from '../components/ui/DotMatrixDisplay';
 import { ExternalLink, Github, Linkedin, Mail, ChevronDown, ArrowUpRight, BookOpen, Briefcase, GraduationCap, Award, Sun, Moon, Flame, Snowflake, FolderOpen, Layers, MapPin, Clock, Coffee, Calendar } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import useAppStore from '../store/useAppStore';
 
 /* ──────────────────────── DATA FROM LOCAL CMS ──────────────────────── */
@@ -107,6 +107,201 @@ const SectionHeader = ({ label, number }) => (
 
 const stagger = { hidden: {}, show: { transition: { staggerChildren: 0.1 } } };
 const fadeUp = { hidden: { opacity: 0, y: 24 }, show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut' } } };
+
+/* ── Project Highlights — Stacked Tabs (reference-inspired, neumorphic) ── */
+const ProjectHighlights = ({ projects }) => {
+    const [active, setActive] = useState(0);
+    const highlights = projects.slice(0, Math.min(projects.length, 4));
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (highlights.length <= 1) return;
+        const timer = setInterval(() => {
+            setActive(prev => (prev + 1) % highlights.length);
+        }, 5000);
+        return () => clearInterval(timer);
+    }, [highlights.length, active]);
+
+    if (highlights.length === 0) return null;
+    const current = highlights[active];
+
+    // Build ordered list: active first, then subsequent in order
+    const orderedTabs = highlights.map((_, i) => (i - active + highlights.length) % highlights.length);
+
+    return (
+        <div className="relative">
+            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-6">Highlights</p>
+
+            {/* ──── Desktop: all items in one flex row, widths animate ──── */}
+            <div className="hidden md:flex h-[380px] relative gap-0 w-full">
+                {highlights.map((project, i) => {
+                    const isActive = i === active;
+                    const isRightSide = i > active;
+
+                    // Calculate widths so the container exactly fits 100%
+                    const inactiveWidth = 52;
+                    const activeWidthCalc = `calc(100% - ${(highlights.length - 1) * inactiveWidth}px)`;
+
+                    // Inverted shadow for tabs on the right, normal for left/active
+                    const shadowClass = isRightSide && !isActive ? 'neu-flat-invert-x' : 'neu-flat';
+                    const roundedClass = isActive ? 'rounded-3xl' : (isRightSide ? 'rounded-r-2xl' : 'rounded-l-2xl');
+
+                    return (
+                        <motion.div
+                            key={project.slug}
+                            className={`relative h-full overflow-hidden cursor-pointer group ${shadowClass} ${roundedClass}`}
+                            style={{ 
+                                flexShrink: 0,
+                                zIndex: 20 - Math.abs(i - active)
+                            }}
+                            animate={{
+                                width: isActive ? activeWidthCalc : `${inactiveWidth}px`,
+                                opacity: 1,
+                            }}
+                            initial={false}
+                            transition={{
+                                width: { duration: 0.6, ease: [0.4, 0, 0.2, 1] },
+                                opacity: { duration: 0.3 },
+                            }}
+                            onClick={() => isActive ? navigate(`/projects/${project.slug}`) : setActive(i)}
+                        >
+                            {/* ── Expanded Content (visible only when active) ── */}
+                            <AnimatePresence>
+                                {isActive && (
+                                    <motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.35, delay: 0.2 }}
+                                        className="flex h-full absolute inset-0"
+                                    >
+                                        {/* Left: Framed Image */}
+                                        <div className="w-1/2 p-5 shrink-0">
+                                            <div className="w-full h-full rounded-2xl overflow-hidden">
+                                                <img src={project.image} alt={project.title} className="w-full h-full object-cover" />
+                                            </div>
+                                        </div>
+
+                                        {/* Right: Info */}
+                                        <div className="w-1/2 flex flex-col justify-center pr-10 py-8">
+                                            <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary mb-3">
+                                                {String(i + 1).padStart(2, '0')} — Featured
+                                            </span>
+                                            <h3 className="text-3xl font-display font-bold text-textMain mb-3 leading-tight">{project.title}</h3>
+                                            <p className="text-sm text-textMuted leading-relaxed mb-6 line-clamp-3">{project.tagline}</p>
+                                            <div className="flex flex-wrap gap-2 mb-6">
+                                                {project.tech.slice(0, 4).map(t => (
+                                                    <span key={t} className="text-[9px] font-mono uppercase px-2.5 py-1 rounded-full neu-pressed tracking-widest text-textMuted">{t}</span>
+                                                ))}
+                                            </div>
+                                            <div className="flex items-center gap-2 text-primary font-mono text-xs uppercase tracking-widest">
+                                                <ArrowUpRight size={14} />
+                                                <span>View Case Study</span>
+                                            </div>
+                                        </div>
+
+                                        {/* Progress bar at bottom */}
+                                        <div className="absolute bottom-0 left-0 right-0 h-1 bg-border/20">
+                                            <motion.div
+                                                key={`progress-${active}`}
+                                                className="h-full bg-primary rounded-full"
+                                                initial={{ width: '0%' }}
+                                                animate={{ width: '100%' }}
+                                                transition={{ duration: 5, ease: 'linear' }}
+                                            />
+                                        </div>
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
+
+                            {/* ── Collapsed Tab Label (visible only when inactive) ── */}
+                            {!isActive && (
+                                <div className="w-full h-full flex items-center justify-center group-hover:bg-surface transition-colors">
+                                    <span
+                                        className="font-mono text-[10px] uppercase tracking-[0.25em] text-textMuted group-hover:text-primary transition-colors whitespace-nowrap"
+                                        style={{
+                                            writingMode: 'vertical-rl',
+                                            textOrientation: 'mixed',
+                                            transform: 'rotate(180deg)',
+                                        }}
+                                    >
+                                        {String(i + 1).padStart(2, '0')} {project.title}
+                                    </span>
+                                </div>
+                            )}
+                        </motion.div>
+                    );
+                })}
+            </div>
+
+            {/* ──── Mobile: vertical stacked layout ──── */}
+            <div className="md:hidden flex flex-col gap-3">
+                {/* Active Card */}
+                <div
+                    className="rounded-2xl neu-flat overflow-hidden cursor-pointer"
+                    onClick={() => navigate(`/projects/${current.slug}`)}
+                >
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={active}
+                            initial={{ opacity: 0, y: 15 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -15 }}
+                            transition={{ duration: 0.4 }}
+                        >
+                            <div className="p-4">
+                                <div className="w-full h-48 rounded-xl overflow-hidden">
+                                    <img src={current.image} alt={current.title} className="w-full h-full object-cover" />
+                                </div>
+                            </div>
+                            <div className="px-5 pb-5">
+                                <span className="font-mono text-[10px] uppercase tracking-[0.3em] text-primary mb-2 block">
+                                    {String(active + 1).padStart(2, '0')} — Featured
+                                </span>
+                                <h3 className="text-xl font-display font-bold text-textMain mb-2">{current.title}</h3>
+                                <p className="text-sm text-textMuted leading-relaxed mb-4 line-clamp-2">{current.tagline}</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {current.tech.slice(0, 3).map(t => (
+                                        <span key={t} className="text-[9px] font-mono uppercase px-2.5 py-1 rounded-full neu-pressed tracking-widest text-textMuted">{t}</span>
+                                    ))}
+                                </div>
+                            </div>
+                            {/* Progress bar */}
+                            <div className="h-1 bg-border/20">
+                                <motion.div
+                                    key={`m-progress-${active}`}
+                                    className="h-full bg-primary rounded-full"
+                                    initial={{ width: '0%' }}
+                                    animate={{ width: '100%' }}
+                                    transition={{ duration: 5, ease: 'linear' }}
+                                />
+                            </div>
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+
+                {/* Horizontal tab strips (below active, like collapsed tabs) */}
+                <div className="flex gap-2">
+                    {highlights.map((project, i) => {
+                        if (i === active) return null;
+                        return (
+                            <button
+                                key={project.slug}
+                                onClick={() => setActive(i)}
+                                className="flex-1 py-3 rounded-xl neu-flat cursor-pointer group"
+                            >
+                                <span className="font-mono text-[9px] uppercase tracking-widest text-textMuted group-hover:text-primary transition-colors block text-center">
+                                    {String(i + 1).padStart(2, '0')} {project.title}
+                                </span>
+                            </button>
+                        );
+                    })}
+                </div>
+            </div>
+        </div>
+    );
+};
+
 
 /* ══════════════════════════════════════════════════════════════
    MAIN DASHBOARD
@@ -248,36 +443,44 @@ const NeumorphicDashboard = () => {
             {/* ═══════════════ PROJECTS ═══════════════ */}
             <section id="projects" className="px-6 md:px-16 lg:px-24 py-20 max-w-[1600px] mx-auto">
                 <SectionHeader label="Selected Work" number={1} />
-                <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.15 }} className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-10">
-                    {PROJECTS.map((project) => (
-                        <motion.div key={project.slug} variants={fadeUp}>
-                            <Link to={`/projects/${project.slug}`}>
-                                <NeuCard className="group cursor-pointer hover:shadow-neu-glow transition-shadow duration-500 h-full flex flex-col !p-0 overflow-hidden">
-                                    <div className="w-full h-48 overflow-hidden relative">
-                                        <img src={project.image} alt={project.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent" />
-                                        <div className="absolute top-4 right-4">
-                                            <ArrowUpRight size={18} className="text-white/60 group-hover:text-primary transition-colors" />
+
+                {/* ── Highlights Carousel (stacked cards, auto-scroll 5s) ── */}
+                <ProjectHighlights projects={PROJECTS} />
+
+                {/* ── All Projects Grid (3 columns) ── */}
+                <div className="mt-16">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-8">All Projects</p>
+                    <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {PROJECTS.map((project) => (
+                            <motion.div key={project.slug} variants={fadeUp}>
+                                <Link to={`/projects/${project.slug}`}>
+                                    <NeuCard className="group cursor-pointer h-full flex flex-col !p-0 overflow-hidden neu-project-card">
+                                        {/* Framed Image — padding creates the frame effect */}
+                                        <div className="p-4 pb-0">
+                                            <div className="w-full h-44 overflow-hidden rounded-xl relative">
+                                                <img src={project.image} alt={project.title} className="w-full h-full object-cover transition-opacity duration-500 group-hover:opacity-90" />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent rounded-xl" />
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className="p-6 md:p-8 flex flex-col flex-1">
-                                        <div className="flex items-center gap-2 mb-3">
-                                            <NeuLED active color="primary" />
-                                            <span className="font-mono text-[10px] text-textMuted uppercase">Active</span>
+                                        <div className="p-5 pt-4 flex flex-col flex-1">
+                                            <h3 className="text-lg font-display font-bold text-textMain mb-2 group-hover:text-primary transition-colors">{project.title}</h3>
+                                            <p className="text-sm text-textMuted leading-relaxed flex-1 line-clamp-2">{project.tagline}</p>
+                                            <div className="flex flex-wrap gap-2 mt-4">
+                                                {project.tech.slice(0, 3).map(t => (
+                                                    <span key={t} className="text-[9px] font-mono uppercase px-2.5 py-1 rounded-full neu-pressed tracking-widest text-textMuted">{t}</span>
+                                                ))}
+                                            </div>
+                                            <div className="flex items-center gap-2 mt-4 pt-3 border-t border-border/30 text-primary font-mono text-[10px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                <ArrowUpRight size={12} />
+                                                <span>View Project</span>
+                                            </div>
                                         </div>
-                                        <h3 className="text-xl font-display font-bold text-textMain mb-2 group-hover:text-primary transition-colors">{project.title}</h3>
-                                        <p className="text-sm text-textMuted leading-relaxed flex-1">{project.tagline}</p>
-                                        <div className="flex flex-wrap gap-2 mt-5">
-                                            {project.tech.map(t => (
-                                                <span key={t} className="text-[10px] font-mono uppercase px-3 py-1.5 rounded-full neu-pressed tracking-widest text-textMuted">{t}</span>
-                                            ))}
-                                        </div>
-                                    </div>
-                                </NeuCard>
-                            </Link>
-                        </motion.div>
-                    ))}
-                </motion.div>
+                                    </NeuCard>
+                                </Link>
+                            </motion.div>
+                        ))}
+                    </motion.div>
+                </div>
             </section>
 
             {/* ═══════════════ EXPERIENCE ═══════════════ */}
@@ -336,7 +539,7 @@ const NeumorphicDashboard = () => {
                     {BLOG_POSTS.map(post => (
                         <motion.div key={post.slug} variants={fadeUp}>
                             <Link to={`/blog/${post.slug}`}>
-                                <NeuCard className="group cursor-pointer hover:shadow-neu-glow transition-shadow duration-500 h-full flex flex-col justify-between">
+                                <NeuCard className="group cursor-pointer neu-project-card h-full flex flex-col justify-between">
                                     <div>
                                         <div className="flex items-center justify-between mb-4">
                                             <span className="text-2xl">{post.mood}</span>
@@ -345,7 +548,7 @@ const NeumorphicDashboard = () => {
                                         <h3 className="text-xl font-display font-bold text-textMain mb-3 group-hover:text-primary transition-colors">{post.title}</h3>
                                         <p className="text-sm text-textMuted leading-relaxed">{post.excerpt}</p>
                                     </div>
-                                    <div className="flex items-center gap-2 mt-6 text-primary font-mono text-xs uppercase tracking-widest">
+                                    <div className="flex items-center gap-2 mt-6 text-primary font-mono text-xs uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                         <BookOpen size={14} />
                                         <span>Read</span>
                                     </div>
