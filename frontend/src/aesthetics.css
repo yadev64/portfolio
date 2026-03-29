@@ -216,20 +216,24 @@ html.light[data-aesthetic="brutal"] .neu-theme-knob {
 
 
 /* ----------------------------------------- */
-/* ☁️ 3. CLAYMORPHISM (PRO MAX UI)           */
+/* ☁️ 3. CLAYMORPHISM (PRO ARTISTIC UI)      */
 /* ----------------------------------------- */
 html[data-aesthetic="clay"] {
   --bg-primary: #1e1e24;
   --accent-primary: #a18cd1;
   --accent-glow: rgba(161, 140, 209, 0.5);
+  --dot-color: #98FF98; /* Mint Neon */
+  --dot-glow: rgba(152, 255, 152, 0.4);
 }
 html.light[data-aesthetic="clay"] {
   --bg-primary: #f2f5f9;
   --accent-primary: #6FB1FC;
   --accent-glow: rgba(111, 177, 252, 0.5);
+  --dot-color: #6FB1FC; /* Sky Blue Neon */
+  --dot-glow: rgba(111, 177, 252, 0.4);
 }
 
-/* Typography & Volumetric Background Lighting */
+/* Typography & Artistic Heading */
 html[data-aesthetic="clay"] body,
 html[data-aesthetic="clay"] h1,
 html[data-aesthetic="clay"] h2,
@@ -243,6 +247,41 @@ html[data-aesthetic="clay"] div,
 html[data-aesthetic="clay"] button,
 html[data-aesthetic="clay"] a {
   font-family: 'Nunito', 'DM Sans', sans-serif !important;
+}
+
+/* Creative Branding - CLEAN TEXT RE-AFFIRMED */
+html[data-aesthetic="clay"] .portfolio-logo {
+  background: none !important;
+  -webkit-background-clip: initial !important;
+  -webkit-text-fill-color: initial !important;
+  color: var(--text-main) !important;
+}
+
+/* Reverting Quick Jump and Highlights to default Clay (Clean) */
+html.light[data-aesthetic="clay"] .neu-flat {
+  background: #FFFFFF !important;
+  border: 4px solid #FFFFFF !important;
+  box-shadow: 16px 16px 32px rgba(160, 175, 195, 0.45), 
+              -16px -16px 32px #FFFFFF,
+              inset 6px 6px 12px #FFFFFF,
+              inset -6px -6px 12px rgba(180, 195, 215, 0.25) !important;
+}
+
+html[data-aesthetic="clay"] .highlight-card:not(.active):nth-child(1) { background: #3a2a2e !important; }
+html[data-aesthetic="clay"] .highlight-card:not(.active):nth-child(2) { background: #2a3a5a !important; }
+html[data-aesthetic="clay"] .highlight-card:not(.active):nth-child(3) { background: #2a3a2e !important; }
+html[data-aesthetic="clay"] .highlight-card:not(.active):nth-child(4) { background: #3a3a2e !important; }
+
+/* Vibrant Tags (Tech Badges) */
+html.light[data-aesthetic="clay"] span.neu-pressed {
+  background: rgba(111, 177, 252, 0.15) !important;
+  color: #4364F7 !important;
+  border: 1px solid rgba(111, 177, 252, 0.3) !important;
+}
+html[data-aesthetic="clay"] span.neu-pressed {
+  background: rgba(161, 140, 209, 0.2) !important;
+  color: #fbc2eb !important;
+  border: 1px solid rgba(161, 140, 209, 0.4) !important;
 }
 
 html.light[data-aesthetic="clay"] body {
@@ -266,7 +305,7 @@ html[data-aesthetic="clay"] .neu-flat-invert-x {
     -12px -12px 24px rgba(255, 255, 255, 0.02),
     inset 6px 6px 12px rgba(255, 255, 255, 0.05),
     inset -6px -6px 12px rgba(0, 0, 0, 0.3) !important;
-  transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease !important;
 }
 html.light[data-aesthetic="clay"] .neu-flat,
 html.light[data-aesthetic="clay"] .neu-project-card,
@@ -278,7 +317,17 @@ html.light[data-aesthetic="clay"] .neu-flat-invert-x {
     -16px -16px 32px rgba(255, 255, 255, 1),
     inset 6px 6px 12px rgba(255, 255, 255, 1),
     inset -6px -6px 12px rgba(180, 195, 215, 0.25) !important;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease !important;
 }
+
+/* Social Candy Pills */
+html.light[data-aesthetic="clay"] .social-links a:nth-child(1) .neu-icon-button { background: #e0e0e0 !important; color: #333 !important; } /* Github */
+html.light[data-aesthetic="clay"] .social-links a:nth-child(2) .neu-icon-button { background: #0077B5 !important; color: #fff !important; } /* LinkedIn */
+html.light[data-aesthetic="clay"] .social-links a:nth-child(3) .neu-icon-button { background: #1769FF !important; color: #fff !important; } /* Behance */
+
+html[data-aesthetic="clay"] .social-links a:nth-child(1) .neu-icon-button { background: #333 !important; color: #fff !important; }
+html[data-aesthetic="clay"] .social-links a:nth-child(2) .neu-icon-button { background: #004182 !important; color: #fff !important; }
+html[data-aesthetic="clay"] .social-links a:nth-child(3) .neu-icon-button { background: #0056e2 !important; color: #fff !important; }
 
 /* Gradient Sheen Primary Accents (Buttons) */
 html[data-aesthetic="clay"] .neu-btn {
@@ -305,38 +354,35 @@ html.light[data-aesthetic="clay"] .neu-btn {
     inset -4px -4px 8px rgba(0, 50, 150, 0.3) !important;
 }
 
-/* Extreme Bouncy Hover Physics */
-html[data-aesthetic="clay"] .neu-btn:hover {
-  transform: translateY(-4px) scale(1.04) !important;
+/* Orange Hero Buttons in Clay */
+html[data-aesthetic="clay"] .hero-identity .neu-btn {
+  background: linear-gradient(135deg, #FF6B00 0%, #FF9E00 100%) !important;
+  color: #fff !important;
   box-shadow: 
-    12px 12px 24px rgba(0, 0, 0, 0.5), 
-    -4px -4px 8px rgba(255, 255, 255, 0.05),
-    inset 4px 4px 8px rgba(255, 255, 255, 0.4),
+    8px 8px 24px rgba(255, 107, 0, 0.45), 
+    -6px -6px 16px rgba(255, 255, 255, 0.1),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.3),
     inset -4px -4px 8px rgba(0, 0, 0, 0.2) !important;
 }
-html.light[data-aesthetic="clay"] .neu-btn:hover {
-  transform: translateY(-6px) scale(1.04) !important;
+html.light[data-aesthetic="clay"] .hero-identity .neu-btn {
   box-shadow: 
-    16px 16px 32px rgba(67, 100, 247, 0.4), 
-    -8px -8px 16px rgba(255, 255, 255, 1),
-    inset 4px 4px 8px rgba(255, 255, 255, 0.6),
-    inset -4px -4px 8px rgba(0, 50, 150, 0.2) !important;
+    8px 8px 24px rgba(255, 107, 0, 0.35), 
+    -6px -6px 16px rgba(255, 255, 255, 1),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.5),
+    inset -4px -4px 8px rgba(150, 50, 0, 0.2) !important;
+}
+
+/* Extreme Bouncy Hover Physics */
+html[data-aesthetic="clay"] .neu-btn:hover,
+html[data-aesthetic="clay"] .neu-icon-button:hover {
+  transform: translateY(-4px) scale(1.08) !important;
+}
+html.light[data-aesthetic="clay"] .neu-btn:hover,
+html.light[data-aesthetic="clay"] .neu-icon-button:hover {
+  transform: translateY(-6px) scale(1.08) !important;
 }
 html[data-aesthetic="clay"] .neu-project-card:hover {
   transform: translateY(-8px) !important;
-  box-shadow: 
-    24px 24px 48px rgba(0, 0, 0, 0.5), 
-    -16px -16px 32px rgba(255, 255, 255, 0.05),
-    inset 6px 6px 12px rgba(255, 255, 255, 0.05),
-    inset -6px -6px 12px rgba(0, 0, 0, 0.3) !important;
-}
-html.light[data-aesthetic="clay"] .neu-project-card:hover {
-  transform: translateY(-8px) !important;
-  box-shadow: 
-    24px 24px 48px rgba(160, 175, 195, 0.4), 
-    -20px -20px 40px rgba(255, 255, 255, 1),
-    inset 6px 6px 12px rgba(255, 255, 255, 1),
-    inset -6px -6px 12px rgba(180, 195, 215, 0.2) !important;
 }
 
 /* Deep Pressed Physics */

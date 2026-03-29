@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NeuCard, NeuButton, NeuToggle, NeuProgress, NeuLED, NeuIconButton, NeuThemeSlider } from '../components/ui/NeumorphicPrimitives';
 import DotMatrixDisplay from '../components/ui/DotMatrixDisplay';
-import { ExternalLink, Github, Linkedin, Mail, ChevronDown, ArrowUpRight, BookOpen, Briefcase, GraduationCap, Award, Sun, Moon, Flame, Snowflake, FolderOpen, Layers, MapPin, Clock, Coffee, Calendar } from 'lucide-react';
+import { ExternalLink, Github, Linkedin, Mail, ChevronDown, ArrowUpRight, BookOpen, Briefcase, GraduationCap, Award, Sun, Moon, Flame, Snowflake, FolderOpen, Layers, MapPin, Clock, Coffee, Calendar, Camera, CameraOff, Aperture } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAppStore from '../store/useAppStore';
 
@@ -149,7 +149,7 @@ const ProjectHighlights = ({ projects }) => {
                     return (
                         <motion.div
                             key={project.slug}
-                            className={`relative h-full overflow-hidden cursor-pointer group ${shadowClass} ${roundedClass}`}
+                            className={`relative h-full overflow-hidden cursor-pointer group highlight-card ${isActive ? 'active' : ''} ${shadowClass} ${roundedClass}`}
                             style={{ 
                                 flexShrink: 0,
                                 zIndex: 20 - Math.abs(i - active)
@@ -308,6 +308,9 @@ const ProjectHighlights = ({ projects }) => {
    ══════════════════════════════════════════════════════════════ */
 const NeumorphicDashboard = () => {
     const { theme, toggleTheme, aesthetic, setAestheticLive, tempDisplayValue } = useAppStore();
+    const [glyphCameraMode, setGlyphCameraMode] = useState(false);
+    const glyphRef = useRef(null);
+
     const isDark = theme === 'dark';
     const typedRole = useTypingEffect(ROLES);
     const clock = useLiveClock();
@@ -330,9 +333,9 @@ const NeumorphicDashboard = () => {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.8 }} className="max-w-[1600px] mx-auto w-full grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
 
                     {/* Left: Identity */}
-                    <div className="lg:col-span-7 flex flex-col justify-center">
+                    <div className="lg:col-span-7 flex flex-col justify-center hero-identity">
                         <p className="font-mono text-xs uppercase tracking-[0.3em] text-textMuted mb-4">Identity Matrix</p>
-                        <h1 className="text-6xl md:text-8xl lg:text-9xl font-display font-bold tracking-tighter text-textMain leading-[0.9]">
+                        <h1 className="text-6xl md:text-8xl lg:text-9xl font-display font-bold tracking-tighter text-textMain leading-[0.9] portfolio-logo">
                             Yadev<span className="text-primary">.</span>dev
                         </h1>
                         <h2 className="text-xl md:text-2xl font-display text-textMuted mt-6 h-10">
@@ -345,10 +348,10 @@ const NeumorphicDashboard = () => {
                             <a href="#projects"><NeuButton variant="primary">View My Work</NeuButton></a>
                             <a href="mailto:yadev@example.com"><NeuButton>Say Hello</NeuButton></a>
                         </div>
-                        <div className="flex gap-4 mt-8">
-                            <a href="https://github.com/yadev64" target="_blank" rel="noopener noreferrer"><NeuIconButton size="sm" hoverColor="#c54af9ff" icon={<Github size={16} />} /></a>
-                            <a href="https://www.linkedin.com/in/yadev-jayachandran/" target="_blank" rel="noopener noreferrer"><NeuIconButton size="sm" hoverColor="#0077ffff" icon={<Linkedin size={16} />} /></a>
-                            <a href="https://www.behance.net/yadev64" target="_blank" rel="noopener noreferrer"><NeuIconButton size="sm" hoverColor="#1769FF" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12.5a5 5 0 0 1 5-5h1a5 5 0 0 1 0 10H1V4h6a4 4 0 0 1 0 8" /><path d="M14 13h7" /><path d="M14 8.5h7" /><ellipse cx="17.5" cy="13" rx="3.5" ry="4.5" /></svg>} /></a>
+                        <div className="flex gap-4 mt-8 social-links">
+                            <a href="https://github.com/yadev64" target="_blank" rel="noopener noreferrer"><NeuIconButton size="sm" icon={<Github size={16} />} /></a>
+                            <a href="https://www.linkedin.com/in/yadev-jayachandran/" target="_blank" rel="noopener noreferrer"><NeuIconButton size="sm" icon={<Linkedin size={16} />} /></a>
+                            <a href="https://www.behance.net/yadev64" target="_blank" rel="noopener noreferrer"><NeuIconButton size="sm" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12.5a5 5 0 0 1 5-5h1a5 5 0 0 1 0 10H1V4h6a4 4 0 0 1 0 8" /><path d="M14 13h7" /><path d="M14 8.5h7" /><ellipse cx="17.5" cy="13" rx="3.5" ry="4.5" /></svg>} /></a>
                         </div>
                     </div>
 
@@ -361,7 +364,7 @@ const NeumorphicDashboard = () => {
                             <div className="grid grid-cols-2 gap-3">
                                 {NAV_ITEMS.map(item => (
                                     <a key={item.label} href={item.href}
-                                        className="flex items-center gap-2.5 px-4 py-3 rounded-xl neu-flat text-textMuted hover:text-primary font-mono text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer">
+                                        className="flex items-center gap-2.5 px-4 py-3 rounded-xl neu-flat text-textMuted hover:text-primary font-mono text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer quick-jump-item">
                                         {item.icon}
                                         <span className="font-semibold">{item.label}</span>
                                     </a>
@@ -370,14 +373,63 @@ const NeumorphicDashboard = () => {
                         </NeuCard>
 
                         {/* CARDS 2a & 2b: Glyph Display (fixed square) + Location (flexible) */}
-                        <div className="flex gap-6">
-                            {/* Left: Circular Dot Matrix Display — fixed size, stays square */}
-                            <NeuCard className="!p-4 flex items-center justify-center shrink-0">
-                                <DotMatrixDisplay tempDisplayValue={tempDisplayValue} />
-                            </NeuCard>
+                        <div className="flex gap-4 md:gap-6">
+                            {/* Left: Circular Dot Matrix Display — split layout on mobile */}
+                            <NeuCard className="flex-1 md:flex-none !p-3 md:!p-4 flex items-center justify-between md:justify-center overflow-hidden">
+                                <div className="shrink-0">
+                                    <DotMatrixDisplay 
+                                        ref={glyphRef}
+                                        tempDisplayValue={tempDisplayValue} 
+                                        cameraMode={glyphCameraMode}
+                                        setCameraMode={setGlyphCameraMode}
+                                        showBuiltinControls={false}
+                                    />
+                                </div>
+                                
+                                {/* Mobile-only Controls Subsection */}
+                                <div className="md:hidden flex flex-col items-center justify-center gap-4 pl-4 mr-2 border-l border-border/10">
+                                    <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-textMuted/60 leading-none">Controls</span>
+                                    
+                                    <div className="flex flex-col gap-5 items-center">
+                                        {/* Camera Toggle */}
+                                        <button 
+                                            onClick={() => setGlyphCameraMode(!glyphCameraMode)}
+                                            className="p-2.5 rounded-xl neu-flat bg-background transition-all active:scale-95"
+                                        >
+                                            {glyphCameraMode ? <CameraOff size={16} className="text-primary" /> : <Camera size={16} className="text-textMuted" />}
+                                        </button>
 
-                            {/* Right: Location + Calendar — fills remaining space */}
-                            <NeuCard className="!p-5 flex flex-col justify-between flex-1 min-w-0">
+                                        {/* Live Indicator / Capture */}
+                                        {glyphCameraMode ? (
+                                            <button 
+                                                onClick={() => glyphRef.current?.captureAndDownload()}
+                                                className="flex flex-col items-center gap-1 group"
+                                            >
+                                                <div className="flex items-center gap-1.5 mb-1 bg-red-500/10 px-2 py-1 rounded-full border border-red-500/20">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                                                    <span className="font-mono text-[8px] font-bold text-red-500 tracking-tighter uppercase">Live</span>
+                                                </div>
+                                                <div className="p-2.5 rounded-xl neu-flat bg-background group-active:scale-95 transition-all">
+                                                    <Aperture size={16} className="text-primary" />
+                                                </div>
+                                            </button>
+                                        ) : (
+                                            <div className="flex flex-col items-center gap-1 opacity-20 filter grayscale">
+                                                 <div className="flex items-center gap-1.5 mb-1 px-2 py-1">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-textMuted" />
+                                                    <span className="font-mono text-[8px] font-medium text-textMuted uppercase tracking-tighter">Standby</span>
+                                                </div>
+                                                <div className="p-2.5 rounded-xl neu-flat bg-background">
+                                                    <Aperture size={16} className="text-textMuted" />
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </NeuCard>
+                            
+                            {/* Right: Location + Calendar — hidden on mobile */}
+                            <NeuCard className="hidden md:flex !p-5 flex-col justify-between flex-1 min-w-0">
                                 <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-4">Location</p>
 
                                 <div className="flex items-center gap-2 mb-4">
@@ -397,38 +449,38 @@ const NeumorphicDashboard = () => {
                                 <div className="flex items-center gap-2 mt-3">
                                     <Coffee size={12} className="text-textMuted" />
                                     <span className="font-mono text-[10px] text-textMuted uppercase">Open to collab</span>
-                                    {/* <span className="ml-auto text-xs">🟢</span> */}
                                 </div>
                             </NeuCard>
                         </div>
 
                         {/* CARD 3: Remote Control (Car AC style) */}
-                        <NeuCard className="!p-5">
-                            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-5 pb-3 border-b border-border/30">System Remote</p>
+                        <NeuCard className="!p-4 md:!p-5">
+                            <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-4 md:mb-5 pb-3 border-b border-border/30">System Remote</p>
 
-                            {/* Dark / Light switch */}
-                            <div className="flex items-center justify-between mb-5">
+                            {/* Dark Mode toggle */}
+                            <div className="flex items-center justify-between mb-4 md:mb-5">
                                 <div className="flex items-center gap-3">
-                                    {isDark ? <Moon size={14} className="text-textMuted" /> : <Sun size={14} className="text-primary" />}
-                                    <span className="font-mono text-xs text-textMuted uppercase">{isDark ? 'Dark Mode' : 'Light Mode'}</span>
+                                    {isDark ? <Moon size={14} className="text-primary" /> : <Sun size={14} className="text-textMuted" />}
+                                    <span className="font-mono text-xs text-textMuted uppercase">Dark Mode</span>
                                 </div>
-                                <NeuToggle checked={!isDark} onChange={() => toggleTheme()} />
+                                <NeuToggle checked={isDark} onChange={() => toggleTheme()} />
                             </div>
 
-                            {/* Theme Slider — 4 aesthetics */}
+                            {/* Theme Slider — 3 aesthetics */}
                             <div className="flex items-center justify-between mb-3">
                                 <span className="font-mono text-xs text-textMuted uppercase">Aesthetic</span>
                             </div>
                             <div className="flex items-center gap-3">
                                 <span className="font-mono text-[10px] text-textMuted uppercase shrink-0">Default</span>
                                 <div className="flex-1 opacity-90"><NeuThemeSlider 
-                                    value={['neumorphism', 'glass', 'brutal', 'clay'].indexOf(aesthetic) !== -1 ? ['neumorphism', 'glass', 'brutal', 'clay'].indexOf(aesthetic) : 0} 
+                                    value={['neumorphism', 'clay', 'brutal'].indexOf(aesthetic) !== -1 ? ['neumorphism', 'clay', 'brutal'].indexOf(aesthetic) : 0} 
                                     onChange={(val) => {
-                                        const themes = ['neumorphism', 'glass', 'brutal', 'clay'];
+                                        const themes = ['neumorphism', 'clay', 'brutal'];
                                         if (themes[val]) setAestheticLive(themes[val]);
                                     }} 
+                                    steps={3}
                                 /></div>
-                                <span className="font-mono text-[10px] text-textMuted uppercase shrink-0">Alt</span>
+                                <span className="font-mono text-[10px] text-textMuted uppercase shrink-0">Brutal</span>
                             </div>
 
                             {/* PWR LED */}

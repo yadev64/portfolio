@@ -225,13 +225,14 @@ export const NeuTempSlider = ({ value, onChange, min = 0, max = 100 }) => {
     );
 };
 
-export const NeuThemeSlider = ({ value, onChange }) => {
-    // value is 0 (Neumo), 1 (Glass), 2 (Brutal), 3 (Clay)
+export const NeuThemeSlider = ({ value, onChange, steps = 4 }) => {
+    // value is index based on available themes
     const knobRef = React.useRef(null);
     const isDragging = React.useRef(false);
     const lastEmitted = React.useRef(value);
+    const maxVal = steps - 1;
 
-    const toPct = React.useCallback((val) => (val / 3) * 100, []);
+    const toPct = React.useCallback((val) => (val / maxVal) * 100, [maxVal]);
 
     const positionKnob = React.useCallback((pct) => {
         if (knobRef.current) {
@@ -288,13 +289,12 @@ export const NeuThemeSlider = ({ value, onChange }) => {
         <div className="relative w-full h-7">
             {/* Track — steps design */}
             <div className="absolute inset-0 rounded-full overflow-hidden flex items-center justify-between px-3 neu-theme-track">
-                <div className="w-1.5 h-1.5 rounded-full bg-border" />
-                <div className="w-1.5 h-1.5 rounded-full bg-border" />
-                <div className="w-1.5 h-1.5 rounded-full bg-border" />
-                <div className="w-1.5 h-1.5 rounded-full bg-border" />
+                {Array.from({ length: steps }).map((_, i) => (
+                    <div key={i} className="w-1.5 h-1.5 rounded-full bg-border" />
+                ))}
             </div>
             
-            <input type="range" min={0} max={3} step={0.01} defaultValue={value} onInput={handleInput} onMouseDown={handleStart} onTouchStart={handleStart} onMouseUp={handleEnd} onTouchEnd={handleEnd} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+            <input type="range" min={0} max={maxVal} step={0.01} defaultValue={value} onInput={handleInput} onMouseDown={handleStart} onTouchStart={handleStart} onMouseUp={handleEnd} onTouchEnd={handleEnd} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
             <div
                 ref={knobRef}
                 className="absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full pointer-events-none z-20 flex items-center justify-center neu-theme-knob"

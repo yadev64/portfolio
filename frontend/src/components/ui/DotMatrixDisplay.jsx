@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { Camera, CameraOff, Aperture } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback, useMemo, useImperativeHandle, forwardRef } from 'react';
+import { Camera, CameraOff, Aperture, Circle } from 'lucide-react';
 
 /* ── 5×3 digit patterns ── */
 const DIGITS = {
@@ -181,9 +181,20 @@ const buildTextGrid = (str) => {
  * Circular Dot Matrix Display.
  * Props:
  *   tempDisplayValue: number | null — when set, shows temperature instead of clock
+ *   cameraMode: boolean (optional, controlled)
+ *   setCameraMode: function (optional, controlled)
+ *   showBuiltinControls: boolean (default true)
  */
-const DotMatrixDisplay = ({ tempDisplayValue = null }) => {
-    const [cameraMode, setCameraMode] = useState(false);
+const DotMatrixDisplay = forwardRef(({ 
+    tempDisplayValue = null,
+    cameraMode: externalCameraMode = null,
+    setCameraMode: setExternalCameraMode = null,
+    showBuiltinControls = true
+}, ref) => {
+    const [internalCameraMode, setInternalCameraMode] = useState(false);
+    const cameraMode = externalCameraMode !== null ? externalCameraMode : internalCameraMode;
+    const setCameraMode = setExternalCameraMode !== null ? setExternalCameraMode : setInternalCameraMode;
+
     const [cameraGrid, setCameraGrid] = useState(null);
     const [time, setTime] = useState(new Date());
     const videoRef = useRef(null);
@@ -209,37 +220,10 @@ const DotMatrixDisplay = ({ tempDisplayValue = null }) => {
             document.removeEventListener('visibilitychange', handleVisibilityChange);
             window.removeEventListener('blur', handleWindowBlur);
         };
-    }, []);
+    }, [setCameraMode]);
 
-    // Camera lifecycle
-    useEffect(() => {
-        if (cameraMode) {
-            startCamera();
-        } else {
-            stopCamera();
-            setCameraGrid(null);
-        }
-        return () => stopCamera();
-    }, [cameraMode]);
-
-    const startCamera = async () => {
-        try {
-            const stream = await navigator.mediaDevices.getUserMedia({
-                video: { width: GRID_SIZE * 4, height: GRID_SIZE * 4, facingMode: 'user' }
-            });
-            streamRef.current = stream;
-            if (videoRef.current) {
-                videoRef.current.srcObject = stream;
-                videoRef.current.play();
-                sampleFrame();
-            }
-        } catch (err) {
-            console.warn('Camera access denied:', err);
-            setCameraMode(false);
-        }
-    };
-
-    const stopCamera = () => {
+    // Camera logic
+    const stopCamera = useCallback(() => {
         if (animFrameRef.current) {
             cancelAnimationFrame(animFrameRef.current);
             animFrameRef.current = null;
@@ -248,7 +232,7 @@ const DotMatrixDisplay = ({ tempDisplayValue = null }) => {
             streamRef.current.getTracks().forEach(t => t.stop());
             streamRef.current = null;
         }
-    };
+    }, []);
 
     const sampleFrame = useCallback(() => {
         const video = videoRef.current;
@@ -285,17 +269,35 @@ const DotMatrixDisplay = ({ tempDisplayValue = null }) => {
         } else {
             video.addEventListener('loadeddata', draw, { once: true });
         }
-    }, []);
+    }, [setCameraGrid]);
 
-    // Determine which grid to display
-    const displayGrid = useMemo(() => {
-        if (cameraMode && cameraGrid) return cameraGrid;
-        if (tempDisplayValue !== null && !cameraMode) {
-            if (typeof tempDisplayValue === 'string') return buildTextGrid(tempDisplayValue);
-            return buildTempGrid(tempDisplayValue);
+    const startCamera = useCallback(async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({
+                video: { width: GRID_SIZE * 4, height: GRID_SIZE * 4, facingMode: 'user' }
+            });
+            streamRef.current = stream;
+            if (videoRef.current) {
+                videoRef.current.srcObject = stream;
+                videoRef.current.play();
+                sampleFrame();
+            }
+        } catch (err) {
+            console.warn('Camera access denied:', err);
+            setCameraMode(false);
         }
-        return buildClockGrid(time);
-    }, [cameraMode, cameraGrid, tempDisplayValue, time]);
+    }, [sampleFrame, setCameraMode]);
+
+    // Camera lifecycle
+    useEffect(() => {
+        if (cameraMode) {
+            startCamera();
+        } else {
+            stopCamera();
+            setCameraGrid(null);
+        }
+        return () => stopCamera();
+    }, [cameraMode, startCamera, stopCamera]);
 
     // Capture current dot matrix as image and download
     const captureAndDownload = useCallback(() => {
@@ -342,6 +344,23 @@ const DotMatrixDisplay = ({ tempDisplayValue = null }) => {
         link.href = offscreen.toDataURL('image/png');
         link.click();
     }, [cameraGrid]);
+
+    // Expose capture and toggle to parent
+    useImperativeHandle(ref, () => ({
+        captureAndDownload,
+        cameraMode
+    }), [captureAndDownload, cameraMode]);
+
+    // Determine which grid to display
+    const displayGrid = useMemo(() => {
+        if (cameraMode && cameraGrid) return cameraGrid;
+        if (tempDisplayValue !== null && !cameraMode) {
+            if (typeof tempDisplayValue === 'string') return buildTextGrid(tempDisplayValue);
+            return buildTempGrid(tempDisplayValue);
+        }
+        return buildClockGrid(time);
+    }, [cameraMode, cameraGrid, tempDisplayValue, time]);
+
 
     // Labels
     const modeLabel = cameraMode ? 'CAM' : (
@@ -405,10 +424,10 @@ const DotMatrixDisplay = ({ tempDisplayValue = null }) => {
                                     width: DOT_SIZE,
                                     height: DOT_SIZE,
                                     backgroundColor: isOn
-                                        ? `rgba(255, 255, 255, ${Math.min(brightness * 1.2, 1)})`
+                                        ? `var(--dot-color, rgba(255, 255, 255, ${Math.min(brightness * 1.2, 1)}))`
                                         : '#1A1A1A',
-                                    boxShadow: brightness > 0.5
-                                        ? `0 0 ${Math.round(brightness * 4)}px rgba(255, 255, 255, ${brightness * 0.3})`
+                                    boxShadow: (brightness > 0.5)
+                                        ? `0 0 ${Math.round(brightness * 4)}px var(--dot-glow, rgba(255, 255, 255, ${brightness * 0.3}))`
                                         : 'none',
                                     transition: cameraMode ? 'none' : 'background-color 0.3s, box-shadow 0.3s',
                                 }}
@@ -426,7 +445,7 @@ const DotMatrixDisplay = ({ tempDisplayValue = null }) => {
             </div>
 
             {/* Capture button — bottom left, only when camera is active */}
-            {cameraMode && cameraGrid && (
+            {showBuiltinControls && cameraMode && cameraGrid && (
                 <button
                     onClick={captureAndDownload}
                     className="absolute bottom-0 left-0 w-8 h-8 flex items-center justify-center cursor-pointer transition-all duration-200 rounded-full bg-background"
@@ -441,22 +460,24 @@ const DotMatrixDisplay = ({ tempDisplayValue = null }) => {
             )}
 
             {/* Camera toggle — bottom right, neumorphic with lighter shadows */}
-            <button
-                onClick={() => setCameraMode(prev => !prev)}
-                className="absolute bottom-0 right-0 w-8 h-8 flex items-center justify-center cursor-pointer transition-all duration-200 rounded-full bg-background"
-                style={{
-                    zIndex: 2,
-                    boxShadow: '2px 2px 5px rgba(0,0,0,0.25), -2px -2px 5px rgba(255,255,255,0.03)',
-                }}
-                title={cameraMode ? 'Switch to clock' : 'Switch to camera'}
-            >
-                {cameraMode
-                    ? <CameraOff size={13} className="text-green-400" />
-                    : <Camera size={13} className="text-textMuted" />
-                }
-            </button>
+            {showBuiltinControls && (
+                <button
+                    onClick={() => setCameraMode(prev => !prev)}
+                    className="absolute bottom-0 right-0 w-8 h-8 flex items-center justify-center cursor-pointer transition-all duration-200 rounded-full bg-background"
+                    style={{
+                        zIndex: 2,
+                        boxShadow: '2px 2px 5px rgba(0,0,0,0.25), -2px -2px 5px rgba(255,255,255,0.03)',
+                    }}
+                    title={cameraMode ? 'Switch to clock' : 'Switch to camera'}
+                >
+                    {cameraMode
+                        ? <CameraOff size={13} className="text-green-400" />
+                        : <Camera size={13} className="text-textMuted" />
+                    }
+                </button>
+            )}
         </div>
     );
-};
+});
 
 export default DotMatrixDisplay;

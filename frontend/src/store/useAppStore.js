@@ -27,10 +27,26 @@ const useAppStore = create(
 
             // --- Theme State ---
             theme: 'light',
+            isExplicitDarkMode: false,
             aesthetic: 'neumorphism',
-            setAesthetic: (aesthetic) => set(() => {
+            setAesthetic: (aesthetic) => set((state) => {
                 document.documentElement.setAttribute('data-aesthetic', aesthetic);
-                return { aesthetic };
+                
+                // Auto-dark mode logic for Clay
+                if (aesthetic === 'clay') {
+                    if (state.theme !== 'dark') {
+                        document.documentElement.classList.remove('light');
+                    }
+                    return { aesthetic, theme: 'dark' };
+                } else {
+                    const targetTheme = state.isExplicitDarkMode ? 'dark' : 'light';
+                    if (targetTheme === 'light') {
+                        document.documentElement.classList.add('light');
+                    } else {
+                        document.documentElement.classList.remove('light');
+                    }
+                    return { aesthetic, theme: targetTheme };
+                }
             }),
             setAestheticLive: (aesthetic) => {
                 const labels = {
@@ -44,9 +60,23 @@ const useAppStore = create(
 
                 const state = get();
                 
+                // Auto-dark mode logic for Clay with persistence update
+                let targetTheme = state.theme;
+                if (aesthetic === 'clay') {
+                    targetTheme = 'dark';
+                    document.documentElement.classList.remove('light');
+                } else {
+                    targetTheme = state.isExplicitDarkMode ? 'dark' : 'light';
+                    if (targetTheme === 'light') {
+                        document.documentElement.classList.add('light');
+                    } else {
+                        document.documentElement.classList.remove('light');
+                    }
+                }
+                
                 if (state._commitTimeout) clearTimeout(state._commitTimeout);
                 const commitTimeout = setTimeout(() => {
-                    set({ aesthetic, _commitTimeout: null });
+                    set({ aesthetic, theme: targetTheme, _commitTimeout: null });
                 }, 150);
 
                 if (state._tempTimeout) clearTimeout(state._tempTimeout);
@@ -67,7 +97,7 @@ const useAppStore = create(
                 } else {
                     document.documentElement.classList.remove('light');
                 }
-                return { theme: newTheme };
+                return { theme: newTheme, isExplicitDarkMode: newTheme === 'dark' };
             }),
             setTheme: (theme) => set(() => {
                 if (theme === 'light') {
@@ -145,6 +175,7 @@ const useAppStore = create(
             name: 'yadev-portfolio-storage',
             partialize: (state) => ({
                 theme: state.theme,
+                isExplicitDarkMode: state.isExplicitDarkMode,
                 aesthetic: state.aesthetic,
                 colorTemp: state.colorTemp,
                 xp: state.xp,
