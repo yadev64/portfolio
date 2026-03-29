@@ -173,87 +173,205 @@ html.light[data-aesthetic="brutal"] .neu-project-card:hover {
   box-shadow: 4px 4px 0px #000 !important;
 }
 
+/* Brutal Quick Jump Caution Tape */
+html[data-aesthetic="brutal"] .quick-jump-container::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 16px;
+  background: repeating-linear-gradient(45deg, #FFE800, #FFE800 10px, #000 10px, #000 20px);
+  border-bottom: 3px solid #fff;
+  z-index: 10;
+}
+html.light[data-aesthetic="brutal"] .quick-jump-container::before {
+  border-bottom: 4px solid #000;
+}
+html[data-aesthetic="brutal"] .quick-jump-container {
+  padding-top: 2.5rem !important;
+}
+
+/* Brutal Theme Slider Override */
+html[data-aesthetic="brutal"] .neu-theme-track {
+  background: #000 !important;
+  border: 3px solid #fff !important;
+  border-radius: 0 !important;
+  box-shadow: 3px 3px 0px #fff !important;
+  transform: translate(-3px, -3px);
+}
+html.light[data-aesthetic="brutal"] .neu-theme-track {
+  background: #fff !important;
+  border: 4px solid #000 !important;
+  box-shadow: 4px 4px 0px #000 !important;
+  transform: translate(-4px, -4px);
+}
+html[data-aesthetic="brutal"] .neu-theme-knob {
+  background: #FFE800 !important;
+  border: 3px solid #fff !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+html.light[data-aesthetic="brutal"] .neu-theme-knob {
+  border: 4px solid #000 !important;
+}
+
 
 /* ----------------------------------------- */
-/* ☁️ 3. CLAYMORPHISM                        */
+/* ☁️ 3. CLAYMORPHISM (PRO MAX UI)           */
 /* ----------------------------------------- */
 html[data-aesthetic="clay"] {
-  --bg-primary: #1a1a24; /* Deep neutral slate/purple background */
-  --accent-primary: #a18cd1; /* Soft purple */
-  --accent-glow: rgba(161, 140, 209, 0.4);
+  --bg-primary: #1e1e24;
+  --accent-primary: #a18cd1;
+  --accent-glow: rgba(161, 140, 209, 0.5);
 }
 html.light[data-aesthetic="clay"] {
-  --bg-primary: #F3F6FB; /* Soft cool off-white background */
-  --accent-primary: #6FB1FC; /* Vibrant soft blue */
-  --accent-glow: rgba(111, 177, 252, 0.4);
+  --bg-primary: #f2f5f9;
+  --accent-primary: #6FB1FC;
+  --accent-glow: rgba(111, 177, 252, 0.5);
 }
 
-/* Base Clay Cards (Clean White / Dark Gray) */
+/* Typography & Volumetric Background Lighting */
+html[data-aesthetic="clay"] body,
+html[data-aesthetic="clay"] h1,
+html[data-aesthetic="clay"] h2,
+html[data-aesthetic="clay"] h3,
+html[data-aesthetic="clay"] h4,
+html[data-aesthetic="clay"] h5,
+html[data-aesthetic="clay"] h6,
+html[data-aesthetic="clay"] p,
+html[data-aesthetic="clay"] span,
+html[data-aesthetic="clay"] div,
+html[data-aesthetic="clay"] button,
+html[data-aesthetic="clay"] a {
+  font-family: 'Nunito', 'DM Sans', sans-serif !important;
+}
+
+html.light[data-aesthetic="clay"] body {
+  background: radial-gradient(circle at 50% 0%, #ffffff 0%, #eef2f6 40%, #e2e8f0 100%) !important;
+  background-attachment: fixed !important;
+}
+html[data-aesthetic="clay"] body {
+  background: radial-gradient(circle at 50% 0%, #2a2a36 0%, #1a1a24 50%, #121218 100%) !important;
+  background-attachment: fixed !important;
+}
+
+/* Base Cards (Thick 3D Pillows) */
 html[data-aesthetic="clay"] .neu-flat,
 html[data-aesthetic="clay"] .neu-project-card,
 html[data-aesthetic="clay"] .neu-flat-invert-x {
-  background: #24242E !important; /* Slightly elevated dark card */
-  border-radius: 2.5rem !important; /* Ultra round pill aesthetic */
+  background: #24242E !important;
+  border-radius: 2.5rem !important;
+  border: 4px solid #333340 !important;
   box-shadow: 
-    16px 16px 32px rgba(0, 0, 0, 0.3), 
-    -8px -8px 16px rgba(255, 255, 255, 0.02),
-    inset 4px 4px 8px rgba(255, 255, 255, 0.05),
-    inset -4px -4px 8px rgba(0, 0, 0, 0.2);
-  border: none !important;
+    16px 16px 32px rgba(0, 0, 0, 0.4), 
+    -12px -12px 24px rgba(255, 255, 255, 0.02),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.05),
+    inset -6px -6px 12px rgba(0, 0, 0, 0.3) !important;
+  transition: all 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
 html.light[data-aesthetic="clay"] .neu-flat,
 html.light[data-aesthetic="clay"] .neu-project-card,
 html.light[data-aesthetic="clay"] .neu-flat-invert-x {
-  background: #FFFFFF !important; /* Pure white cards */
+  background: #FFFFFF !important;
+  border: 4px solid #ffffff !important;
   box-shadow: 
-    16px 16px 32px rgba(180, 195, 215, 0.4), 
-    -12px -12px 24px rgba(255, 255, 255, 1),
-    inset 4px 4px 8px rgba(255, 255, 255, 1),
-    inset -4px -4px 8px rgba(180, 195, 215, 0.15);
+    16px 16px 32px rgba(160, 175, 195, 0.45), 
+    -16px -16px 32px rgba(255, 255, 255, 1),
+    inset 6px 6px 12px rgba(255, 255, 255, 1),
+    inset -6px -6px 12px rgba(180, 195, 215, 0.25) !important;
 }
 
-/* Colorful Primary Buttons (The "Clay" Accents) */
+/* Gradient Sheen Primary Accents (Buttons) */
 html[data-aesthetic="clay"] .neu-btn {
-  background: #a18cd1 !important; /* Vivid Purple Accent */
+  background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%) !important;
   color: #fff !important;
   border-radius: 2rem !important;
+  border: 2px solid rgba(255, 255, 255, 0.1) !important;
   box-shadow: 
-    6px 6px 12px rgba(0, 0, 0, 0.3), 
+    8px 8px 16px rgba(0, 0, 0, 0.4), 
     -4px -4px 8px rgba(255, 255, 255, 0.05),
-    inset 3px 3px 6px rgba(255, 255, 255, 0.2),
-    inset -3px -3px 6px rgba(0, 0, 0, 0.2);
-  border: none !important;
+    inset 4px 4px 8px rgba(255, 255, 255, 0.3),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.2) !important;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
 }
 html.light[data-aesthetic="clay"] .neu-btn {
-  background: #6FB1FC !important; /* Vivid Cyan/Blue Accent */
+  background: linear-gradient(135deg, #6FB1FC 0%, #4364F7 100%) !important;
   color: #fff !important;
   border-radius: 2rem !important;
+  border: 2px solid rgba(255, 255, 255, 0.4) !important;
   box-shadow: 
-    8px 8px 16px rgba(111, 177, 252, 0.3), 
-    -6px -6px 12px rgba(255, 255, 255, 1),
-    inset 3px 3px 6px rgba(255, 255, 255, 0.4),
-    inset -3px -3px 6px rgba(111, 177, 252, 0.2);
+    8px 8px 24px rgba(67, 100, 247, 0.35), 
+    -6px -6px 16px rgba(255, 255, 255, 1),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.5),
+    inset -4px -4px 8px rgba(0, 50, 150, 0.3) !important;
 }
 
-/* Button Hover scales up playfully */
+/* Extreme Bouncy Hover Physics */
 html[data-aesthetic="clay"] .neu-btn:hover {
-  transform: scale(1.05) !important;
+  transform: translateY(-4px) scale(1.04) !important;
+  box-shadow: 
+    12px 12px 24px rgba(0, 0, 0, 0.5), 
+    -4px -4px 8px rgba(255, 255, 255, 0.05),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.4),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.2) !important;
+}
+html.light[data-aesthetic="clay"] .neu-btn:hover {
+  transform: translateY(-6px) scale(1.04) !important;
+  box-shadow: 
+    16px 16px 32px rgba(67, 100, 247, 0.4), 
+    -8px -8px 16px rgba(255, 255, 255, 1),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.6),
+    inset -4px -4px 8px rgba(0, 50, 150, 0.2) !important;
 }
 html[data-aesthetic="clay"] .neu-project-card:hover {
-  transform: translateY(-4px) !important;
+  transform: translateY(-8px) !important;
+  box-shadow: 
+    24px 24px 48px rgba(0, 0, 0, 0.5), 
+    -16px -16px 32px rgba(255, 255, 255, 0.05),
+    inset 6px 6px 12px rgba(255, 255, 255, 0.05),
+    inset -6px -6px 12px rgba(0, 0, 0, 0.3) !important;
+}
+html.light[data-aesthetic="clay"] .neu-project-card:hover {
+  transform: translateY(-8px) !important;
+  box-shadow: 
+    24px 24px 48px rgba(160, 175, 195, 0.4), 
+    -20px -20px 40px rgba(255, 255, 255, 1),
+    inset 6px 6px 12px rgba(255, 255, 255, 1),
+    inset -6px -6px 12px rgba(180, 195, 215, 0.2) !important;
 }
 
-/* Pressed State */
+/* Deep Pressed Physics */
 html[data-aesthetic="clay"] .neu-pressed {
   background: #1a1a24 !important;
   border-radius: 2.5rem !important;
+  transform: scale(0.96) !important;
   box-shadow: 
-    inset 8px 8px 16px rgba(0, 0, 0, 0.4),
-    inset -8px -8px 16px rgba(255, 255, 255, 0.02) !important;
+    inset 12px 12px 24px rgba(0, 0, 0, 0.5),
+    inset -12px -12px 24px rgba(255, 255, 255, 0.02) !important;
 }
 html.light[data-aesthetic="clay"] .neu-pressed {
-  background: #F3F6FB !important;
+  background: #eef2f6 !important;
+  transform: scale(0.96) !important;
   box-shadow: 
-    inset 8px 8px 16px rgba(180, 195, 215, 0.6),
-    inset -8px -8px 16px rgba(255, 255, 255, 1) !important;
+    inset 12px 12px 24px rgba(160, 175, 195, 0.6),
+    inset -12px -12px 24px rgba(255, 255, 255, 1) !important;
+}
+
+/* Clay Theme Slider Custom Overrides */
+html[data-aesthetic="clay"] .neu-theme-track {
+  background: rgba(0,0,0,0.3) !important;
+  box-shadow: inset 0 6px 12px rgba(0,0,0,0.5) !important;
+}
+html.light[data-aesthetic="clay"] .neu-theme-track {
+  background: rgba(180,195,215,0.4) !important;
+  box-shadow: inset 0 6px 12px rgba(160,175,195,0.6), inset 0 -4px 8px rgba(255,255,255,1) !important;
+}
+html[data-aesthetic="clay"] .neu-theme-knob {
+  background: linear-gradient(135deg, #a18cd1, #fbc2eb) !important;
+  border: 2px solid rgba(255,255,255,0.2) !important;
+  box-shadow: 4px 4px 8px rgba(0,0,0,0.5), inset 2px 2px 4px rgba(255,255,255,0.4) !important;
+}
+html.light[data-aesthetic="clay"] .neu-theme-knob {
+  background: linear-gradient(135deg, #6FB1FC, #4364F7) !important;
+  border: 2px solid #fff !important;
+  box-shadow: 4px 4px 8px rgba(67,100,247,0.4), inset 2px 2px 4px rgba(255,255,255,0.8) !important;
 }

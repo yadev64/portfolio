@@ -356,7 +356,7 @@ const NeumorphicDashboard = () => {
                     <div className="lg:col-span-5 flex flex-col gap-6">
 
                         {/* CARD 1: Quick Navigation (Pressed IN) */}
-                        <NeuCard className="!p-5 neu-pressed border-none">
+                        <NeuCard className="!p-5 neu-pressed border-none quick-jump-container relative overflow-hidden">
                             <p className="font-mono text-[10px] uppercase tracking-[0.3em] font-bold mb-4 pb-3 border-b border-border/10">Quick Jump</p>
                             <div className="grid grid-cols-2 gap-3">
                                 {NAV_ITEMS.map(item => (

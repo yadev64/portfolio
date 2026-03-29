@@ -287,7 +287,7 @@ export const NeuThemeSlider = ({ value, onChange }) => {
     return (
         <div className="relative w-full h-7">
             {/* Track — steps design */}
-            <div className="absolute inset-0 rounded-full overflow-hidden flex items-center justify-between px-3" style={{ background: 'rgba(0,0,0,0.15)', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.3)' }}>
+            <div className="absolute inset-0 rounded-full overflow-hidden flex items-center justify-between px-3 neu-theme-track">
                 <div className="w-1.5 h-1.5 rounded-full bg-border" />
                 <div className="w-1.5 h-1.5 rounded-full bg-border" />
                 <div className="w-1.5 h-1.5 rounded-full bg-border" />
@@ -297,11 +297,9 @@ export const NeuThemeSlider = ({ value, onChange }) => {
             <input type="range" min={0} max={3} step={0.01} defaultValue={value} onInput={handleInput} onMouseDown={handleStart} onTouchStart={handleStart} onMouseUp={handleEnd} onTouchEnd={handleEnd} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
             <div
                 ref={knobRef}
-                className="absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full pointer-events-none z-20 flex items-center justify-center"
+                className="absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full pointer-events-none z-20 flex items-center justify-center neu-theme-knob"
                 style={{
                     left: `calc(${initPct}% - ${initPct * 0.28 - 4}px)`,
-                    background: 'var(--bg-primary)',
-                    boxShadow: '0 1px 4px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.15)',
                     transition: 'left 0.15s ease-out',
                 }}
             >
