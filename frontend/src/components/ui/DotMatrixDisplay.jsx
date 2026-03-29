@@ -17,6 +17,20 @@ const DIGITS = {
     '°': [0, 1, 0, 1, 0, 1, 0, 1, 0],
     // C character (3×5)
     'C': [1, 1, 1, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 1, 1],
+    // Letters for themes (3x5)
+    'A': [1,1,1, 1,0,1, 1,1,1, 1,0,1, 1,0,1],
+    'B': [1,1,0, 1,0,1, 1,1,0, 1,0,1, 1,1,0],
+    'E': [1,1,1, 1,0,0, 1,1,0, 1,0,0, 1,1,1],
+    'G': [0,1,1, 1,0,0, 1,0,1, 1,0,1, 0,1,1],
+    'L': [1,0,0, 1,0,0, 1,0,0, 1,0,0, 1,1,1],
+    'M': [1,1,1, 1,1,1, 1,0,1, 1,0,1, 1,0,1],
+    'N': [1,1,1, 1,0,1, 1,0,1, 1,0,1, 1,0,1],
+    'O': [1,1,1, 1,0,1, 1,0,1, 1,0,1, 1,1,1],
+    'R': [1,1,0, 1,0,1, 1,1,0, 1,0,1, 1,0,1],
+    'S': [1,1,1, 1,0,0, 1,1,1, 0,0,1, 1,1,1],
+    'T': [1,1,1, 0,1,0, 0,1,0, 0,1,0, 0,1,0],
+    'U': [1,0,1, 1,0,1, 1,0,1, 1,0,1, 1,1,1],
+    'Y': [1,0,1, 1,0,1, 0,1,0, 0,1,0, 0,1,0],
 };
 
 const GRID_SIZE = 27;
@@ -146,6 +160,22 @@ const buildTempGrid = (degC) => {
     return grid;
 };
 
+/** Build text grid: up to 6 characters centered at 1x scale */
+const buildTextGrid = (str) => {
+    const grid = new Array(GRID_SIZE * GRID_SIZE).fill(0);
+    const text = str.substring(0, 6).toUpperCase();
+    const totalW = text.length * 4 - 1; // 3 width + 1 gap per char
+    const offsetX = Math.floor((GRID_SIZE - totalW) / 2);
+    const offsetY = Math.floor((GRID_SIZE - 5) / 2);
+
+    let x = offsetX;
+    for (let i = 0; i < text.length; i++) {
+        stampDigit(grid, text[i], x, offsetY);
+        x += 4;
+    }
+    return grid;
+};
+
 
 /**
  * Circular Dot Matrix Display.
@@ -260,7 +290,10 @@ const DotMatrixDisplay = ({ tempDisplayValue = null }) => {
     // Determine which grid to display
     const displayGrid = useMemo(() => {
         if (cameraMode && cameraGrid) return cameraGrid;
-        if (tempDisplayValue !== null && !cameraMode) return buildTempGrid(tempDisplayValue);
+        if (tempDisplayValue !== null && !cameraMode) {
+            if (typeof tempDisplayValue === 'string') return buildTextGrid(tempDisplayValue);
+            return buildTempGrid(tempDisplayValue);
+        }
         return buildClockGrid(time);
     }, [cameraMode, cameraGrid, tempDisplayValue, time]);
 
@@ -310,8 +343,17 @@ const DotMatrixDisplay = ({ tempDisplayValue = null }) => {
         link.click();
     }, [cameraGrid]);
 
-    // Mode label
-    const modeLabel = cameraMode ? 'CAM' : (tempDisplayValue !== null ? '°C' : 'IST');
+    // Labels
+    const modeLabel = cameraMode ? 'CAM' : (
+        tempDisplayValue !== null 
+            ? (typeof tempDisplayValue === 'string' ? 'SYS' : '°C') 
+            : 'IST'
+    );
+    const topLabel = cameraMode ? 'LIVE' : (
+        tempDisplayValue !== null 
+            ? (typeof tempDisplayValue === 'string' ? 'THEME' : 'TEMP') 
+            : 'TIME'
+    );
 
     return (
         <div className="relative" style={{ width: DISPLAY_PX + 20, height: DISPLAY_PX + 20 }}>

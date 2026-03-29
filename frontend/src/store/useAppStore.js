@@ -27,6 +27,39 @@ const useAppStore = create(
 
             // --- Theme State ---
             theme: 'light',
+            aesthetic: 'neumorphism',
+            setAesthetic: (aesthetic) => set(() => {
+                document.documentElement.setAttribute('data-aesthetic', aesthetic);
+                return { aesthetic };
+            }),
+            setAestheticLive: (aesthetic) => {
+                const labels = {
+                    'neumorphism': 'NEUMO',
+                    'glass': 'GLASS',
+                    'brutal': 'BRUTAL',
+                    'clay': 'CLAY'
+                };
+                
+                document.documentElement.setAttribute('data-aesthetic', aesthetic);
+
+                const state = get();
+                
+                if (state._commitTimeout) clearTimeout(state._commitTimeout);
+                const commitTimeout = setTimeout(() => {
+                    set({ aesthetic, _commitTimeout: null });
+                }, 150);
+
+                if (state._tempTimeout) clearTimeout(state._tempTimeout);
+                const showTimeout = setTimeout(() => {
+                    set({ tempDisplayValue: labels[aesthetic] });
+                    const hideTimeout = setTimeout(() => {
+                        set({ tempDisplayValue: null, _tempTimeout: null });
+                    }, 2000);
+                    set({ _tempTimeout: hideTimeout });
+                }, 300);
+
+                set({ _commitTimeout: commitTimeout, _tempTimeout: showTimeout });
+            },
             toggleTheme: () => set((state) => {
                 const newTheme = state.theme === 'dark' ? 'light' : 'dark';
                 if (newTheme === 'light') {
@@ -112,6 +145,7 @@ const useAppStore = create(
             name: 'yadev-portfolio-storage',
             partialize: (state) => ({
                 theme: state.theme,
+                aesthetic: state.aesthetic,
                 colorTemp: state.colorTemp,
                 xp: state.xp,
                 easterEggUnlocked: state.easterEggUnlocked,
@@ -122,6 +156,11 @@ const useAppStore = create(
                     document.documentElement.classList.add('light');
                 } else {
                     document.documentElement.classList.remove('light');
+                }
+                if (state && state.aesthetic) {
+                    document.documentElement.setAttribute('data-aesthetic', state.aesthetic);
+                } else {
+                    document.documentElement.setAttribute('data-aesthetic', 'neumorphism');
                 }
                 if (state && state.colorTemp !== undefined) {
                     const { r, g, b } = lerpColor(state.colorTemp / 100);

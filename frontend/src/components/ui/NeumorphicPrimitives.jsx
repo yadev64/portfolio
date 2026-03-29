@@ -224,3 +224,89 @@ export const NeuTempSlider = ({ value, onChange, min = 0, max = 100 }) => {
         </div>
     );
 };
+
+export const NeuThemeSlider = ({ value, onChange }) => {
+    // value is 0 (Neumo), 1 (Glass), 2 (Brutal), 3 (Clay)
+    const knobRef = React.useRef(null);
+    const isDragging = React.useRef(false);
+    const lastEmitted = React.useRef(value);
+
+    const toPct = React.useCallback((val) => (val / 3) * 100, []);
+
+    const positionKnob = React.useCallback((pct) => {
+        if (knobRef.current) {
+            knobRef.current.style.left = `calc(${pct}% - ${pct * 0.28 - 4}px)`;
+        }
+    }, []);
+
+    React.useEffect(() => {
+        if (!isDragging.current) positionKnob(toPct(value));
+    }, [value, positionKnob, toPct]);
+
+    const handleStart = React.useCallback(() => {
+        isDragging.current = true;
+        if (knobRef.current) knobRef.current.style.transition = 'none';
+        if (!audioCtx.current) audioCtx.current = new (window.AudioContext || window.webkitAudioContext)();
+    }, []);
+
+    const audioCtx = React.useRef(null);
+    const playTick = React.useCallback(() => {
+        const ctx = audioCtx.current;
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.frequency.value = 800;
+        osc.type = 'sine';
+        gain.gain.setValueAtTime(0.06, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.03);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.03);
+    }, []);
+
+    const handleInput = React.useCallback((e) => {
+        const raw = Number(e.target.value);
+        positionKnob(toPct(raw));
+        const snapped = Math.round(raw);
+        if (snapped !== lastEmitted.current) {
+            lastEmitted.current = snapped;
+            playTick();
+            onChange(snapped);
+        }
+    }, [onChange, positionKnob, toPct, playTick]);
+
+    const handleEnd = React.useCallback(() => {
+        isDragging.current = false;
+        if (knobRef.current) knobRef.current.style.transition = 'left 0.15s ease-out';
+        positionKnob(toPct(lastEmitted.current));
+    }, [positionKnob, toPct]);
+
+    const initPct = toPct(value);
+
+    return (
+        <div className="relative w-full h-7">
+            {/* Track — steps design */}
+            <div className="absolute inset-0 rounded-full overflow-hidden flex items-center justify-between px-3" style={{ background: 'rgba(0,0,0,0.15)', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.3)' }}>
+                <div className="w-1.5 h-1.5 rounded-full bg-border" />
+                <div className="w-1.5 h-1.5 rounded-full bg-border" />
+                <div className="w-1.5 h-1.5 rounded-full bg-border" />
+                <div className="w-1.5 h-1.5 rounded-full bg-border" />
+            </div>
+            
+            <input type="range" min={0} max={3} step={0.01} defaultValue={value} onInput={handleInput} onMouseDown={handleStart} onTouchStart={handleStart} onMouseUp={handleEnd} onTouchEnd={handleEnd} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+            <div
+                ref={knobRef}
+                className="absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full pointer-events-none z-20 flex items-center justify-center"
+                style={{
+                    left: `calc(${initPct}% - ${initPct * 0.28 - 4}px)`,
+                    background: 'var(--bg-primary)',
+                    boxShadow: '0 1px 4px rgba(0,0,0,0.4), inset 0 1px 1px rgba(255,255,255,0.15)',
+                    transition: 'left 0.15s ease-out',
+                }}
+            >
+                <div className="w-2 h-2 rounded-full opacity-60" style={{ background: 'var(--text-main)' }} />
+            </div>
+        </div>
+    );
+};

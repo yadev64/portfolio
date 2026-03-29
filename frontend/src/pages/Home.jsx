@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { NeuCard, NeuButton, NeuToggle, NeuProgress, NeuLED, NeuIconButton, NeuTempSlider } from '../components/ui/NeumorphicPrimitives';
+import { NeuCard, NeuButton, NeuToggle, NeuProgress, NeuLED, NeuIconButton, NeuThemeSlider } from '../components/ui/NeumorphicPrimitives';
 import DotMatrixDisplay from '../components/ui/DotMatrixDisplay';
 import { ExternalLink, Github, Linkedin, Mail, ChevronDown, ArrowUpRight, BookOpen, Briefcase, GraduationCap, Award, Sun, Moon, Flame, Snowflake, FolderOpen, Layers, MapPin, Clock, Coffee, Calendar } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -307,7 +307,7 @@ const ProjectHighlights = ({ projects }) => {
    MAIN DASHBOARD
    ══════════════════════════════════════════════════════════════ */
 const NeumorphicDashboard = () => {
-    const { theme, toggleTheme, colorTemp, setColorTempLive, tempDisplayValue } = useAppStore();
+    const { theme, toggleTheme, aesthetic, setAestheticLive, tempDisplayValue } = useAppStore();
     const isDark = theme === 'dark';
     const typedRole = useTypingEffect(ROLES);
     const clock = useLiveClock();
@@ -415,14 +415,20 @@ const NeumorphicDashboard = () => {
                                 <NeuToggle checked={!isDark} onChange={() => toggleTheme()} />
                             </div>
 
-                            {/* Temperature slider — Car AC style */}
+                            {/* Theme Slider — 4 aesthetics */}
                             <div className="flex items-center justify-between mb-3">
-                                <span className="font-mono text-xs text-textMuted uppercase">Ambient</span>
+                                <span className="font-mono text-xs text-textMuted uppercase">Aesthetic</span>
                             </div>
                             <div className="flex items-center gap-3">
-                                <Snowflake size={16} className="text-[#0078FF] shrink-0" />
-                                <NeuTempSlider value={colorTemp} onChange={setColorTempLive} min={0} max={100} />
-                                <Flame size={16} className="text-[#FF4500] shrink-0" />
+                                <span className="font-mono text-[10px] text-textMuted uppercase shrink-0">Default</span>
+                                <div className="flex-1 opacity-90"><NeuThemeSlider 
+                                    value={['neumorphism', 'glass', 'brutal', 'clay'].indexOf(aesthetic) !== -1 ? ['neumorphism', 'glass', 'brutal', 'clay'].indexOf(aesthetic) : 0} 
+                                    onChange={(val) => {
+                                        const themes = ['neumorphism', 'glass', 'brutal', 'clay'];
+                                        if (themes[val]) setAestheticLive(themes[val]);
+                                    }} 
+                                /></div>
+                                <span className="font-mono text-[10px] text-textMuted uppercase shrink-0">Alt</span>
                             </div>
 
                             {/* PWR LED */}

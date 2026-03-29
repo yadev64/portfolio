@@ -8,6 +8,7 @@ import { BlogPost } from './pages/BlogPost'
 
 import { CursorTrail } from './components/ui/CursorTrail'
 import { GlobalGamification } from './components/ui/GlobalGamification'
+import { AestheticSwitcher } from './components/ui/AestheticSwitcher'
 
 function App() {
   return (

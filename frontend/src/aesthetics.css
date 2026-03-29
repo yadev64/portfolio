@@ -1,0 +1,176 @@
+/* ========================================= */
+/* MULTI-AESTHETIC THEME ENGINE              */
+/* ========================================= */
+
+/* Add smooth transitions to all primitive classes so they morph buttery smooth */
+.neu-flat, .neu-btn, .neu-pressed, .neu-project-card, .neu-flat-invert-x {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Base override helper */
+html[data-aesthetic="brutal"], html[data-aesthetic="clay"], html[data-aesthetic="glass"] {
+  transition: background-color 0.5s ease;
+}
+
+/* ----------------------------------------- */
+/* 🪞 1. LIQUID GLASS UI                       */
+/* ----------------------------------------- */
+/* Mesh gradient animation behind everything */
+html[data-aesthetic="glass"] body::before {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  z-index: -1;
+  background: 
+    radial-gradient(circle at 15% 50%, rgba(120, 0, 255, 0.15), transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(0, 200, 255, 0.15), transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(255, 0, 150, 0.15), transparent 50%);
+  filter: blur(60px);
+  animation: mesh-flow 15s ease-in-out infinite alternate;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+html.light[data-aesthetic="glass"] body::before {
+  background: 
+    radial-gradient(circle at 15% 50%, rgba(120, 0, 255, 0.3), transparent 50%),
+    radial-gradient(circle at 85% 30%, rgba(0, 200, 255, 0.3), transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(255, 0, 150, 0.3), transparent 50%);
+}
+
+@keyframes mesh-flow {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(5deg) scale(1.1); }
+  100% { transform: rotate(-5deg) scale(1.05); }
+}
+
+/* Glass Primitives */
+html[data-aesthetic="glass"] .neu-flat,
+html[data-aesthetic="glass"] .neu-project-card,
+html[data-aesthetic="glass"] .neu-flat-invert-x,
+html[data-aesthetic="glass"] .neu-btn {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+}
+html.light[data-aesthetic="glass"] .neu-flat,
+html.light[data-aesthetic="glass"] .neu-project-card,
+html.light[data-aesthetic="glass"] .neu-flat-invert-x,
+html.light[data-aesthetic="glass"] .neu-btn {
+  background: rgba(255, 255, 255, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+}
+
+html[data-aesthetic="glass"] .neu-pressed {
+  background: rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+html.light[data-aesthetic="glass"] .neu-pressed {
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* ----------------------------------------- */
+/* 🏗️ 2. BRUTALISM                           */
+/* ----------------------------------------- */
+html[data-aesthetic="brutal"] {
+  --bg-primary: #121212;
+}
+html.light[data-aesthetic="brutal"] {
+  --bg-primary: #FFE800; /* High contrast yellow/white */
+}
+
+/* Brutal Cards */
+html[data-aesthetic="brutal"] .neu-flat,
+html[data-aesthetic="brutal"] .neu-btn,
+html[data-aesthetic="brutal"] .neu-project-card,
+html[data-aesthetic="brutal"] .neu-flat-invert-x {
+  background: var(--bg-primary);
+  border: 3px solid #fff;
+  border-radius: 4px !important;
+  box-shadow: 5px 5px 0px #fff;
+}
+html.light[data-aesthetic="brutal"] .neu-flat,
+html.light[data-aesthetic="brutal"] .neu-btn,
+html.light[data-aesthetic="brutal"] .neu-project-card,
+html.light[data-aesthetic="brutal"] .neu-flat-invert-x {
+  border: 4px solid #000;
+  box-shadow: 6px 6px 0px #000;
+}
+
+html[data-aesthetic="brutal"] .neu-pressed {
+  background: #333;
+  border: 3px solid #fff;
+  border-radius: 4px !important;
+  box-shadow: inset 4px 4px 0px rgba(0,0,0,0.5);
+}
+html.light[data-aesthetic="brutal"] .neu-pressed {
+  background: #E5D100;
+  border: 4px solid #000;
+  box-shadow: inset 4px 4px 0px rgba(0,0,0,0.2);
+}
+
+/* Brutal Hover */
+html[data-aesthetic="brutal"] .neu-btn:hover,
+html[data-aesthetic="brutal"] .neu-project-card:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 3px 3px 0px #fff;
+}
+html.light[data-aesthetic="brutal"] .neu-btn:hover,
+html.light[data-aesthetic="brutal"] .neu-project-card:hover {
+  transform: translate(2px, 2px);
+  box-shadow: 4px 4px 0px #000;
+}
+
+
+/* ----------------------------------------- */
+/* ☁️ 3. CLAYMORPHISM                        */
+/* ----------------------------------------- */
+html[data-aesthetic="clay"] {
+  --bg-primary: #242730;
+}
+html.light[data-aesthetic="clay"] {
+  --bg-primary: #f0f4f8; /* Soft baby blue/grey */
+}
+
+html[data-aesthetic="clay"] .neu-flat,
+html[data-aesthetic="clay"] .neu-btn,
+html[data-aesthetic="clay"] .neu-project-card,
+html[data-aesthetic="clay"] .neu-flat-invert-x {
+  background: var(--bg-primary);
+  border-radius: 2.5rem !important; /* Ultra round pill aesthetic */
+  box-shadow: 
+    10px 10px 20px rgba(0, 0, 0, 0.3), 
+    -10px -10px 20px rgba(255, 255, 255, 0.03),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.08),
+    inset -4px -4px 8px rgba(0, 0, 0, 0.2);
+  border: none;
+}
+html.light[data-aesthetic="clay"] .neu-flat,
+html.light[data-aesthetic="clay"] .neu-btn,
+html.light[data-aesthetic="clay"] .neu-project-card,
+html.light[data-aesthetic="clay"] .neu-flat-invert-x {
+  box-shadow: 
+    10px 10px 20px rgba(166, 180, 200, 0.4), 
+    -10px -10px 20px rgba(255, 255, 255, 1),
+    inset 4px 4px 8px rgba(255, 255, 255, 1),
+    inset -4px -4px 8px rgba(166, 180, 200, 0.3);
+}
+
+html[data-aesthetic="clay"] .neu-pressed {
+  background: var(--bg-primary);
+  border-radius: 2.5rem !important;
+  box-shadow: 
+    inset 6px 6px 12px rgba(0, 0, 0, 0.4),
+    inset -6px -6px 12px rgba(255, 255, 255, 0.03);
+}
+html.light[data-aesthetic="clay"] .neu-pressed {
+  box-shadow: 
+    inset 6px 6px 12px rgba(166, 180, 200, 0.5),
+    inset -6px -6px 12px rgba(255, 255, 255, 1);
+}
