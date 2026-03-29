@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import { NeuCard, NeuButton, NeuToggle, NeuProgress, NeuLED, NeuIconButton, NeuThemeSlider } from '../components/ui/NeumorphicPrimitives';
 import DotMatrixDisplay from '../components/ui/DotMatrixDisplay';
+import HyperHome from '../components/hyper/HyperHome';
 import { ExternalLink, Github, Linkedin, Mail, ChevronDown, ArrowUpRight, BookOpen, Briefcase, GraduationCap, Award, Sun, Moon, Flame, Snowflake, FolderOpen, Layers, MapPin, Clock, Coffee, Calendar, Camera, CameraOff, Aperture } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAppStore from '../store/useAppStore';
@@ -307,7 +308,7 @@ const ProjectHighlights = ({ projects }) => {
    MAIN DASHBOARD
    ══════════════════════════════════════════════════════════════ */
 const NeumorphicDashboard = () => {
-    const { theme, toggleTheme, aesthetic, setAestheticLive, tempDisplayValue } = useAppStore();
+    const { theme, toggleTheme, aesthetic, setAestheticLive, tempDisplayValue, isHyperMode, toggleHyperMode } = useAppStore();
     const [glyphCameraMode, setGlyphCameraMode] = useState(false);
     const glyphRef = useRef(null);
 
@@ -324,6 +325,8 @@ const NeumorphicDashboard = () => {
     const dayName = clock.toLocaleDateString('en-US', { weekday: 'short' });
     const monthName = clock.toLocaleDateString('en-US', { month: 'short' });
     const dayNum = clock.getDate();
+
+    if (isHyperMode) return <HyperHome />;
 
     return (
         <div className="min-h-screen bg-background text-textMain font-body selection:bg-primary selection:text-white">
@@ -456,6 +459,18 @@ const NeumorphicDashboard = () => {
                         {/* CARD 3: Remote Control (Car AC style) */}
                         <NeuCard className="!p-4 md:!p-5">
                             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-4 md:mb-5 pb-3 border-b border-border/30">System Remote</p>
+
+                            {/* Hyper Mode toggle */}
+                            <div className="flex items-center justify-between mb-4 border-b border-border/10 pb-4">
+                                <div className="flex items-center gap-2">
+                                    <Flame size={14} className={isHyperMode ? "text-[#df4418]" : "text-textMuted"} />
+                                    <span className="font-mono text-[10px] text-textMuted uppercase tracking-[0.2em]">Hyper Mode</span>
+                                </div>
+                                <NeuToggle 
+                                    checked={isHyperMode}
+                                    onChange={toggleHyperMode}
+                                />
+                            </div>
 
                             {/* Dark Mode toggle */}
                             <div className="flex items-center justify-between mb-4 md:mb-5">

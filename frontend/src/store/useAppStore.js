@@ -29,6 +29,7 @@ const useAppStore = create(
             theme: 'light',
             isExplicitDarkMode: false,
             aesthetic: 'neumorphism',
+            isHyperMode: false,
             setAesthetic: (aesthetic) => set((state) => {
                 document.documentElement.setAttribute('data-aesthetic', aesthetic);
                 
@@ -76,7 +77,7 @@ const useAppStore = create(
                 
                 if (state._commitTimeout) clearTimeout(state._commitTimeout);
                 const commitTimeout = setTimeout(() => {
-                    set({ aesthetic, theme: targetTheme, _commitTimeout: null });
+                    set({ aesthetic, theme: targetTheme, isHyperMode: false, _commitTimeout: null });
                 }, 150);
 
                 if (state._tempTimeout) clearTimeout(state._tempTimeout);
@@ -107,6 +108,8 @@ const useAppStore = create(
                 }
                 return { theme };
             }),
+
+            toggleHyperMode: () => set((state) => ({ isHyperMode: !state.isHyperMode })),
 
             // ── Color Temperature ──
             // 0 = cold (blue), 100 = warm (orange)
