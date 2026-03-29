@@ -22,26 +22,31 @@ html[data-aesthetic="glass"] body::before {
   inset: -50%;
   z-index: -1;
   background: 
-    radial-gradient(circle at 15% 50%, rgba(120, 0, 255, 0.15), transparent 50%),
-    radial-gradient(circle at 85% 30%, rgba(0, 200, 255, 0.15), transparent 50%),
-    radial-gradient(circle at 50% 80%, rgba(255, 0, 150, 0.15), transparent 50%);
-  filter: blur(60px);
-  animation: mesh-flow 15s ease-in-out infinite alternate;
+    radial-gradient(ellipse at 10% 20%, rgba(20, 100, 255, 0.8) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(0, 200, 255, 0.6) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 10%, rgba(120, 50, 255, 0.7) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 90%, rgba(0, 255, 150, 0.5) 0%, transparent 60%),
+    #050a1f;
+  filter: blur(80px);
+  animation: liquid-wave 15s ease-in-out infinite alternate;
   pointer-events: none;
   opacity: 1;
   transition: opacity 0.5s ease;
 }
 html.light[data-aesthetic="glass"] body::before {
   background: 
-    radial-gradient(circle at 15% 50%, rgba(120, 0, 255, 0.3), transparent 50%),
-    radial-gradient(circle at 85% 30%, rgba(0, 200, 255, 0.3), transparent 50%),
-    radial-gradient(circle at 50% 80%, rgba(255, 0, 150, 0.3), transparent 50%);
+    radial-gradient(ellipse at 10% 20%, rgba(67, 100, 247, 0.6) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 80%, rgba(111, 177, 252, 0.6) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 10%, rgba(0, 82, 212, 0.5) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 90%, rgba(80, 220, 255, 0.4) 0%, transparent 60%),
+    #e8effc;
 }
 
-@keyframes mesh-flow {
-  0% { transform: rotate(0deg) scale(1); }
-  50% { transform: rotate(5deg) scale(1.1); }
-  100% { transform: rotate(-5deg) scale(1.05); }
+@keyframes liquid-wave {
+  0% { transform: rotate(0deg) scale(1) translate(0, 0); }
+  33% { transform: rotate(3deg) scale(1.1) translate(20px, -20px); }
+  66% { transform: rotate(-2deg) scale(1.05) translate(-10px, 30px); }
+  100% { transform: rotate(-4deg) scale(1.15) translate(30px, 10px); }
 }
 
 /* Glass Primitives */
@@ -49,30 +54,36 @@ html[data-aesthetic="glass"] .neu-flat,
 html[data-aesthetic="glass"] .neu-project-card,
 html[data-aesthetic="glass"] .neu-flat-invert-x,
 html[data-aesthetic="glass"] .neu-btn {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.3), inset 0 0 20px rgba(255, 255, 255, 0.05);
 }
 html.light[data-aesthetic="glass"] .neu-flat,
 html.light[data-aesthetic="glass"] .neu-project-card,
 html.light[data-aesthetic="glass"] .neu-flat-invert-x,
 html.light[data-aesthetic="glass"] .neu-btn {
-  background: rgba(255, 255, 255, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.6);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: 0 10px 40px -10px rgba(0, 100, 255, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.8), inset 0 0 20px rgba(255, 255, 255, 0.4);
 }
 
 html[data-aesthetic="glass"] .neu-pressed {
-  background: rgba(0, 0, 0, 0.2);
-  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.15);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 html.light[data-aesthetic="glass"] .neu-pressed {
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: inset 0 4px 12px rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  box-shadow: inset 0 4px 12px rgba(0, 50, 150, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 /* ----------------------------------------- */
@@ -80,51 +91,86 @@ html.light[data-aesthetic="glass"] .neu-pressed {
 /* ----------------------------------------- */
 html[data-aesthetic="brutal"] {
   --bg-primary: #121212;
+  --text-primary: #FAFAFA;
+  --text-secondary: #D4D4D8;
 }
 html.light[data-aesthetic="brutal"] {
   --bg-primary: #FFE800; /* High contrast yellow/white */
+  --text-primary: #000000;
+  --text-secondary: #000000;
 }
 
-/* Brutal Cards */
+/* Brutalism Global Typography Overrides */
+html[data-aesthetic="brutal"] body,
+html[data-aesthetic="brutal"] div,
+html[data-aesthetic="brutal"] p,
+html[data-aesthetic="brutal"] span,
+html[data-aesthetic="brutal"] h1,
+html[data-aesthetic="brutal"] h2,
+html[data-aesthetic="brutal"] h3,
+html[data-aesthetic="brutal"] a,
+html[data-aesthetic="brutal"] button {
+  font-family: "Space Grotesk", sans-serif !important;
+  color: var(--text-primary);
+}
+html[data-aesthetic="brutal"] .text-textMuted {
+  color: var(--text-secondary) !important;
+}
+html[data-aesthetic="brutal"] .font-mono {
+  font-family: "Space Mono", monospace !important;
+}
+
+/* Brutal Cards and Primitives */
 html[data-aesthetic="brutal"] .neu-flat,
 html[data-aesthetic="brutal"] .neu-btn,
 html[data-aesthetic="brutal"] .neu-project-card,
-html[data-aesthetic="brutal"] .neu-flat-invert-x {
-  background: var(--bg-primary);
-  border: 3px solid #fff;
-  border-radius: 4px !important;
-  box-shadow: 5px 5px 0px #fff;
+html[data-aesthetic="brutal"] .neu-flat-invert-x,
+html[data-aesthetic="brutal"] .rounded-full,
+html[data-aesthetic="brutal"] .rounded-2xl,
+html[data-aesthetic="brutal"] .rounded-3xl,
+html[data-aesthetic="brutal"] .rounded-l-2xl,
+html[data-aesthetic="brutal"] .rounded-r-2xl {
+  background: var(--bg-primary) !important;
+  border: 3px solid #fff !important;
+  border-radius: 0px !important;
+  box-shadow: 5px 5px 0px #fff !important;
 }
 html.light[data-aesthetic="brutal"] .neu-flat,
 html.light[data-aesthetic="brutal"] .neu-btn,
 html.light[data-aesthetic="brutal"] .neu-project-card,
-html.light[data-aesthetic="brutal"] .neu-flat-invert-x {
-  border: 4px solid #000;
-  box-shadow: 6px 6px 0px #000;
+html.light[data-aesthetic="brutal"] .neu-flat-invert-x,
+html.light[data-aesthetic="brutal"] .rounded-full,
+html.light[data-aesthetic="brutal"] .rounded-2xl,
+html.light[data-aesthetic="brutal"] .rounded-3xl,
+html.light[data-aesthetic="brutal"] .rounded-l-2xl,
+html.light[data-aesthetic="brutal"] .rounded-r-2xl {
+  border: 4px solid #000 !important;
+  box-shadow: 6px 6px 0px #000 !important;
 }
 
+/* Brutal Pressed State */
 html[data-aesthetic="brutal"] .neu-pressed {
-  background: #333;
-  border: 3px solid #fff;
-  border-radius: 4px !important;
-  box-shadow: inset 4px 4px 0px rgba(0,0,0,0.5);
+  background: #333 !important;
+  border: 3px solid #fff !important;
+  border-radius: 0px !important;
+  box-shadow: inset 4px 4px 0px rgba(0,0,0,0.5) !important;
 }
 html.light[data-aesthetic="brutal"] .neu-pressed {
-  background: #E5D100;
-  border: 4px solid #000;
-  box-shadow: inset 4px 4px 0px rgba(0,0,0,0.2);
+  background: #E5D100 !important;
+  border: 4px solid #000 !important;
+  box-shadow: inset 4px 4px 0px rgba(0,0,0,0.2) !important;
 }
 
 /* Brutal Hover */
 html[data-aesthetic="brutal"] .neu-btn:hover,
 html[data-aesthetic="brutal"] .neu-project-card:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 3px 3px 0px #fff;
+  transform: translate(2px, 2px) !important;
+  box-shadow: 3px 3px 0px #fff !important;
 }
 html.light[data-aesthetic="brutal"] .neu-btn:hover,
 html.light[data-aesthetic="brutal"] .neu-project-card:hover {
-  transform: translate(2px, 2px);
-  box-shadow: 4px 4px 0px #000;
+  transform: translate(2px, 2px) !important;
+  box-shadow: 4px 4px 0px #000 !important;
 }
 
 
@@ -132,45 +178,82 @@ html.light[data-aesthetic="brutal"] .neu-project-card:hover {
 /* ☁️ 3. CLAYMORPHISM                        */
 /* ----------------------------------------- */
 html[data-aesthetic="clay"] {
-  --bg-primary: #242730;
+  --bg-primary: #1a1a24; /* Deep neutral slate/purple background */
+  --accent-primary: #a18cd1; /* Soft purple */
+  --accent-glow: rgba(161, 140, 209, 0.4);
 }
 html.light[data-aesthetic="clay"] {
-  --bg-primary: #f0f4f8; /* Soft baby blue/grey */
+  --bg-primary: #F3F6FB; /* Soft cool off-white background */
+  --accent-primary: #6FB1FC; /* Vibrant soft blue */
+  --accent-glow: rgba(111, 177, 252, 0.4);
 }
 
+/* Base Clay Cards (Clean White / Dark Gray) */
 html[data-aesthetic="clay"] .neu-flat,
-html[data-aesthetic="clay"] .neu-btn,
 html[data-aesthetic="clay"] .neu-project-card,
 html[data-aesthetic="clay"] .neu-flat-invert-x {
-  background: var(--bg-primary);
+  background: #24242E !important; /* Slightly elevated dark card */
   border-radius: 2.5rem !important; /* Ultra round pill aesthetic */
   box-shadow: 
-    10px 10px 20px rgba(0, 0, 0, 0.3), 
-    -10px -10px 20px rgba(255, 255, 255, 0.03),
-    inset 4px 4px 8px rgba(255, 255, 255, 0.08),
+    16px 16px 32px rgba(0, 0, 0, 0.3), 
+    -8px -8px 16px rgba(255, 255, 255, 0.02),
+    inset 4px 4px 8px rgba(255, 255, 255, 0.05),
     inset -4px -4px 8px rgba(0, 0, 0, 0.2);
-  border: none;
+  border: none !important;
 }
 html.light[data-aesthetic="clay"] .neu-flat,
-html.light[data-aesthetic="clay"] .neu-btn,
 html.light[data-aesthetic="clay"] .neu-project-card,
 html.light[data-aesthetic="clay"] .neu-flat-invert-x {
+  background: #FFFFFF !important; /* Pure white cards */
   box-shadow: 
-    10px 10px 20px rgba(166, 180, 200, 0.4), 
-    -10px -10px 20px rgba(255, 255, 255, 1),
+    16px 16px 32px rgba(180, 195, 215, 0.4), 
+    -12px -12px 24px rgba(255, 255, 255, 1),
     inset 4px 4px 8px rgba(255, 255, 255, 1),
-    inset -4px -4px 8px rgba(166, 180, 200, 0.3);
+    inset -4px -4px 8px rgba(180, 195, 215, 0.15);
 }
 
+/* Colorful Primary Buttons (The "Clay" Accents) */
+html[data-aesthetic="clay"] .neu-btn {
+  background: #a18cd1 !important; /* Vivid Purple Accent */
+  color: #fff !important;
+  border-radius: 2rem !important;
+  box-shadow: 
+    6px 6px 12px rgba(0, 0, 0, 0.3), 
+    -4px -4px 8px rgba(255, 255, 255, 0.05),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.2),
+    inset -3px -3px 6px rgba(0, 0, 0, 0.2);
+  border: none !important;
+}
+html.light[data-aesthetic="clay"] .neu-btn {
+  background: #6FB1FC !important; /* Vivid Cyan/Blue Accent */
+  color: #fff !important;
+  border-radius: 2rem !important;
+  box-shadow: 
+    8px 8px 16px rgba(111, 177, 252, 0.3), 
+    -6px -6px 12px rgba(255, 255, 255, 1),
+    inset 3px 3px 6px rgba(255, 255, 255, 0.4),
+    inset -3px -3px 6px rgba(111, 177, 252, 0.2);
+}
+
+/* Button Hover scales up playfully */
+html[data-aesthetic="clay"] .neu-btn:hover {
+  transform: scale(1.05) !important;
+}
+html[data-aesthetic="clay"] .neu-project-card:hover {
+  transform: translateY(-4px) !important;
+}
+
+/* Pressed State */
 html[data-aesthetic="clay"] .neu-pressed {
-  background: var(--bg-primary);
+  background: #1a1a24 !important;
   border-radius: 2.5rem !important;
   box-shadow: 
-    inset 6px 6px 12px rgba(0, 0, 0, 0.4),
-    inset -6px -6px 12px rgba(255, 255, 255, 0.03);
+    inset 8px 8px 16px rgba(0, 0, 0, 0.4),
+    inset -8px -8px 16px rgba(255, 255, 255, 0.02) !important;
 }
 html.light[data-aesthetic="clay"] .neu-pressed {
+  background: #F3F6FB !important;
   box-shadow: 
-    inset 6px 6px 12px rgba(166, 180, 200, 0.5),
-    inset -6px -6px 12px rgba(255, 255, 255, 1);
+    inset 8px 8px 16px rgba(180, 195, 215, 0.6),
+    inset -8px -8px 16px rgba(255, 255, 255, 1) !important;
 }

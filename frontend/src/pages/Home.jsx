@@ -456,7 +456,7 @@ const NeumorphicDashboard = () => {
                 {/* ── All Projects Grid (3 columns) ── */}
                 <div className="mt-16">
                     <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-8">All Projects</p>
-                    <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.1 }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <motion.div variants={stagger} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {PROJECTS.map((project) => (
                             <motion.div key={project.slug} variants={fadeUp}>
                                 <Link to={`/projects/${project.slug}`}>
@@ -494,7 +494,7 @@ const NeumorphicDashboard = () => {
                 <SectionHeader label="Experience" number={2} />
                 <div className="relative">
                     <div className="absolute left-6 top-0 bottom-0 w-px bg-border/50" />
-                    <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }} className="flex flex-col gap-8">
+                    <motion.div variants={stagger} initial="hidden" animate="show" className="flex flex-col gap-8">
                         {JOURNEY.map((node, i) => (
                             <motion.div key={i} variants={fadeUp} className="flex gap-6 items-start">
                                 <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 relative z-10 ${node.highlight ? 'neu-convex text-primary' : 'neu-flat text-textMuted'}`}>
@@ -541,7 +541,7 @@ const NeumorphicDashboard = () => {
             {/* ═══════════════ BLOG ═══════════════ */}
             <section id="blog" className="px-6 md:px-16 lg:px-24 py-20 max-w-[1600px] mx-auto">
                 <SectionHeader label="Writing" number={4} />
-                <motion.div variants={stagger} initial="hidden" whileInView="show" viewport={{ once: true }} className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+                <motion.div variants={stagger} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
                     {BLOG_POSTS.map(post => (
                         <motion.div key={post.slug} variants={fadeUp}>
                             <Link to={`/blog/${post.slug}`}>
