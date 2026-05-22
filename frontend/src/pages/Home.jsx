@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { NeuCard, NeuButton, NeuToggle, NeuProgress, NeuLED, NeuIconButton, NeuThemeSlider } from '../components/ui/NeumorphicPrimitives';
 import DotMatrixDisplay from '../components/ui/DotMatrixDisplay';
 import HyperHome from '../components/hyper/HyperHome';
-import { ExternalLink, Github, Linkedin, Mail, ChevronDown, ArrowUpRight, BookOpen, Briefcase, GraduationCap, Award, Sun, Moon, Flame, Snowflake, FolderOpen, Layers, MapPin, Clock, Coffee, Calendar, Camera, CameraOff, Aperture } from 'lucide-react';
+import { ExternalLink, Github, Linkedin, Mail, ChevronDown, ArrowUpRight, BookOpen, Briefcase, GraduationCap, Award, Sun, Moon, Snowflake, FolderOpen, Layers, MapPin, Clock, Coffee, Calendar, Camera, CameraOff, Aperture } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAppStore from '../store/useAppStore';
 
@@ -151,7 +151,7 @@ const ProjectHighlights = ({ projects }) => {
                         <motion.div
                             key={project.slug}
                             className={`relative h-full overflow-hidden cursor-pointer group highlight-card ${isActive ? 'active' : ''} ${shadowClass} ${roundedClass}`}
-                            style={{ 
+                            style={{
                                 flexShrink: 0,
                                 zIndex: 20 - Math.abs(i - active)
                             }}
@@ -308,7 +308,7 @@ const ProjectHighlights = ({ projects }) => {
    MAIN DASHBOARD
    ══════════════════════════════════════════════════════════════ */
 const NeumorphicDashboard = () => {
-    const { theme, toggleTheme, aesthetic, setAestheticLive, tempDisplayValue, isHyperMode, toggleHyperMode } = useAppStore();
+    const { theme, toggleTheme, aesthetic, setAestheticLive, tempDisplayValue, isHyperMode } = useAppStore();
     const [glyphCameraMode, setGlyphCameraMode] = useState(false);
     const glyphRef = useRef(null);
 
@@ -352,6 +352,7 @@ const NeumorphicDashboard = () => {
                                 </div> */}
                             </div>
                         </div>
+
                         <h2 className="text-xl md:text-2xl font-display text-textMuted mt-6 h-10">
                             {typedRole}<span className="animate-pulse">|</span>
                         </h2>
@@ -388,25 +389,25 @@ const NeumorphicDashboard = () => {
 
                         {/* CARDS 2a & 2b: Glyph Display (fixed square) + Location (flexible) */}
                         <div className="flex gap-4 md:gap-6">
-                            {/* Left: Circular Dot Matrix Display — split layout on mobile */}
-                            <NeuCard className="flex-1 md:flex-none !p-3 md:!p-4 flex items-center justify-between md:justify-center overflow-hidden">
+                            {/* Left: Circular Dot Matrix Display — split layout */}
+                            <NeuCard className="flex-1 md:flex-none !p-3 md:!p-4 flex items-center justify-between overflow-hidden">
                                 <div className="shrink-0">
-                                    <DotMatrixDisplay 
+                                    <DotMatrixDisplay
                                         ref={glyphRef}
-                                        tempDisplayValue={tempDisplayValue} 
+                                        tempDisplayValue={tempDisplayValue}
                                         cameraMode={glyphCameraMode}
                                         setCameraMode={setGlyphCameraMode}
                                         showBuiltinControls={false}
                                     />
                                 </div>
-                                
-                                {/* Mobile-only Controls Subsection */}
-                                <div className="md:hidden flex flex-col items-center justify-center gap-4 pl-4 mr-2 border-l border-border/10">
+
+                                {/* Controls Subsection */}
+                                <div className="flex flex-col items-center justify-center gap-4 pl-4 mr-2 border-l border-border/10 w-20 shrink-0">
                                     <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-textMuted/60 leading-none">Controls</span>
-                                    
+
                                     <div className="flex flex-col gap-5 items-center">
                                         {/* Camera Toggle */}
-                                        <button 
+                                        <button
                                             onClick={() => setGlyphCameraMode(!glyphCameraMode)}
                                             className="p-2.5 rounded-xl neu-flat bg-background transition-all active:scale-95"
                                         >
@@ -415,7 +416,7 @@ const NeumorphicDashboard = () => {
 
                                         {/* Live Indicator / Capture */}
                                         {glyphCameraMode ? (
-                                            <button 
+                                            <button
                                                 onClick={() => glyphRef.current?.captureAndDownload()}
                                                 className="flex flex-col items-center gap-1 group"
                                             >
@@ -429,7 +430,7 @@ const NeumorphicDashboard = () => {
                                             </button>
                                         ) : (
                                             <div className="flex flex-col items-center gap-1 opacity-20 filter grayscale">
-                                                 <div className="flex items-center gap-1.5 mb-1 px-2 py-1">
+                                                <div className="flex items-center gap-1.5 mb-1 px-2 py-1">
                                                     <div className="w-1.5 h-1.5 rounded-full bg-textMuted" />
                                                     <span className="font-mono text-[8px] font-medium text-textMuted uppercase tracking-tighter">Standby</span>
                                                 </div>
@@ -441,7 +442,7 @@ const NeumorphicDashboard = () => {
                                     </div>
                                 </div>
                             </NeuCard>
-                            
+
                             {/* Right: Location + Calendar — hidden on mobile */}
                             <NeuCard className="hidden md:flex !p-5 flex-col justify-between flex-1 min-w-0">
                                 <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-4">Location</p>
@@ -471,17 +472,6 @@ const NeumorphicDashboard = () => {
                         <NeuCard className="!p-4 md:!p-5">
                             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-4 md:mb-5 pb-3 border-b border-border/30">System Remote</p>
 
-                            {/* Hyper Mode toggle */}
-                            <div className="flex items-center justify-between mb-4 border-b border-border/10 pb-4">
-                                <div className="flex items-center gap-2">
-                                    <Flame size={14} className={isHyperMode ? "text-[#df4418]" : "text-textMuted"} />
-                                    <span className="font-mono text-[10px] text-textMuted uppercase tracking-[0.2em]">Hyper Mode</span>
-                                </div>
-                                <NeuToggle 
-                                    checked={isHyperMode}
-                                    onChange={toggleHyperMode}
-                                />
-                            </div>
 
                             {/* Dark Mode toggle */}
                             <div className="flex items-center justify-between mb-4 md:mb-5">
@@ -498,12 +488,12 @@ const NeumorphicDashboard = () => {
                             </div>
                             <div className="flex items-center gap-3">
                                 <span className="font-mono text-[10px] text-textMuted uppercase shrink-0">Default</span>
-                                <div className="flex-1 opacity-90"><NeuThemeSlider 
-                                    value={['neumorphism', 'clay', 'brutal'].indexOf(aesthetic) !== -1 ? ['neumorphism', 'clay', 'brutal'].indexOf(aesthetic) : 0} 
+                                <div className="flex-1 opacity-90"><NeuThemeSlider
+                                    value={['neumorphism', 'clay', 'brutal'].indexOf(aesthetic) !== -1 ? ['neumorphism', 'clay', 'brutal'].indexOf(aesthetic) : 0}
                                     onChange={(val) => {
                                         const themes = ['neumorphism', 'clay', 'brutal'];
                                         if (themes[val]) setAestheticLive(themes[val]);
-                                    }} 
+                                    }}
                                     steps={3}
                                 /></div>
                                 <span className="font-mono text-[10px] text-textMuted uppercase shrink-0">Brutal</span>
