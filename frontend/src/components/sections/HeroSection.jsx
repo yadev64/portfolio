@@ -68,7 +68,7 @@ export const HeroSection = () => {
                     <MagneticButton onClick={() => document.getElementById('projects')?.scrollIntoView()}>
                         View My Work
                     </MagneticButton>
-                    <MagneticButton variant="secondary" onClick={() => window.location.href = 'mailto:yadev@example.com'}>
+                    <MagneticButton variant="secondary" onClick={() => window.location.href = 'mailto:hello@yadev.cc'}>
                         Say Hello
                     </MagneticButton>
                 </motion.div>

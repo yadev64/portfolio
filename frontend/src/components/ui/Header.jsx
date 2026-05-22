@@ -23,7 +23,7 @@ const Header = () => {
                     </Link>
                     <span className="w-px h-5 bg-border/50" />
                     <Link to="/" className="font-display font-bold text-lg text-textMain tracking-tight">
-                        Yadev<span className="text-primary">.</span>dev
+                        Yadev<span className="text-primary">.</span>cc
                     </Link>
                 </div>
 

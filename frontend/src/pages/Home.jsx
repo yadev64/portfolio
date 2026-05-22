@@ -338,9 +338,20 @@ const NeumorphicDashboard = () => {
                     {/* Left: Identity */}
                     <div className="lg:col-span-7 flex flex-col justify-center hero-identity">
                         <p className="font-mono text-xs uppercase tracking-[0.3em] text-textMuted mb-4">Identity Matrix</p>
-                        <h1 className="text-6xl md:text-8xl lg:text-9xl font-display font-bold tracking-tighter text-textMain leading-[0.9] portfolio-logo">
-                            Yadev<span className="text-primary">.</span>dev
-                        </h1>
+                        <div className="relative mb-6 select-none group">
+                            <h1 className="text-6xl md:text-8xl lg:text-[7rem] font-display font-extrabold tracking-tighter text-textMain leading-[0.8] portfolio-logo">
+                                Yadev
+                            </h1>
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-3 mt-3 md:mt-4">
+                                <span className="text-2xl md:text-4xl lg:text-5xl font-light tracking-widest text-textMuted uppercase font-body">
+                                    Jayachandran
+                                </span>
+                                {/* <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full neu-pressed text-primary font-mono text-xs md:text-sm tracking-wider w-fit shadow-sm border border-border/10">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                                    <span>yadev.cc</span>
+                                </div> */}
+                            </div>
+                        </div>
                         <h2 className="text-xl md:text-2xl font-display text-textMuted mt-6 h-10">
                             {typedRole}<span className="animate-pulse">|</span>
                         </h2>
@@ -349,7 +360,7 @@ const NeumorphicDashboard = () => {
                         </p>
                         <div className="flex flex-wrap gap-4 mt-10">
                             <a href="#projects"><NeuButton variant="primary">View My Work</NeuButton></a>
-                            <a href="mailto:yadev@example.com"><NeuButton>Say Hello</NeuButton></a>
+                            <a href="mailto:hello@yadev.cc"><NeuButton>Say Hello</NeuButton></a>
                         </div>
                         <div className="flex gap-4 mt-8 social-links">
                             <a href="https://github.com/yadev64" target="_blank" rel="noopener noreferrer"><NeuIconButton size="sm" icon={<Github size={16} />} /></a>
@@ -636,7 +647,7 @@ const NeumorphicDashboard = () => {
             <footer className="px-6 md:px-16 lg:px-24 py-16 max-w-[1600px] mx-auto">
                 <NeuCard className="flex flex-col md:flex-row md:items-center md:justify-between gap-8">
                     <div>
-                        <h2 className="text-2xl font-display font-bold text-textMain">Yadev<span className="text-primary">.</span>dev</h2>
+                        <h2 className="text-2xl font-display font-bold text-textMain">Yadev<span className="text-primary">.</span>cc</h2>
                         <p className="font-mono text-xs text-textMuted mt-2">Designed & built by Yadev. Powered by curiosity and coffee.</p>
                     </div>
                     <div className="flex gap-4">

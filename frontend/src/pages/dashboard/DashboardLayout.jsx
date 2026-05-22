@@ -37,7 +37,7 @@ export const DashboardLayout = () => {
             {/* Sidebar */}
             <aside className="w-64 border-r border-border bg-bg-card flex flex-col">
                 <div className="p-6 border-b border-border">
-                    <Link to="/" className="text-xl font-display font-bold text-accent-primary">Yadev<span className="text-text-primary">.dev</span></Link>
+                    <Link to="/" className="text-xl font-display font-bold text-accent-primary">Yadev<span className="text-text-primary">.cc</span></Link>
                     <div className="text-xs font-mono text-text-secondary mt-1">Admin // System</div>
                 </div>
 

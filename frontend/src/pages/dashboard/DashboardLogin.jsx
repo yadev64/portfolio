@@ -20,7 +20,7 @@ export const DashboardLogin = () => {
             // Stub api call
             // const res = await fetch('http://localhost:8787/api/auth/login', { ... })
             setTimeout(() => {
-                if (email === 'yadev@example.com' && password === 'admin') {
+                if ((email === 'admin@yadev.cc' || email === 'yadev@example.com') && password === 'admin') {
                     setAuth('mock-jwt-token-123')
                     toast.success('Authentication successful')
                     navigate('/dashboard')
@@ -61,7 +61,7 @@ export const DashboardLogin = () => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="w-full bg-bg-secondary border border-border rounded-lg px-4 py-3 text-text-primary focus:outline-none focus:border-accent-primary font-mono transition-colors"
-                            placeholder="admin@yadev.dev"
+                            placeholder="admin@yadev.cc"
                             required
                         />
                     </div>
