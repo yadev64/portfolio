@@ -1,12 +1,12 @@
 [
   {
     "_id": "career_tricog",
-    "designation": "Senior Software Engineer",
+    "designation": "R&D Team Lead (Senior Software Engineer)",
     "company": "Tricog Health",
     "fromDate": "2024-06",
     "toDate": "",
     "isPresent": true,
-    "details": "Architecting and scaling cloud-native healthcare AI interfaces and clinical workflow applications. Building high-performance, real-time diagnostic tooling and medical data visualization dashboards for global healthcare providers.",
+    "details": "Leading the Research & Development (R&D) team at Tricog Health. Pioneering healthcare AI diagnostic architectures, agentic SDLC pipelines, automated clinical workflows, medical device telemetry, and high-performance diagnostic visualization platforms.",
     "type": "job",
     "highlight": true,
     "createdAt": "2024-06-01T00:00:00.000Z"

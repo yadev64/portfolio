@@ -4,7 +4,7 @@ import { Edit2, Trash2, X } from 'lucide-react';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
-const CATEGORIES = ['Frontend', 'Backend', 'Database', 'Cloud', 'Tools', 'Design', 'Other Technologies'];
+const CATEGORIES = ['AI & Agents', 'DevOps & Cloud', 'Frontend', 'Backend', 'Architecture', 'Tools'];
 
 const SkillsAdmin = () => {
     const [skills, setSkills] = useState([]);

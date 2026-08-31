@@ -14,11 +14,11 @@ import SKILLS_DATA from '../data/skills.json';
 import WRITING_DATA from '../data/writing.json';
 
 const ROLES = [
-    'Senior Software Engineer_',
-    'Full-Stack Architect_',
-    'Product Thinker & Maker_',
-    'UI/UX Craftsman_',
-    'Open Source Builder_',
+    'Leading R&D @ Tricog Health_',
+    'AI & Agentic Systems Architect_',
+    'Agentic SDLC & Tooling Builder_',
+    'Railway CI/CD & Cloud Engineer_',
+    'Full-Stack & Systems Craftsman_',
 ];
 
 // Map JSON data to the shapes this component expects
@@ -33,7 +33,7 @@ const PROJECTS = PROJECTS_DATA.map(p => ({
 // Map skills — normalize category to lowercase for filtering
 const SKILLS = SKILLS_DATA.map(s => ({
     name: s.name,
-    category: (s.category || '').toLowerCase().replace('other technologies', 'cloud').replace('people and community', 'tools'),
+    category: (s.category || '').toLowerCase().trim(),
     proficiency: s.proficiency || 80,
 }));
 
@@ -362,7 +362,7 @@ const NeumorphicDashboard = () => {
                             {typedRole}<span className="animate-pulse">|</span>
                         </h2>
                         <p className="text-textMuted text-sm md:text-base max-w-lg mt-6 leading-relaxed">
-                            Senior Software Engineer at <span className="text-primary font-semibold">Tricog Health</span> · ex-Founding Engineer. Building scalable web architectures, native utilities, and IoT prototypes at the intersection of code & design.
+                            Leading the R&D team at <span className="text-primary font-semibold">Tricog Health</span> · ex-Founding Engineer. Pioneering <span className="text-textMain font-medium">Agentic SDLC</span>, autonomous AI agents, multi-agent workflows, and production deployments on Railway.
                         </p>
                         <div className="flex flex-wrap gap-4 mt-10">
                             <a href="#projects"><NeuButton variant="primary">View My Work</NeuButton></a>
@@ -595,7 +595,7 @@ const NeumorphicDashboard = () => {
             <section id="skills" className="px-6 md:px-16 lg:px-24 py-20 max-w-[1600px] mx-auto">
                 <SectionHeader label="Technical Skills" number={3} />
                 <div className="flex flex-wrap gap-3 mb-10">
-                    {['all', 'frontend', 'backend', 'database', 'cloud', 'tools'].map(cat => (
+                    {['all', 'ai & agents', 'devops & cloud', 'frontend', 'backend', 'architecture'].map(cat => (
                         <button key={cat} onClick={() => setActiveSkillCategory(cat)}
                             className={`px-4 py-2 rounded-full font-mono text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer ${activeSkillCategory === cat ? 'neu-pressed text-primary' : 'neu-flat text-textMuted hover:text-textMain'}`}>
                             {cat}

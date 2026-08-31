@@ -1,131 +1,200 @@
 [
   {
-    "_id": "skill_react_next",
-    "name": "React / Next.js",
-    "category": "Frontend",
-    "iconClass": "devicon-react-original",
-    "proficiency": 96,
+    "_id": "skill_autonomous_agents",
+    "name": "Autonomous Agents & Multi-Agent Systems",
+    "category": "AI & Agents",
+    "iconClass": "devicon-python-plain",
+    "proficiency": 95,
     "createdAt": "2026-01-01T00:00:00.000Z",
-    "updatedAt": "2026-08-31T17:13:19.141Z"
+    "updatedAt": "2026-08-31T20:00:00.000Z"
   },
   {
-    "_id": "skill_vue_nuxt",
-    "name": "Vue.js / Nuxt",
-    "category": "Frontend",
-    "iconClass": "devicon-vuejs-plain",
-    "proficiency": 92,
-    "createdAt": "2026-01-02T00:00:00.000Z"
+    "_id": "skill_agentic_sdlc",
+    "name": "Agentic SDLC & Automated Workflows",
+    "category": "AI & Agents",
+    "iconClass": "devicon-git-plain",
+    "proficiency": 95,
+    "createdAt": "2026-01-02T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
   },
   {
-    "_id": "skill_typescript",
-    "name": "TypeScript / JavaScript",
-    "category": "Frontend",
+    "_id": "skill_agentic_skills",
+    "name": "Agentic Skills Creation & Tooling",
+    "category": "AI & Agents",
     "iconClass": "devicon-typescript-plain",
     "proficiency": 94,
-    "createdAt": "2026-01-03T00:00:00.000Z"
+    "createdAt": "2026-01-03T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
   },
   {
-    "_id": "skill_swift_appkit",
-    "name": "Swift / SwiftUI & AppKit",
-    "category": "Frontend",
-    "iconClass": "devicon-swift-plain",
-    "proficiency": 86,
-    "createdAt": "2026-01-04T00:00:00.000Z"
+    "_id": "skill_teaching_agentic",
+    "name": "Teaching & Mentoring Agentic Development",
+    "category": "AI & Agents",
+    "iconClass": "devicon-d3js-plain",
+    "proficiency": 92,
+    "createdAt": "2026-01-04T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
   },
   {
-    "_id": "skill_tailwind_css",
-    "name": "Tailwind CSS / Design Systems",
-    "category": "Frontend",
-    "iconClass": "devicon-tailwindcss-plain",
-    "proficiency": 96,
-    "createdAt": "2026-01-05T00:00:00.000Z"
-  },
-  {
-    "_id": "skill_nodejs_express",
-    "name": "Node.js / Express",
-    "category": "Backend",
-    "iconClass": "devicon-nodejs-plain",
-    "proficiency": 90,
-    "createdAt": "2026-01-06T00:00:00.000Z"
-  },
-  {
-    "_id": "skill_csharp_dotnet",
-    "name": "C# / .NET",
-    "category": "Backend",
-    "iconClass": "devicon-csharp-plain",
-    "proficiency": 84,
-    "createdAt": "2026-01-07T00:00:00.000Z"
-  },
-  {
-    "_id": "skill_python",
-    "name": "Python & Scripting",
-    "category": "Backend",
+    "_id": "skill_llm_orchestration",
+    "name": "LLM Function Calling & Tool Use",
+    "category": "AI & Agents",
     "iconClass": "devicon-python-plain",
-    "proficiency": 82,
-    "createdAt": "2026-01-08T00:00:00.000Z"
+    "proficiency": 90,
+    "createdAt": "2026-01-05T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
   },
   {
-    "_id": "skill_cpp",
-    "name": "C / C++ (Low Level)",
-    "category": "Backend",
-    "iconClass": "devicon-cplusplus-plain",
-    "proficiency": 80,
-    "createdAt": "2026-01-09T00:00:00.000Z"
-  },
-  {
-    "_id": "skill_mongodb",
-    "name": "MongoDB",
-    "category": "Database",
+    "_id": "skill_vector_rag",
+    "name": "Vector Databases & Context Retrieval (RAG)",
+    "category": "AI & Agents",
     "iconClass": "devicon-mongodb-plain",
-    "proficiency": 88,
-    "createdAt": "2026-01-10T00:00:00.000Z"
+    "proficiency": 86,
+    "createdAt": "2026-01-06T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
   },
   {
-    "_id": "skill_postgresql",
-    "name": "PostgreSQL",
-    "category": "Database",
-    "iconClass": "devicon-postgresql-plain",
-    "proficiency": 85,
-    "createdAt": "2026-01-11T00:00:00.000Z"
+    "_id": "skill_railway_deploy",
+    "name": "Railway Deployment & PaaS Architecture",
+    "category": "DevOps & Cloud",
+    "iconClass": "devicon-docker-plain",
+    "proficiency": 96,
+    "createdAt": "2026-01-07T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
+  },
+  {
+    "_id": "skill_railway_cicd",
+    "name": "Railway CI/CD & Automated Pipelines",
+    "category": "DevOps & Cloud",
+    "iconClass": "devicon-github-original",
+    "proficiency": 95,
+    "createdAt": "2026-01-08T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
+  },
+  {
+    "_id": "skill_docker_containers",
+    "name": "Docker & Container Orchestration",
+    "category": "DevOps & Cloud",
+    "iconClass": "devicon-docker-plain",
+    "proficiency": 88,
+    "createdAt": "2026-01-09T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
+  },
+  {
+    "_id": "skill_github_actions",
+    "name": "GitHub Actions CI/CD",
+    "category": "DevOps & Cloud",
+    "iconClass": "devicon-github-original",
+    "proficiency": 90,
+    "createdAt": "2026-01-10T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
   },
   {
     "_id": "skill_aws_gcp",
-    "name": "AWS & Google Cloud Platform",
-    "category": "Cloud",
+    "name": "AWS & Google Cloud Infrastructure",
+    "category": "DevOps & Cloud",
     "iconClass": "devicon-googlecloud-plain",
-    "proficiency": 82,
-    "createdAt": "2026-01-12T00:00:00.000Z"
+    "proficiency": 84,
+    "createdAt": "2026-01-11T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
   },
   {
-    "_id": "skill_docker",
-    "name": "Docker & CI/CD",
-    "category": "Cloud",
-    "iconClass": "devicon-docker-plain",
-    "proficiency": 80,
-    "createdAt": "2026-01-13T00:00:00.000Z"
+    "_id": "skill_react_next",
+    "name": "React / Next.js / Vite",
+    "category": "Frontend",
+    "iconClass": "devicon-react-original",
+    "proficiency": 94,
+    "createdAt": "2026-01-12T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
   },
   {
-    "_id": "skill_figma_design",
-    "name": "Figma & Design Thinking",
-    "category": "Tools",
-    "iconClass": "devicon-figma-plain",
+    "_id": "skill_typescript",
+    "name": "TypeScript & Modern ESNext",
+    "category": "Frontend",
+    "iconClass": "devicon-typescript-plain",
+    "proficiency": 95,
+    "createdAt": "2026-01-13T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
+  },
+  {
+    "_id": "skill_tailwind_css",
+    "name": "Tailwind CSS & Design Systems",
+    "category": "Frontend",
+    "iconClass": "devicon-tailwindcss-plain",
     "proficiency": 92,
-    "createdAt": "2026-01-14T00:00:00.000Z"
+    "createdAt": "2026-01-14T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
   },
   {
-    "_id": "skill_data_viz",
-    "name": "Data Viz & Cytoscape",
-    "category": "Tools",
-    "iconClass": "devicon-d3js-plain",
+    "_id": "skill_swift_appkit",
+    "name": "Swift & macOS AppKit (Native)",
+    "category": "Frontend",
+    "iconClass": "devicon-swift-plain",
+    "proficiency": 78,
+    "createdAt": "2026-01-15T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
+  },
+  {
+    "_id": "skill_nodejs_express",
+    "name": "Node.js & Express / Fastify",
+    "category": "Backend",
+    "iconClass": "devicon-nodejs-plain",
+    "proficiency": 92,
+    "createdAt": "2026-01-16T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
+  },
+  {
+    "_id": "skill_python",
+    "name": "Python (AI Tooling & Agent Scripts)",
+    "category": "Backend",
+    "iconClass": "devicon-python-plain",
+    "proficiency": 90,
+    "createdAt": "2026-01-17T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
+  },
+  {
+    "_id": "skill_postgresql",
+    "name": "PostgreSQL & Database Architecture",
+    "category": "Backend",
+    "iconClass": "devicon-postgresql-plain",
     "proficiency": 88,
-    "createdAt": "2026-01-15T00:00:00.000Z"
+    "createdAt": "2026-01-18T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
   },
   {
-    "_id": "skill_iot_hardware",
-    "name": "Hardware & IoT (Arduino/RPi/Jetson)",
-    "category": "Tools",
-    "iconClass": "devicon-arduino-plain",
-    "proficiency": 86,
-    "createdAt": "2026-01-16T00:00:00.000Z"
+    "_id": "skill_redis",
+    "name": "Redis (Caching & Pub/Sub Queues)",
+    "category": "Backend",
+    "iconClass": "devicon-redis-plain",
+    "proficiency": 85,
+    "createdAt": "2026-01-19T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
+  },
+  {
+    "_id": "skill_lead_rd",
+    "name": "Leading R&D & Rapid Prototyping",
+    "category": "Architecture",
+    "iconClass": "devicon-figma-plain",
+    "proficiency": 95,
+    "createdAt": "2026-01-20T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
+  },
+  {
+    "_id": "skill_system_design",
+    "name": "System Design & Distributed Workflows",
+    "category": "Architecture",
+    "iconClass": "devicon-csharp-plain",
+    "proficiency": 92,
+    "createdAt": "2026-01-21T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
+  },
+  {
+    "_id": "skill_design_thinking",
+    "name": "Product Strategy & Design Thinking",
+    "category": "Architecture",
+    "iconClass": "devicon-figma-plain",
+    "proficiency": 90,
+    "createdAt": "2026-01-22T00:00:00.000Z",
+    "updatedAt": "2026-08-31T20:00:00.000Z"
   }
 ]
