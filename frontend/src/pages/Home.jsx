@@ -376,10 +376,10 @@ const NeumorphicDashboard = () => {
                     </div>
 
                     {/* Right: Card Stack */}
-                    <div className="lg:col-span-5 flex flex-col gap-6">
+                    <div className="lg:col-span-5 flex flex-col gap-6 w-full max-w-full min-w-0">
 
                         {/* CARD 1: Quick Navigation (Pressed IN) */}
-                        <NeuCard className="!p-5 neu-pressed border-none quick-jump-container relative overflow-hidden">
+                        <NeuCard className="w-full !p-5 neu-pressed border-none quick-jump-container relative overflow-hidden">
                             <p className="font-mono text-[10px] uppercase tracking-[0.3em] font-bold mb-4 pb-3 border-b border-border/10">Quick Jump</p>
                             <div className="grid grid-cols-2 gap-3">
                                 {NAV_ITEMS.map(item => (
@@ -392,10 +392,10 @@ const NeumorphicDashboard = () => {
                             </div>
                         </NeuCard>
 
-                        {/* CARDS 2a & 2b: Glyph Display + Location (Only rendered when ample space is available) */}
-                        <div className="flex gap-4 md:gap-6 items-stretch">
+                        {/* CARDS 2a & 2b: Glyph Display + Location (strictly bounded to right column width) */}
+                        <div className="w-full grid grid-cols-1 2xl:grid-cols-12 gap-4 md:gap-6 items-stretch">
                             {/* Left: Circular Dot Matrix Display */}
-                            <NeuCard className="flex-1 xl:flex-none !p-3 md:!p-4 flex items-center justify-between overflow-hidden">
+                            <NeuCard className="w-full 2xl:col-span-7 !p-3 md:!p-4 flex items-center justify-between overflow-hidden min-w-0">
                                 <div className="shrink-0">
                                     <DotMatrixDisplay
                                         ref={glyphRef}
@@ -450,33 +450,33 @@ const NeumorphicDashboard = () => {
                                 </div>
                             </NeuCard>
 
-                            {/* Right: Location + Calendar — only renders when ample room (xl and up) to avoid congestion */}
-                            <NeuCard className="hidden xl:flex !p-5 flex-col justify-between flex-1 min-w-[190px]">
+                            {/* Right: Location + Calendar — only renders when ample room (2xl and up) to avoid congestion and NEVER exceeds Quick Jump's right bound */}
+                            <NeuCard className="hidden 2xl:flex 2xl:col-span-5 !p-5 flex-col justify-between w-full min-w-0 overflow-hidden">
                                 <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-4">Location</p>
 
                                 <div className="flex items-center gap-2 mb-4">
-                                    <MapPin size={14} className="text-primary" />
-                                    <span className="font-mono text-xs text-textMain font-medium">Bangalore, IN</span>
+                                    <MapPin size={14} className="text-primary shrink-0" />
+                                    <span className="font-mono text-xs text-textMain font-medium truncate">Bangalore, IN</span>
                                 </div>
 
                                 {/* Mini Calendar */}
                                 <div className="neu-pressed rounded-xl p-3 flex items-center gap-3">
                                     <Calendar size={16} className="text-primary shrink-0" />
-                                    <div className="flex flex-col">
+                                    <div className="flex flex-col min-w-0">
                                         <span className="font-mono text-[10px] text-textMuted uppercase">{dayName}</span>
-                                        <span className="font-display text-lg font-bold text-textMain leading-tight">{monthName} {dayNum}</span>
+                                        <span className="font-display text-lg font-bold text-textMain leading-tight truncate">{monthName} {dayNum}</span>
                                     </div>
                                 </div>
 
                                 <div className="flex items-center gap-2 mt-3">
-                                    <Coffee size={12} className="text-textMuted" />
-                                    <span className="font-mono text-[10px] text-textMuted uppercase">Open to collab</span>
+                                    <Coffee size={12} className="text-textMuted shrink-0" />
+                                    <span className="font-mono text-[10px] text-textMuted uppercase truncate">Open to collab</span>
                                 </div>
                             </NeuCard>
                         </div>
 
                         {/* CARD 3: Remote Control (Car AC style) */}
-                        <NeuCard className="!p-4 md:!p-5">
+                        <NeuCard className="w-full !p-4 md:!p-5">
                             <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-4 md:mb-5 pb-3 border-b border-border/30">System Remote</p>
 
 
