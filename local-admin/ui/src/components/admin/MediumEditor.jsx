@@ -71,6 +71,13 @@ const MediumEditor = ({ value, onChange, placeholder = 'Tell your story...' }) =
         },
     });
 
+    // Synchronize external value changes (e.g. when editing an existing post)
+    React.useEffect(() => {
+        if (editor && value !== undefined && value !== editor.getHTML()) {
+            editor.commands.setContent(value || '', false);
+        }
+    }, [value, editor]);
+
     const uploadAndInsertImage = useCallback(async (file) => {
         if (!editor) return;
         const formData = new FormData();

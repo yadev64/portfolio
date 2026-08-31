@@ -14,10 +14,11 @@ import SKILLS_DATA from '../data/skills.json';
 import WRITING_DATA from '../data/writing.json';
 
 const ROLES = [
-    'Software Engineer_',
-    'Builder of Tools_',
-    'Maker_',
-    'UI Craftsman_',
+    'Senior Software Engineer_',
+    'Full-Stack Architect_',
+    'Product Thinker & Maker_',
+    'UI/UX Craftsman_',
+    'Open Source Builder_',
 ];
 
 // Map JSON data to the shapes this component expects
@@ -138,9 +139,10 @@ const ProjectHighlights = ({ projects }) => {
                 {highlights.map((project, i) => {
                     const isActive = i === active;
                     const isRightSide = i > active;
+                    const shortTitle = (project.title || '').split('—')[0].split(' - ')[0].trim();
 
                     // Calculate widths so the container exactly fits 100%
-                    const inactiveWidth = 52;
+                    const inactiveWidth = 56;
                     const activeWidthCalc = `calc(100% - ${(highlights.length - 1) * inactiveWidth}px)`;
 
                     // Inverted shadow for tabs on the right, normal for left/active
@@ -217,16 +219,18 @@ const ProjectHighlights = ({ projects }) => {
 
                             {/* ── Collapsed Tab Label (visible only when inactive) ── */}
                             {!isActive && (
-                                <div className="w-full h-full flex items-center justify-center group-hover:bg-surface transition-colors">
+                                <div className="w-full h-full flex flex-col items-center justify-center py-10 px-2 overflow-hidden group-hover:bg-surface transition-colors select-none">
                                     <span
-                                        className="font-mono text-[10px] uppercase tracking-[0.25em] text-textMuted group-hover:text-primary transition-colors whitespace-nowrap"
+                                        className="font-mono text-[10px] uppercase tracking-[0.2em] text-textMuted group-hover:text-primary transition-colors whitespace-nowrap overflow-hidden text-ellipsis block"
                                         style={{
                                             writingMode: 'vertical-rl',
                                             textOrientation: 'mixed',
                                             transform: 'rotate(180deg)',
+                                            maxHeight: '260px',
                                         }}
+                                        title={project.title}
                                     >
-                                        {String(i + 1).padStart(2, '0')} {project.title}
+                                        {String(i + 1).padStart(2, '0')} · {shortTitle}
                                     </span>
                                 </div>
                             )}
@@ -285,14 +289,15 @@ const ProjectHighlights = ({ projects }) => {
                 <div className="flex gap-2">
                     {highlights.map((project, i) => {
                         if (i === active) return null;
+                        const shortTitle = (project.title || '').split('—')[0].split(' - ')[0].trim();
                         return (
                             <button
                                 key={project.slug}
                                 onClick={() => setActive(i)}
-                                className="flex-1 py-3 rounded-xl neu-flat cursor-pointer group"
+                                className="flex-1 py-3 px-2 rounded-xl neu-flat cursor-pointer group overflow-hidden"
                             >
-                                <span className="font-mono text-[9px] uppercase tracking-widest text-textMuted group-hover:text-primary transition-colors block text-center">
-                                    {String(i + 1).padStart(2, '0')} {project.title}
+                                <span className="font-mono text-[9px] uppercase tracking-widest text-textMuted group-hover:text-primary transition-colors block text-center truncate">
+                                    {String(i + 1).padStart(2, '0')} {shortTitle}
                                 </span>
                             </button>
                         );
@@ -357,7 +362,7 @@ const NeumorphicDashboard = () => {
                             {typedRole}<span className="animate-pulse">|</span>
                         </h2>
                         <p className="text-textMuted text-sm md:text-base max-w-lg mt-6 leading-relaxed">
-                            Senior Software Engineer at <span className="text-primary font-semibold">Tricog Health</span>, Bangalore. I build production-grade web apps, open-source dev tools, and cloud infrastructure.
+                            Senior Software Engineer at <span className="text-primary font-semibold">Tricog Health</span> · ex-Founding Engineer. Building scalable web architectures, native utilities, and IoT prototypes at the intersection of code & design.
                         </p>
                         <div className="flex flex-wrap gap-4 mt-10">
                             <a href="#projects"><NeuButton variant="primary">View My Work</NeuButton></a>

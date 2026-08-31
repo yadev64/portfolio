@@ -1,67 +1,155 @@
 [
   {
-    "_id": "seed_1",
-    "title": "Restaurant OS",
-    "description": "Full-stack multi-tenant SaaS platform for hotel chain management. Isolated databases, real-time orders, shared billing.",
-    "content": "",
-    "coverImage": "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600&h=340&fit=crop",
-    "externalLink": "",
+    "_id": "proj_macbar",
+    "title": "macbar — Dynamic Island HUD for macOS",
+    "description": "Transforms your MacBook's notch into an interactive Dynamic Island command center packed with live system telemetry, system-wide media controls, calendar, weather, and AirPods battery.",
+    "content": "<p><strong>macbar</strong> is a native macOS system utility that repurposes the static display notch cutout on modern MacBooks into an intelligent, expandable, interactive heads-up display (HUD). Instead of letting screen real estate go unused, macbar brings high-frequency system stats, media playback, calendar schedules, and hardware controls directly to your fingertips.</p><p>✨ Core Philosophy: Hover over the notch → it expands → you're in total control. Move away → it disappears seamlessly with zero cognitive overhead.</p><h2>1. The Problem Space</h2><p>Modern MacBook displays introduced the camera notch, creating an unused dead-zone in the menu bar. Meanwhile, power users and developers continuously juggle separate status bar icons for CPU monitoring, audio switching, weather, and media playback. Most third-party tools that attempt to address this rely on heavy web-wrapper runtimes (like Electron) that consume hundreds of megabytes of RAM and trigger significant CPU wakeups, hurting battery life.</p><h2>2. Architectural &amp; Technical Deep-Dive</h2><p>macbar was engineered strictly using native <strong>SwiftUI</strong>, <strong>AppKit</strong>, and low-level Darwin / Mach kernel APIs with zero external third-party dependencies.</p><img class=\"medium-editor-image\" src=\"https://github.com/user-attachments/assets/e4a7959d-0543-4913-a5f5-4b9e50a88704\" alt=\"macbar icon\"><h3>Window Management &amp; Multi-Space Persistence</h3><p>To ensure macbar remains instantly accessible across all virtual desktops and full-screen spaces without flickering or losing focus, <code>NotchWindowController</code> configures the backing <code>NSWindow</code> directly against the CoreGraphics window server.</p><h3>Smart Two-Phase Hover Engine</h3><p>A major design challenge was avoiding accidental expansions when users simply move their cursor past the top menu bar. macbar solves this using a two-phase velocity-sensitive hover tracking observer. The window only expands when the cursor enters the notch trigger zone and decelerates below a configured velocity threshold.</p><h3>Live Hardware Telemetry Without Battery Drain</h3><ul><li><p><strong>Mach Kernel CPU &amp; RAM Polling:</strong> Directly calls <code>host_statistics64</code> and <code>vm_stat</code> from <code>Darwin.Mach</code>, bypassing heavy shell invocations like <code>top</code> or <code>ps</code>.</p></li><li><p><strong>Power &amp; Battery:</strong> Reads IOKit power sources (<code>IOPMCopyBatteryInfo</code>) and <code>pmset</code> power assertion logs to track discharge velocity, cycle health, and power delivery state.</p></li><li><p><strong>AirPods &amp; Bluetooth Peripherals:</strong> Hooks into <code>IOBluetooth</code> to read live left/right earbud and charging case battery percentages.</p></li><li><p><strong>System-Wide Media Controller:</strong> Leverages the macOS NowPlaying private framework bridge and AppleScript bridges to extract album art, track duration, scrubber progress, and Spotify/Apple Music playback controls.</p></li></ul><h2>3. Feature Highlights</h2><p></p><img class=\"medium-editor-image\" src=\"http://localhost:4000/uploads/img-0797-1788202940571.PNG\" alt=\"IMG_0797.PNG\"><ul><li><p>🎯 <strong>Notch-Native Geometry:</strong> Aligns perfectly with the hardware notch bezel radii across 14-inch and 16-inch Apple Silicon MacBook Pro and MacBook Air displays.</p></li><li><p>📊 <strong>Interactive Stats Bar:</strong> Clickable live indicators for CPU, RAM, Free SSD Storage, Battery, and Network Wi-Fi SSID.</p></li><li><p>🎵 <strong>Aesthetic Media Pill:</strong> Dynamic frosted-glass artwork blur with live playback scrubbing and tactile playback buttons.</p></li><li><p>🌤️ <strong>Zero-API Weather &amp; Calendar:</strong> Built-in weather conditions and upcoming calendar agenda without requiring paid API keys.</p></li><li><p>⚡ <strong>Negligible Resource Overhead:</strong> Idle CPU usage stays below <strong>0.2%</strong> and memory stays under <strong>25MB</strong>.</p></li></ul><h2>4. Tech Stack &amp; Tools</h2><p><code>Swift 5.9</code>, <code>SwiftUI</code>, <code>AppKit</code>, <code>Combine</code>, <code>IOKit</code>, <code>IOBluetooth</code>, <code>CoreGraphics</code>, <code>Darwin Mach APIs</code></p>",
+    "coverImage": "https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=800&h=450&fit=crop",
+    "externalLink": "https://github.com/yadev64/macbar",
     "tags": [
-      "React",
-      "Node.js",
-      "MongoDB",
-      "Express"
+      "Swift",
+      "SwiftUI",
+      "macOS",
+      "AppKit",
+      "System Utility",
+      "Hardware Telemetry"
     ],
     "published": true,
-    "slug": "restaurant-os",
-    "createdAt": "2026-01-01T00:00:00.000Z"
+    "slug": "macbar-dynamic-island-hud-for-macos",
+    "createdAt": "2026-01-01T00:00:00.000Z",
+    "updatedAt": "2026-08-31T19:02:32.931Z"
   },
   {
-    "_id": "seed_2",
-    "title": "RequestLab",
-    "description": "Postman meets diff tool — open-source API testing with visual request comparison.",
-    "content": "",
-    "coverImage": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=340&fit=crop",
-    "externalLink": "",
+    "_id": "proj_floatme",
+    "title": "FloatMe — Zero-Latency Native macOS Presenter Camera",
+    "description": "High-aesthetic, zero-latency circular floating camera preview engineered for content creators, keynote presenters, and video tutorials. Operates above full-screen apps with click-through ghost mode.",
+    "content": "<div class=\"space-y-8\"><p class=\"text-lg leading-relaxed text-textMain font-medium\"><strong>FloatMe</strong> is an ultra-lightweight, perfectly circular native macOS floating camera utility designed specifically to sit gracefully over your work while screen recording, coding live, presenting slide decks, or streaming. Built strictly with Apple frameworks, it runs with near-zero CPU overhead while ensuring your webcam preview stays persistently on top of everything—even full-screen slide presentations and multi-monitor setups.</p><div class=\"p-6 rounded-2xl neu-pressed my-6\"><p class=\"text-primary font-mono text-sm font-semibold tracking-wide\">🎥 Designed for engineers and presenters who want a clean, studio-grade video circle without the bloat of OBS or heavy streaming studios.</p></div><h2>1. The Problem Space</h2><p>Presenters, educators, and engineers recording coding tutorials constantly battle clunky webcam window setups:</p><ul><li>Standard camera preview windows get minimized or buried beneath full-screen Keynote/PowerPoint presentations.</li><li>Rectangular camera feeds block code editors, terminal prompts, and critical UI buttons.</li><li>Heavy software like OBS or web-based overlays consume 20-40% CPU, spin up laptop fans, and introduce perceptible audio/video latency during screen captures.</li></ul><h2>2. Key Innovations & Technical Architecture</h2><h3>True Floating Window Across All Spaces</h3><p>FloatMe detaches from the Dock and operates as a menu-bar system agent. It elevates its window level to <code>NSWindow.Level.screenSaver</code> and binds to <code>.canJoinAllSpaces</code>:</p><pre><code>// Setting up the zero-boundary circular presenter canvas\nlet window = NSWindow(\n    contentRect: NSRect(x: 100, y: 100, width: circleSize, height: circleSize),\n    styleMask: [.borderless],\n    backing: .buffered,\n    defer: false\n)\nwindow.level = .screenSaver\nwindow.collectionBehavior = [.canJoinAllSpaces, .fullScreenAuxiliary, .stationary]\nwindow.isOpaque = false\nwindow.backgroundColor = .clear\nwindow.hasShadow = true</code></pre><h3>Ghost Mode (Click-Through Event Passing)</h3><p>Never get blocked by your own face again. When <strong>Ghost Mode</strong> is toggled on, mouse events are configured to ignore the floating camera window entirely, allowing clicks to strike whatever IDE button, browser tab, or presentation element lies directly underneath:</p><pre><code>// Dynamically toggle event passing without destroying video capture buffers\nwindow.ignoresMouseEvents = ghostModeActive</code></pre><h3>Live AVFoundation Pipeline & Edge Feathering</h3><p>FloatMe connects directly to <code>AVCaptureSession</code> with preset <code>.high</code> resolution, rendering camera buffers inside a custom Metal-backed SwiftUI shape:</p><ul><li><strong>Dynamic Digital Zoom & Crop:</strong> Allows presenters to adjust digital magnification up to 300% without moving the physical laptop screen or webcam.</li><li><strong>Gaussian Edge Feathering:</strong> Replaces harsh circular vector borders with a smooth, studio-fade Gaussian blur gradient.</li><li><strong>Monochromatic Live Studio Filter:</strong> Real-time hardware shader that converts the live video feed into a high-contrast grayscale stream for minimalist, distraction-free technical screencasts.</li><li><strong>Mirroring & Opacity Controls:</strong> Real-time horizontal flip and alpha transparency sliders stored via <code>@AppStorage</code>.</li></ul><h2>3. Performance Benchmarks</h2><div class=\"grid grid-cols-1 md:grid-cols-3 gap-4 my-6\"><div class=\"p-4 rounded-xl neu-flat text-center\"><span class=\"text-2xl font-bold text-primary font-display\">0.4%</span><p class=\"font-mono text-xs text-textMuted uppercase mt-1\">Idle CPU Usage</p></div><div class=\"p-4 rounded-xl neu-flat text-center\"><span class=\"text-2xl font-bold text-primary font-display\">&lt; 18 MB</span><p class=\"font-mono text-xs text-textMuted uppercase mt-1\">RAM Footprint</p></div><div class=\"p-4 rounded-xl neu-flat text-center\"><span class=\"text-2xl font-bold text-primary font-display\">0 ms</span><p class=\"font-mono text-xs text-textMuted uppercase mt-1\">Buffer Latency</p></div></div><h2>4. Tech Stack & Frameworks</h2><p><code>Swift 5.9</code>, <code>SwiftUI</code>, <code>AppKit</code>, <code>AVFoundation</code>, <code>CoreMedia</code>, <code>Metal Shaders</code></p></div>",
+    "coverImage": "https://images.unsplash.com/photo-1588702547923-7093a6c3ba33?w=800&h=450&fit=crop",
+    "externalLink": "https://github.com/yadev64/floatme",
     "tags": [
-      "React",
-      "Electron",
-      "TypeScript"
+      "Swift",
+      "AVFoundation",
+      "AppKit",
+      "macOS",
+      "Video Processing",
+      "Presenter Tool"
     ],
     "published": true,
-    "slug": "requestlab",
+    "slug": "floatme",
     "createdAt": "2026-01-02T00:00:00.000Z"
   },
   {
-    "_id": "seed_3",
-    "title": "MacBar",
-    "description": "Aesthetic macOS status bar replacement with customizable Liquid Glass widgets.",
-    "content": "",
-    "coverImage": "https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=600&h=340&fit=crop",
-    "externalLink": "",
+    "_id": "proj_sleepx",
+    "title": "SleepX — Smart Ergonomic IoT Travel Pillow",
+    "description": "Award-winning IoT travel neck pillow with integrated Bluetooth 4.0 audio, 72-hour battery, optical night reading lamp, and hands-free voice control. Top 30 at Maker Mela 2018 & Top 15 at Nanshan Entrepreneurship Star Contest.",
+    "content": "<p>Humans are social beings. And so, they travel from place to place for various purposes. During long journeys by bus, train, or flight, commuters routinely listen to music, read books, or take a nap. For making naps comfortable, neck pillows exist—but managing earphones is a frustrating chore with tangled wires catching on luggage, and tiny earbud batteries die after just a few hours. Furthermore, reading books at night is impossible once overhead lights are switched off. With the aim of solving these problems, we created <strong>SleepX</strong>.</p><p>🏆</p><p>Maker Mela 2018 — Top 30 Finalist</p><p>Selected among top hardware makers across Asia (Mumbai)</p><p>⭐</p><p>Nanshan Entrepreneurship Star Contest — Top 15</p><p>Global hardware innovation competition (Shenzhen)</p><h2>1. What is SleepX?</h2><p><strong>SleepX</strong> is a smart neck pillow designed for long-distance travelers. It integrates wireless Bluetooth-enabled earphones powered by a high-capacity Li-ion battery, allowing the device to run for <strong>more than 3 full days (72+ hours)</strong> on a single charge. It features a precision white LED at the bottom right, angled specifically to make reading books easy and comfortable at night without disturbing neighbors. Once connected to a smartphone via Bluetooth, users can control volume, skip tracks, attend calls, and invoke voice assistants hands-free.</p><h2>2. Product Features &amp; Engineering</h2><h3>✨ Look Elegant</h3><p>Finely crafted for elegant look and feel so users can wear it for prolonged durations without fatigue. Handcrafted from fine <strong>rexine</strong> for comfort and filled with smooth, lightweight polyester fiber. The outer rexine enables easy cleaning with water while shielding sensitive internal electronic circuitry from moisture.</p><h3>🔋 Run All Day Long</h3><p>Powered by an internal <strong>2,750mAh Lithium-Ion battery</strong>, SleepX runs for more than 3 days on a single charge. Travelers never have to worry about running out of battery during multi-day journeys. Equipped with a standard Micro-USB 2.0 port, it charges effortlessly with standard smartphone chargers or power banks.</p><h3>🎧 Let's Go Wireless</h3><p>Inbuilt Bluetooth earphones make listening more comfortable than ever before. Powered by Bluetooth 4.0, ultra-clear audio is streamed seamlessly. The pillow is equipped with tactile buttons to adjust volume, skip tracks, and answer incoming calls with an internal noise-isolated mic.</p><h3>💡 Isn't it Beautiful at Night?</h3><p>Ever wished to read books at night while traveling? SleepX makes the dream come true. Equipped with a focused white LED held by a finely engineered optical LED holder that illuminates reading materials at a comfortable 45° angle while allowing easy bulb or color tone replacement.</p><h3>🎙️ And the Best Part...? Voice Control!</h3><p>Control everything by voice! Users can invoke <strong>Google Assistant</strong> on Android or <strong>Siri</strong> on iOS directly via the pillow's microphone and headset controls. Travelers never need to fumble for their phone in crowded buses or trains—just speak the magic words to play music, check arrival times, or dictate messages.</p><h2>3. The Makers Team</h2><p><em>\"We are young makers from God's own Country — Kerala. We love making gadgets that seem fun and help us in our daily life. In our free time, we spend time taking classes and organising workshops for students on using technology to improve life.\"</em></p>",
+    "coverImage": "/uploads/sleepx-1788202695119.png",
+    "externalLink": "https://sites.google.com/view/sleepx/home",
     "tags": [
-      "SwiftUI",
-      "AppKit",
-      "Combine"
+      "Hardware",
+      "IoT",
+      "Bluetooth",
+      "Product Design",
+      "Embedded C",
+      "Maker Mela"
     ],
     "published": true,
-    "slug": "macbar",
-    "createdAt": "2026-01-03T00:00:00.000Z"
+    "slug": "sleepx-smart-ergonomic-iot-travel-pillow",
+    "createdAt": "2026-01-03T00:00:00.000Z",
+    "updatedAt": "2026-08-31T18:58:20.443Z"
   },
   {
-    "_id": "seed_4",
-    "title": "Portfolio v3",
-    "description": "This site. Neumorphic design system inspired by Dieter Rams.",
-    "content": "",
-    "coverImage": "https://images.unsplash.com/photo-1545235617-9465d2a55698?w=600&h=340&fit=crop",
-    "externalLink": "",
+    "_id": "proj_gmadb",
+    "title": "GMADB — Graphical Minimal ADB & Fastboot",
+    "description": "Open-source graphical tool for Android Debug Bridge (ADB), streamlining 1-click ROM/kernel flashing, device discovery, live output terminal blackboard, and shell execution.",
+    "content": "<div class=\"space-y-8\"><p class=\"text-lg leading-relaxed text-textMain font-medium\"><strong>GMADB (GUI Minimal ADB)</strong> is an open-source Windows desktop application built with C# and .NET to streamline the workflow of flashing custom ROMs, kernels, recovery partitions, and sideloading packages to Android devices over the Android Debug Bridge (ADB) and Fastboot protocols.</p><div class=\"my-6\"><img src=\"https://user-images.githubusercontent.com/21107275/123399242-0047a880-d5c2-11eb-9fac-849b98cd85d5.png\" alt=\"GMADB Dashboard UI\" class=\"w-full rounded-2xl shadow-xl neu-flat p-2\" /></div><h2>1. The Problem Space</h2><p>Flashing custom firmware (LineageOS, Pixel Experience, TWRP, Magisk root packages) traditionally requires users to open command prompts, manually navigate complex filesystem paths, type exact terminal arguments (<code>adb sideload rom.zip</code>, <code>fastboot flash recovery twrp.img</code>), and monitor cryptic CLI error strings. A single typo can leave a device soft-bricked or stuck in bootloops.</p><h2>2. Architecture & Functional Breakdown</h2><div class=\"my-6\"><img src=\"https://user-images.githubusercontent.com/21107275/123399260-06d62000-d5c2-11eb-9f7f-a5ac5ef0c9ea.png\" alt=\"GMADB Usage Workflow\" class=\"w-full rounded-2xl shadow-xl neu-flat p-2\" /></div><h3>1. Select & Single-Click Flash Engine</h3><p>Users click <strong>Select ROM</strong>, choose their target <code>.zip</code> or <code>.img</code> package via the native file explorer dialog, and click Flash. GMADB automatically validates package file integrity, checks whether the connected device is in ADB Recovery or Fastboot bootloader mode, and dispatches the exact sequence of flashing commands.</p><h3>2. Live Asynchronous Terminal Blackboard</h3><p>Instead of hiding terminal logs or blocking the UI thread during large 2GB+ firmware transfers, GMADB spawns child ADB worker threads with asynchronous standard output (<code>stdout</code>) and standard error (<code>stderr</code>) stream redirection, piping real-time transfer percentages and error diagnostics to a styled terminal window.</p><h3>3. Automated Device Discovery</h3><p>A single click queries <code>adb devices</code> and <code>fastboot devices</code>, parsing hardware serial numbers, device model names, and connection states (Device, Recovery, Sideload, Unauthorized).</p><h3>4. Custom Shell Execution & Activity Logging</h3><p>Advanced developers can send raw shell commands (e.g. <code>adb shell getprop ro.product.model</code>, <code>adb reboot recovery</code>) directly from the integrated input console while automatic log recorders output timestamped session diagnostics for debugging failed flashes.</p><h2>3. Tech Stack & Dependencies</h2><p><code>C#</code>, <code>.NET Framework 4.5+</code>, <code>Windows Forms</code>, <code>Android Debug Bridge (ADB)</code>, <code>Fastboot CLI Engine</code></p></div>",
+    "coverImage": "https://user-images.githubusercontent.com/21107275/123399242-0047a880-d5c2-11eb-9fac-849b98cd85d5.png",
+    "externalLink": "https://github.com/yadev64/GMADB",
     "tags": [
-      "React",
-      "Tailwind",
-      "Framer Motion"
+      "C#",
+      ".NET",
+      "Android",
+      "ADB",
+      "Desktop Tool",
+      "Fastboot"
     ],
     "published": true,
-    "slug": "portfolio-v3",
+    "slug": "gmadb",
     "createdAt": "2026-01-04T00:00:00.000Z"
+  },
+  {
+    "_id": "proj_dos_gui",
+    "title": "DOS_GUI — Graphical Windowing System for MS-DOS",
+    "description": "Custom graphical user interface built from scratch in Turbo C++ for MS-DOS environments, exploring low-level Cartesian coordinate rasterization and event polling with graphics.h.",
+    "content": "<div class=\"space-y-8\"><p class=\"text-lg leading-relaxed text-textMain font-medium\"><strong>DOS_GUI</strong> (originally titled <em>DOS Ultimate</em>) is a complete graphical windowing environment written in pure Turbo C++ for MS-DOS and DOSBox. Built in 2016 as a deep exploration of computer graphics fundamentals, the project implements window lifecycle management, mouse/keyboard event loops, mathematical rasterization, and interactive desktop utilities using only raw VGA raster primitives.</p><div class=\"my-6 p-6 rounded-2xl neu-pressed\"><p class=\"text-primary font-mono text-sm font-semibold tracking-wide\">💡 Written to understand how early operating system pioneers built graphical interfaces before modern frameworks existed.</p></div><h2>1. Visual Tour & Screenshots</h2><div class=\"grid grid-cols-1 md:grid-cols-2 gap-6 my-6\"><div class=\"space-y-2\"><img src=\"https://user-images.githubusercontent.com/21107275/123401265-3e45cc00-d5c4-11eb-91b3-548c1e45c6c2.JPG\" alt=\"BIOS Boot Animation\" class=\"rounded-xl neu-flat p-2 w-full\" /><p class=\"font-mono text-xs text-textMuted text-center\">1. BIOS-Style Boot Sequence</p></div><div class=\"space-y-2\"><img src=\"https://user-images.githubusercontent.com/21107275/123401275-400f8f80-d5c4-11eb-8ca3-dce032a9ae3d.JPG\" alt=\"User Login Screen\" class=\"rounded-xl neu-flat p-2 w-full\" /><p class=\"font-mono text-xs text-textMuted text-center\">2. Encrypted User Authentication</p></div><div class=\"space-y-2\"><img src=\"https://user-images.githubusercontent.com/21107275/123401284-4271e980-d5c4-11eb-9ed6-60a4f926d63e.JPG\" alt=\"Desktop Home Screen\" class=\"rounded-xl neu-flat p-2 w-full\" /><p class=\"font-mono text-xs text-textMuted text-center\">3. Desktop Environment & App Launcher</p></div><div class=\"space-y-2\"><img src=\"https://user-images.githubusercontent.com/21107275/123401293-43a31680-d5c4-11eb-953a-83474a57b32d.jpg\" alt=\"System Shutdown\" class=\"rounded-xl neu-flat p-2 w-full\" /><p class=\"font-mono text-xs text-textMuted text-center\">4. Shutdown Confirmation Dialog</p></div></div><h2>2. Architectural & Code Analysis</h2><p>Under Turbo C++ running in 16-bit real-mode emulation, memory is strictly segmented into 64KB chunks and no windowing abstractions exist. The entire environment is built from first mathematical principles:</p><h3>Cartesian Coordinate Window Drawing Engine</h3><pre><code>// Drawing a 3D beveled window with title bar and drop shadow\nvoid drawWindow(int x, int y, int w, int h, char* title) {\n    // 1. Drop shadow offset\n    setfillstyle(SOLID_FILL, DARKGRAY);\n    bar(x + 5, y + 5, x + w + 5, y + h + 5);\n    \n    // 2. Main Window Surface\n    setfillstyle(SOLID_FILL, LIGHTGRAY);\n    bar(x, y, x + w, y + h);\n    \n    // 3. Beveled 3D Borders\n    setcolor(WHITE);\n    line(x, y, x + w, y); // Top highlight\n    line(x, y, x, y + h); // Left highlight\n    setcolor(BLACK);\n    line(x + w, y, x + w, y + h); // Right shadow\n    line(x, y + h, x + w, y + h); // Bottom shadow\n    \n    // 4. Gradient Title Bar\n    setfillstyle(SOLID_FILL, BLUE);\n    bar(x + 2, y + 2, x + w - 2, y + 22);\n    setcolor(WHITE);\n    outtextxy(x + 10, y + 7, title);\n}</code></pre><h3>Integrated Applications Suite</h3><p>The codebase includes fully interactive built-in programs:</p><ul><li><strong>Conversational AI Assistant:</strong> Rule-based natural language parsing engine responding to system queries.</li><li><strong>Geometry & Area Calculator:</strong> Interactive trigonometric solver and formula computation engine.</li><li><strong>Unit Converter:</strong> Multi-metric distance, temperature, and weight conversion tool.</li><li><strong>Student Marksheet Evaluator:</strong> Grade computation and report card generator.</li></ul><h2>3. Tech Stack & Environment</h2><p><code>C++</code>, <code>Turbo C++ 3.0</code>, <code>MS-DOS</code>, <code>DOSBox Emulator</code>, <code>graphics.h / BGI (Borland Graphics Interface)</code></p></div>",
+    "coverImage": "https://user-images.githubusercontent.com/21107275/123401284-4271e980-d5c4-11eb-9ed6-60a4f926d63e.JPG",
+    "externalLink": "https://github.com/yadev64/DOS_GUI",
+    "tags": [
+      "C++",
+      "Turbo C++",
+      "MS-DOS",
+      "Computer Graphics",
+      "Low Level",
+      "Retro Computing"
+    ],
+    "published": true,
+    "slug": "dos-gui",
+    "createdAt": "2026-01-05T00:00:00.000Z"
+  },
+  {
+    "_id": "proj_sensor_collector",
+    "title": "Android Sensor Data Collector — ML Telemetry Suite",
+    "description": "High-frequency telemetry logging engine capturing real-time Accelerometer, Gyroscope, and GPS streams into structured CSV datasets for machine learning rash driving detection models.",
+    "content": "<div class=\"space-y-8\"><p class=\"text-lg leading-relaxed text-textMain font-medium\"><strong>Android Sensor Data Collector</strong> is an open-source mobile telemetry logger designed to collect high-precision inertial and geospatial data streams from onboard smartphone sensors. The captured CSV datasets are structured specifically for training and validating machine learning models that detect aggressive driving behaviors, harsh braking, and vehicular collisions.</p><div class=\"my-6\"><img src=\"https://user-images.githubusercontent.com/21107275/123445126-381c1380-d5f5-11eb-9107-11d9b91d1699.jpg\" alt=\"Android Sensor Data Collector UI\" class=\"w-full max-w-sm mx-auto rounded-2xl shadow-xl neu-flat p-2\" /></div><h2>1. The Problem Space</h2><p>Training supervised machine learning models to detect rash driving, sudden swerving, and abrupt deceleration requires thousands of hours of synchronized, clean, high-frequency motion data. However, existing telemetry tools were either closed-source, battery-draining, or failed to synchronize GPS coordinates with millisecond-accurate inertial sensor readings.</p><h2>2. Technical Architecture & Sensor Pipeline</h2><h3>High-Frequency Sensor Polling</h3><p>The application hooks into the Android <code>SensorManager</code> at <code>SENSOR_DELAY_FASTEST</code> / <code>SENSOR_DELAY_GAME</code>, registering asynchronous listeners for:</p><ul><li><strong>3-Axis Accelerometer:</strong> Captures linear acceleration along X, Y, and Z axes (in $m/s^2$) including gravitational components.</li><li><strong>3-Axis Gyroscope:</strong> Measures rotational velocity (in $rad/s$) around all three spatial axes.</li><li><strong>Fused Location Provider:</strong> Queries GPS and Wi-Fi triangulation for latitude, longitude, altitude, speed, and bearing.</li></ul><h3>Buffered CSV File I/O</h3><p>To avoid I/O bottlenecks and frame drops on low-end Android handsets, sensor events are queued in an in-memory ring buffer. Worker threads flush buffered batches into a structured CSV file stored on internal device memory:</p><pre><code>// CSV Format Schema:\n// timestamp_ms, acc_x, acc_y, acc_z, gyro_x, gyro_y, gyro_z, lat, lng, speed, accuracy\n1624891200123, 0.124, 9.812, 0.045, 0.001, -0.002, 0.004, 10.01234, 76.34567, 14.2, 3.5</code></pre><h2>3. Machine Learning Integration</h2><p>The resulting datasets have been used to train Support Vector Machines (SVM), Random Forests, and 1D Convolutional Neural Networks (CNNs) to classify driving events into: <em>Normal Driving</em>, <em>Harsh Acceleration</em>, <em>Abrupt Braking</em>, and <em>Aggressive Lane Changing</em>.</p><h2>4. Tech Stack</h2><p><code>Java</code>, <code>Android SDK (API 28+)</code>, <code>SensorManager API</code>, <code>FusedLocationProviderClient</code>, <code>CSV File Stream Writer</code></p></div>",
+    "coverImage": "https://user-images.githubusercontent.com/21107275/123445126-381c1380-d5f5-11eb-9107-11d9b91d1699.jpg",
+    "externalLink": "https://github.com/yadev64/Android-Sensor-Data-Collector",
+    "tags": [
+      "Java",
+      "Android",
+      "Machine Learning",
+      "Sensors",
+      "Data Collection",
+      "Telemetry"
+    ],
+    "published": true,
+    "slug": "android-sensor-data-collector",
+    "createdAt": "2026-01-06T00:00:00.000Z"
+  },
+  {
+    "_id": "proj_convivial",
+    "title": "Convivial — Enterprise Event Management Platform",
+    "description": "Full-stack event administration dashboard and ticketing suite featuring tier-based pricing, purchase analytics, customer ticket booking, and real-time conversion metrics.",
+    "content": "<div class=\"space-y-8\"><p class=\"text-lg leading-relaxed text-textMain font-medium\"><strong>Convivial</strong> is an enterprise-grade event management dashboard and ticketing administration platform. It enables event organizers to manage the entire event lifecycle: publishing multi-track events, configuring tiered ticket categories, processing customer ticket purchases, and inspecting real-time purchase analytics and venue capacity.</p><div class=\"my-6\"><img src=\"https://user-images.githubusercontent.com/21107275/120108669-e2825180-c183-11eb-9d61-f4f4182e12af.png\" alt=\"Convivial Dashboard Architecture\" class=\"w-full rounded-2xl shadow-xl neu-flat p-2\" /></div><h2>1. Architectural Breakdown</h2><p>Convivial is structured with a clean separation of concerns between a reactive single-page frontend and a high-performance RESTful API backend.</p><h3>Frontend Layer (Vue 3 + Vuex + Vuesax)</h3><ul><li><strong>Vue 3 Composition API:</strong> Modular components for event listing, ticket category builders, and attendee management.</li><li><strong>Vuex State Management:</strong> Global state store handling token-based session persistence, reactive shopping cart state, and live analytics updates.</li><li><strong>Axios HTTP Interceptors:</strong> Handles automatic Bearer token injection, request throttling, and global error handling.</li><li><strong>Vuesax Design System:</strong> Custom styled cards, dialogs, and responsive navigation drawers.</li></ul><h3>Backend Layer (Laravel 8 Sanctum + MySQL)</h3><ul><li><strong>Laravel 8 MVC Architecture:</strong> RESTful API controllers with validated Form Requests and Eloquent ORM relationships.</li><li><strong>Sanctum Authentication:</strong> Lightweight API token authentication ensuring secure multi-role access (Admin, Organizer, Cashier).</li><li><strong>Transaction Safety:</strong> Database transactions wrapping ticket booking and seat allotment routines to prevent overselling.</li></ul><h2>2. Key Capabilities</h2><ul><li>🎟️ <strong>Tiered Ticketing Engine:</strong> Configure VIP, Early Bird, General Admission, and Student tiers with dynamic cutoff dates and seat quotas.</li><li>📊 <strong>Live Sales Analytics:</strong> Visual representation of revenue velocity, hourly checkout rates, and category distribution.</li><li>👥 <strong>Direct Customer Sideloading:</strong> Administrative ticket generation on behalf of cash/offline buyers with instant QR voucher generation.</li></ul><h2>3. Tech Stack</h2><p><code>Vue 3</code>, <code>Vuex</code>, <code>Vuesax</code>, <code>Laravel 8</code>, <code>PHP 8</code>, <code>Sanctum</code>, <code>MySQL</code>, <code>Axios</code></p></div>",
+    "coverImage": "https://user-images.githubusercontent.com/21107275/120108669-e2825180-c183-11eb-9d61-f4f4182e12af.png",
+    "externalLink": "https://github.com/yadev64/convivial",
+    "tags": [
+      "Vue.js",
+      "Laravel",
+      "PHP",
+      "Full Stack",
+      "MySQL",
+      "Vuex"
+    ],
+    "published": true,
+    "slug": "convivial",
+    "createdAt": "2026-01-07T00:00:00.000Z"
+  },
+  {
+    "_id": "proj_prodeck",
+    "title": "ProDeck — Product Ideation & Innovation Framework",
+    "description": "Structured product ideation slides and design thinking frameworks guiding startup founders, student innovators, and product managers from ambiguous problem spaces to validated solutions.",
+    "content": "<div class=\"space-y-8\"><p class=\"text-lg leading-relaxed text-textMain font-medium\"><strong>ProDeck</strong> is an open-source product ideation and design thinking toolkit created to help startup founders, engineering teams, and student innovators systematically deconstruct problems, avoid premature solutioning, and build user-centric products that solve genuine pain points.</p><div class=\"my-6 p-6 rounded-2xl neu-pressed\"><p class=\"text-primary font-mono text-sm font-semibold tracking-wide\">🎯 Developed during my fellowship at Kerala Startup Mission (KSUM) to mentor 500+ student innovators across 10+ campuses during Inspire 2019 and Idea Fest.</p></div><h2>1. The Problem with Linear Problem Solving</h2><p>Most aspiring innovators approach product building linearly: they encounter a superficial observation, immediately write code or build hardware, and discover months later that nobody actually needed the solution. ProDeck introduces structured perspective-shifting exercises that force creators to examine problem spaces from multiple dimensions before committing resources.</p><h2>2. The 4-Stage ProDeck Innovation Cycle</h2><h3>Stage 1: Deep Root Deconstruction</h3><ul><li>Stripping away surface symptoms using the <em>5-Whys</em> root cause analysis framework.</li><li>Identifying the primary emotional, functional, and financial friction points experienced by the core persona.</li></ul><h3>Stage 2: Multi-Lens Perspective Shifting</h3><ul><li><strong>User Lens:</strong> What does the extreme user (both novice and power user) struggle with?</li><li><strong>Business Lens:</strong> What economic incentives govern the existing market status quo?</li><li><strong>Technological Lens:</strong> What emerging APIs, sensors, or protocols make a 10x improvement possible today that was impossible 3 years ago?</li></ul><h3>Stage 3: Divergent Ideation & Rapid Constraints</h3><ul><li>Generating 20+ non-linear approaches to the problem.</li><li>Applying deliberate constraints (e.g. \"How would you solve this with zero internet?\" or \"How would you solve this in 24 hours?\").</li></ul><h3>Stage 4: Feasibility & Desirability Scoring Matrix</h3><ul><li>Scoring proposed prototypes against technical feasibility, user adoption friction, and economic viability.</li><li>Defining clear MVP (Minimum Viable Product) acceptance criteria and rapid validation milestones.</li></ul><h2>3. Impact & Deployment</h2><p>ProDeck was deployed as the foundational curriculum for <strong>Think Camp</strong> design thinking bootcamps in partnership with <em>Design4India</em> and adopted across university Innovation and Entrepreneurship Development Centres (IEDCs) throughout Kerala.</p><h2>4. Resources</h2><p>Freely available on GitHub for educators, incubators, and startup founders.</p></div>",
+    "coverImage": "https://images.unsplash.com/photo-1531403009284-440f080d1e12?w=800&h=450&fit=crop",
+    "externalLink": "https://github.com/yadev64/ProDeck",
+    "tags": [
+      "Design Thinking",
+      "Product Strategy",
+      "UX Research",
+      "Mentorship",
+      "Innovation"
+    ],
+    "published": true,
+    "slug": "prodeck",
+    "createdAt": "2026-01-08T00:00:00.000Z"
   }
 ]

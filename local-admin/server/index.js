@@ -87,6 +87,26 @@ app.post('/api/:collection', async (req, res) => {
     res.json({ success: true, insertedId: newItem._id });
 });
 
+app.put('/api/:collection/:id', async (req, res) => {
+    const { collection, id } = req.params;
+    const items = await readData(collection);
+
+    const index = items.findIndex(item => item._id === id);
+    if (index === -1) {
+        return res.status(404).json({ error: 'Item not found' });
+    }
+
+    items[index] = {
+        ...items[index],
+        ...req.body,
+        _id: id, // preserve original ID
+        updatedAt: new Date().toISOString()
+    };
+
+    await writeData(collection, items);
+    res.json({ success: true, item: items[index] });
+});
+
 app.delete('/api/:collection/:id', async (req, res) => {
     const { collection, id } = req.params;
     const items = await readData(collection);
