@@ -392,11 +392,11 @@ const NeumorphicDashboard = () => {
                             </div>
                         </NeuCard>
 
-                        {/* CARDS 2a & 2b: Glyph Display + Location (Flex layout strictly matching Quick Jump width) */}
+                        {/* CARDS 2a & 2b: Glyph Display + Location (Full width on mobile, flex bounded on desktop) */}
                         <div className="w-full flex gap-3.5 items-stretch min-w-0">
                             {/* Left: Circular Dot Matrix Display */}
-                            <NeuCard className="shrink-0 !p-3 flex items-center justify-between overflow-hidden">
-                                <div className="shrink-0">
+                            <NeuCard className="w-full sm:w-auto sm:shrink-0 !p-3 md:!p-4 flex items-center justify-between overflow-hidden min-w-0">
+                                <div className="flex-1 sm:flex-none flex items-center justify-center sm:justify-start shrink-0">
                                     <DotMatrixDisplay
                                         ref={glyphRef}
                                         tempDisplayValue={tempDisplayValue}
