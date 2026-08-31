@@ -36,24 +36,6 @@
     "updatedAt": "2026-08-31T20:00:00.000Z"
   },
   {
-    "_id": "skill_llm_orchestration",
-    "name": "LLM Function Calling & Tool Use",
-    "category": "AI & Agents",
-    "iconClass": "devicon-python-plain",
-    "proficiency": 90,
-    "createdAt": "2026-01-05T00:00:00.000Z",
-    "updatedAt": "2026-08-31T20:00:00.000Z"
-  },
-  {
-    "_id": "skill_vector_rag",
-    "name": "Vector Databases & Context Retrieval (RAG)",
-    "category": "AI & Agents",
-    "iconClass": "devicon-mongodb-plain",
-    "proficiency": 86,
-    "createdAt": "2026-01-06T00:00:00.000Z",
-    "updatedAt": "2026-08-31T20:00:00.000Z"
-  },
-  {
     "_id": "skill_railway_deploy",
     "name": "Railway Deployment & PaaS Architecture",
     "category": "DevOps & Cloud",
@@ -154,12 +136,12 @@
   },
   {
     "_id": "skill_postgresql",
-    "name": "PostgreSQL & Database Architecture",
+    "name": "MySQL & Database Architecture",
     "category": "Backend",
     "iconClass": "devicon-postgresql-plain",
     "proficiency": 88,
     "createdAt": "2026-01-18T00:00:00.000Z",
-    "updatedAt": "2026-08-31T20:00:00.000Z"
+    "updatedAt": "2026-08-31T19:17:41.947Z"
   },
   {
     "_id": "skill_redis",
