@@ -392,10 +392,10 @@ const NeumorphicDashboard = () => {
                             </div>
                         </NeuCard>
 
-                        {/* CARDS 2a & 2b: Glyph Display (fixed square) + Location (flexible) */}
-                        <div className="flex gap-4 md:gap-6">
-                            {/* Left: Circular Dot Matrix Display — split layout */}
-                            <NeuCard className="flex-1 md:flex-none !p-3 md:!p-4 flex items-center justify-between overflow-hidden">
+                        {/* CARDS 2a & 2b: Glyph Display + Location (Only rendered when ample space is available) */}
+                        <div className="flex gap-4 md:gap-6 items-stretch">
+                            {/* Left: Circular Dot Matrix Display */}
+                            <NeuCard className="flex-1 xl:flex-none !p-3 md:!p-4 flex items-center justify-between overflow-hidden">
                                 <div className="shrink-0">
                                     <DotMatrixDisplay
                                         ref={glyphRef}
@@ -414,7 +414,8 @@ const NeumorphicDashboard = () => {
                                         {/* Camera Toggle */}
                                         <button
                                             onClick={() => setGlyphCameraMode(!glyphCameraMode)}
-                                            className="p-2.5 rounded-xl neu-flat bg-background transition-all active:scale-95"
+                                            className="p-2.5 rounded-xl neu-flat bg-background transition-all active:scale-95 cursor-pointer"
+                                            title={glyphCameraMode ? "Disable Camera" : "Enable Camera"}
                                         >
                                             {glyphCameraMode ? <CameraOff size={16} className="text-primary" /> : <Camera size={16} className="text-textMuted" />}
                                         </button>
@@ -423,7 +424,8 @@ const NeumorphicDashboard = () => {
                                         {glyphCameraMode ? (
                                             <button
                                                 onClick={() => glyphRef.current?.captureAndDownload()}
-                                                className="flex flex-col items-center gap-1 group"
+                                                className="flex flex-col items-center gap-1 group cursor-pointer"
+                                                title="Capture Frame"
                                             >
                                                 <div className="flex items-center gap-1.5 mb-1 bg-red-500/10 px-2 py-1 rounded-full border border-red-500/20">
                                                     <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
@@ -448,18 +450,18 @@ const NeumorphicDashboard = () => {
                                 </div>
                             </NeuCard>
 
-                            {/* Right: Location + Calendar — hidden on mobile */}
-                            <NeuCard className="hidden md:flex !p-5 flex-col justify-between flex-1 min-w-0">
+                            {/* Right: Location + Calendar — only renders when ample room (xl and up) to avoid congestion */}
+                            <NeuCard className="hidden xl:flex !p-5 flex-col justify-between flex-1 min-w-[190px]">
                                 <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-4">Location</p>
 
                                 <div className="flex items-center gap-2 mb-4">
                                     <MapPin size={14} className="text-primary" />
-                                    <span className="font-mono text-xs text-textMain">Bangalore, IN</span>
+                                    <span className="font-mono text-xs text-textMain font-medium">Bangalore, IN</span>
                                 </div>
 
                                 {/* Mini Calendar */}
                                 <div className="neu-pressed rounded-xl p-3 flex items-center gap-3">
-                                    <Calendar size={16} className="text-primary shrink-0 " />
+                                    <Calendar size={16} className="text-primary shrink-0" />
                                     <div className="flex flex-col">
                                         <span className="font-mono text-[10px] text-textMuted uppercase">{dayName}</span>
                                         <span className="font-display text-lg font-bold text-textMain leading-tight">{monthName} {dayNum}</span>
