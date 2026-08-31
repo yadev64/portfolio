@@ -392,10 +392,10 @@ const NeumorphicDashboard = () => {
                             </div>
                         </NeuCard>
 
-                        {/* CARDS 2a & 2b: Glyph Display + Location (strictly bounded to right column width) */}
-                        <div className="w-full grid grid-cols-1 2xl:grid-cols-12 gap-4 md:gap-6 items-stretch">
+                        {/* CARDS 2a & 2b: Glyph Display + Location (Flex layout strictly matching Quick Jump width) */}
+                        <div className="w-full flex gap-3.5 items-stretch min-w-0">
                             {/* Left: Circular Dot Matrix Display */}
-                            <NeuCard className="w-full 2xl:col-span-7 !p-3 md:!p-4 flex items-center justify-between overflow-hidden min-w-0">
+                            <NeuCard className="shrink-0 !p-3 flex items-center justify-between overflow-hidden">
                                 <div className="shrink-0">
                                     <DotMatrixDisplay
                                         ref={glyphRef}
@@ -407,17 +407,17 @@ const NeumorphicDashboard = () => {
                                 </div>
 
                                 {/* Controls Subsection */}
-                                <div className="flex flex-col items-center justify-center gap-4 pl-4 mr-2 border-l border-border/10 w-20 shrink-0">
-                                    <span className="font-mono text-[8px] uppercase tracking-[0.2em] text-textMuted/60 leading-none">Controls</span>
+                                <div className="flex flex-col items-center justify-center gap-3 pl-3 ml-1 border-l border-border/10 w-14 shrink-0">
+                                    <span className="font-mono text-[7px] uppercase tracking-[0.2em] text-textMuted/60 leading-none">Controls</span>
 
-                                    <div className="flex flex-col gap-5 items-center">
+                                    <div className="flex flex-col gap-3.5 items-center">
                                         {/* Camera Toggle */}
                                         <button
                                             onClick={() => setGlyphCameraMode(!glyphCameraMode)}
-                                            className="p-2.5 rounded-xl neu-flat bg-background transition-all active:scale-95 cursor-pointer"
+                                            className="p-2 rounded-xl neu-flat bg-background transition-all active:scale-95 cursor-pointer"
                                             title={glyphCameraMode ? "Disable Camera" : "Enable Camera"}
                                         >
-                                            {glyphCameraMode ? <CameraOff size={16} className="text-primary" /> : <Camera size={16} className="text-textMuted" />}
+                                            {glyphCameraMode ? <CameraOff size={15} className="text-primary" /> : <Camera size={15} className="text-textMuted" />}
                                         </button>
 
                                         {/* Live Indicator / Capture */}
@@ -427,22 +427,22 @@ const NeumorphicDashboard = () => {
                                                 className="flex flex-col items-center gap-1 group cursor-pointer"
                                                 title="Capture Frame"
                                             >
-                                                <div className="flex items-center gap-1.5 mb-1 bg-red-500/10 px-2 py-1 rounded-full border border-red-500/20">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                                                    <span className="font-mono text-[8px] font-bold text-red-500 tracking-tighter uppercase">Live</span>
+                                                <div className="flex items-center gap-1 mb-0.5 bg-red-500/10 px-1.5 py-0.5 rounded-full border border-red-500/20">
+                                                    <div className="w-1 h-1 rounded-full bg-red-500 animate-pulse" />
+                                                    <span className="font-mono text-[7px] font-bold text-red-500 tracking-tighter uppercase">Live</span>
                                                 </div>
-                                                <div className="p-2.5 rounded-xl neu-flat bg-background group-active:scale-95 transition-all">
-                                                    <Aperture size={16} className="text-primary" />
+                                                <div className="p-2 rounded-xl neu-flat bg-background group-active:scale-95 transition-all">
+                                                    <Aperture size={15} className="text-primary" />
                                                 </div>
                                             </button>
                                         ) : (
                                             <div className="flex flex-col items-center gap-1 opacity-20 filter grayscale">
-                                                <div className="flex items-center gap-1.5 mb-1 px-2 py-1">
-                                                    <div className="w-1.5 h-1.5 rounded-full bg-textMuted" />
-                                                    <span className="font-mono text-[8px] font-medium text-textMuted uppercase tracking-tighter">Standby</span>
+                                                <div className="flex items-center gap-1 mb-0.5 px-1.5 py-0.5">
+                                                    <div className="w-1 h-1 rounded-full bg-textMuted" />
+                                                    <span className="font-mono text-[7px] font-medium text-textMuted uppercase tracking-tighter">Standby</span>
                                                 </div>
-                                                <div className="p-2.5 rounded-xl neu-flat bg-background">
-                                                    <Aperture size={16} className="text-textMuted" />
+                                                <div className="p-2 rounded-xl neu-flat bg-background">
+                                                    <Aperture size={15} className="text-textMuted" />
                                                 </div>
                                             </div>
                                         )}
@@ -450,27 +450,27 @@ const NeumorphicDashboard = () => {
                                 </div>
                             </NeuCard>
 
-                            {/* Right: Location + Calendar — only renders when ample room (2xl and up) to avoid congestion and NEVER exceeds Quick Jump's right bound */}
-                            <NeuCard className="hidden 2xl:flex 2xl:col-span-5 !p-5 flex-col justify-between w-full min-w-0 overflow-hidden">
-                                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-4">Location</p>
+                            {/* Right: Location + Calendar — flex-1 takes exact remaining width, perfectly bounded */}
+                            <NeuCard className="hidden sm:flex !p-4 flex-col justify-between flex-1 min-w-0 overflow-hidden">
+                                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-2">Location</p>
 
-                                <div className="flex items-center gap-2 mb-4">
+                                <div className="flex items-center gap-2 mb-2">
                                     <MapPin size={14} className="text-primary shrink-0" />
                                     <span className="font-mono text-xs text-textMain font-medium truncate">Bangalore, IN</span>
                                 </div>
 
                                 {/* Mini Calendar */}
-                                <div className="neu-pressed rounded-xl p-3 flex items-center gap-3">
-                                    <Calendar size={16} className="text-primary shrink-0" />
+                                <div className="neu-pressed rounded-xl p-2.5 flex items-center gap-2.5 my-1">
+                                    <Calendar size={15} className="text-primary shrink-0" />
                                     <div className="flex flex-col min-w-0">
-                                        <span className="font-mono text-[10px] text-textMuted uppercase">{dayName}</span>
-                                        <span className="font-display text-lg font-bold text-textMain leading-tight truncate">{monthName} {dayNum}</span>
+                                        <span className="font-mono text-[9px] text-textMuted uppercase">{dayName}</span>
+                                        <span className="font-display text-base font-bold text-textMain leading-tight truncate">{monthName} {dayNum}</span>
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-2 mt-3">
-                                    <Coffee size={12} className="text-textMuted shrink-0" />
-                                    <span className="font-mono text-[10px] text-textMuted uppercase truncate">Open to collab</span>
+                                <div className="flex items-center gap-1.5 mt-1">
+                                    <Coffee size={11} className="text-textMuted shrink-0" />
+                                    <span className="font-mono text-[9px] text-textMuted uppercase truncate">Open to collab</span>
                                 </div>
                             </NeuCard>
                         </div>
