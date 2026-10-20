@@ -4,7 +4,15 @@ import { Edit2, Trash2, X } from 'lucide-react';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
-const CATEGORIES = ['AI & Agents', 'DevOps & Cloud', 'Frontend', 'Backend', 'Architecture', 'Tools'];
+const CATEGORIES = [
+    'AI and Agentic Engineering',
+    'Backend',
+    'Frontend and Design',
+    'Data',
+    'Cloud and DevOps',
+    'Healthcare, Security and Quality',
+    'Leadership'
+];
 
 const SkillsAdmin = () => {
     const [skills, setSkills] = useState([]);
@@ -12,7 +20,6 @@ const SkillsAdmin = () => {
     const [name, setName] = useState('');
     const [iconClass, setIconClass] = useState('');
     const [category, setCategory] = useState(CATEGORIES[0]);
-    const [proficiency, setProficiency] = useState(80);
     const [isSaving, setIsSaving] = useState(false);
     const formTopRef = useRef(null);
 
@@ -31,7 +38,6 @@ const SkillsAdmin = () => {
         setName('');
         setIconClass('');
         setCategory(CATEGORIES[0]);
-        setProficiency(80);
     };
 
     const handleStartEdit = (skill) => {
@@ -39,10 +45,9 @@ const SkillsAdmin = () => {
         setName(skill.name || '');
         setIconClass(skill.iconClass || '');
         setCategory(skill.category || CATEGORIES[0]);
-        setProficiency(skill.proficiency || 80);
 
         formTopRef.current?.scrollIntoView({ behavior: 'smooth' });
-        toast.info(`Editing skill: ${skill.name}`);
+        toast.info(`Editing skill tag: ${skill.name}`);
     };
 
     const handlePublish = async (e) => {
@@ -54,7 +59,6 @@ const SkillsAdmin = () => {
             name,
             iconClass,
             category,
-            proficiency: Number(proficiency)
         };
 
         try {
@@ -129,7 +133,7 @@ const SkillsAdmin = () => {
                 </div>
 
                 <form onSubmit={handlePublish} className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label className="block font-mono text-[10px] uppercase text-textMuted mb-1">Category</label>
                             <select className="neu-input appearance-none" value={category} onChange={e => setCategory(e.target.value)}>
@@ -137,16 +141,12 @@ const SkillsAdmin = () => {
                             </select>
                         </div>
                         <div>
-                            <label className="block font-mono text-[10px] uppercase text-textMuted mb-1">Skill Name</label>
+                            <label className="block font-mono text-[10px] uppercase text-textMuted mb-1">Skill Tag Name</label>
                             <input className="neu-input" placeholder="e.g. React / Next.js" value={name} onChange={e => setName(e.target.value)} required />
                         </div>
                         <div>
                             <label className="block font-mono text-[10px] uppercase text-textMuted mb-1">Devicon Class (optional)</label>
                             <input className="neu-input" placeholder="e.g. devicon-react-original" value={iconClass} onChange={e => setIconClass(e.target.value)} />
-                        </div>
-                        <div>
-                            <label className="block font-mono text-[10px] uppercase text-textMuted mb-1">Proficiency ({proficiency}%)</label>
-                            <input type="range" min="0" max="100" value={proficiency} onChange={e => setProficiency(e.target.value)} className="w-full accent-primary mt-2" />
                         </div>
                     </div>
                     <div className="flex items-center justify-between pt-2">
@@ -156,7 +156,7 @@ const SkillsAdmin = () => {
                             </button>
                         ) : <div />}
                         <button type="submit" className="neu-btn px-8 py-3 font-mono text-xs uppercase tracking-wider text-primary font-bold">
-                            {isSaving ? (editingId ? 'Updating...' : 'Adding...') : (editingId ? 'Update Skill' : 'Add Skill')}
+                            {isSaving ? (editingId ? 'Updating...' : 'Adding...') : (editingId ? 'Update Tag' : 'Add Tag')}
                         </button>
                     </div>
                 </form>
@@ -171,19 +171,20 @@ const SkillsAdmin = () => {
                             <h3 className="font-mono text-[10px] uppercase tracking-widest text-textMuted mb-3 border-b border-border pb-2">
                                 {cat} ({items.length})
                             </h3>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                            <div className="flex flex-wrap gap-2.5">
                                 {items.map(s => {
                                     const isCurrentlyEditing = editingId === s._id;
                                     return (
-                                        <div key={s._id} className={`neu-flat p-3 flex items-center justify-between group transition-all ${isCurrentlyEditing ? 'ring-2 ring-primary bg-primary/5' : ''}`}>
-                                            <div className="flex items-center gap-2.5 min-w-0">
-                                                {s.iconClass && <i className={`${s.iconClass} text-lg text-primary shrink-0`}></i>}
-                                                <div className="min-w-0">
-                                                    <span className="font-bold text-sm text-textMain truncate block">{s.name}</span>
-                                                    <span className="font-mono text-[10px] text-textMuted">{s.proficiency}%</span>
-                                                </div>
+                                        <div key={s._id} className={`neu-flat px-3.5 py-2 rounded-xl flex items-center gap-2.5 group transition-all ${isCurrentlyEditing ? 'ring-2 ring-primary bg-primary/5' : ''}`}>
+                                            <div className="flex items-center gap-2 min-w-0">
+                                                {s.iconClass ? (
+                                                    <i className={`${s.iconClass} text-sm text-primary shrink-0`}></i>
+                                                ) : (
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-primary/70 shrink-0" />
+                                                )}
+                                                <span className="font-mono text-xs font-semibold text-textMain">{s.name}</span>
                                             </div>
-                                            <div className="flex items-center gap-1.5 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
+                                            <div className="flex items-center gap-1 shrink-0 opacity-40 group-hover:opacity-100 transition-opacity ml-1">
                                                 <button
                                                     type="button"
                                                     onClick={() => handleStartEdit(s)}

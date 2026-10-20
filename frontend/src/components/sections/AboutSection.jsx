@@ -5,15 +5,15 @@ import { Terminal } from '../ui/Terminal'
 export const AboutSection = () => {
     const terminalLines = [
         "> whoami",
-        "Yadev — Leading R&D @ Tricog Health, Bangalore",
+        "Yadev Jayachandran — Senior Software Engineer | Full-Stack & AI-Native Engineering",
+        "> current_role",
+        "Senior Software Engineer, CoreTech Team @ Tricog Health, Bengaluru",
         "> focus",
-        "[\"autonomous agents\", \"agentic SDLC\", \"skills creation\", \"railway CI/CD\"]",
-        "> currently_architecting",
-        "Agentic SDLC pipelines & Autonomous Workflows",
+        "[\"AI-driven cybersecurity\", \"agentic engineering\", \"developer tools\", \"platform shared services\"]",
         "> stack",
-        "Agentic Workflows | Railway | Python | React | Node | PostgreSQL",
-        "> fun_fact",
-        "Rides a Royal Enfield Interceptor 650. Will talk about it unprompted."
+        "TypeScript | Node.js | NestJS | React | Python | AWS | Docker | Claude Code | AI Agents | MCP",
+        "> experience",
+        "6+ years full-stack engineering, developer communities & mentorship"
     ]
 
     return (

@@ -1,0 +1,42 @@
+[
+  {
+    "_id": "ach_sony_2023",
+    "title": "Sony Spresense Master Award",
+    "organization": "Sony Yuru Hackathon",
+    "year": "2023",
+    "link": "",
+    "details": "Recognized with the Master Award for hardware and sensor innovation utilizing the Sony Spresense microcontroller platform."
+  },
+  {
+    "_id": "ach_csi_2020",
+    "title": "Highest Committed Student Branch Activist Award",
+    "organization": "Computer Society of India (CSI)",
+    "year": "2020",
+    "link": "",
+    "details": "Conferred for statewide leadership and impact in organizing student developer initiatives and technical workshops."
+  },
+  {
+    "_id": "ach_sleepx_china_2019",
+    "title": "\"SleepX\": Top 15 Projects",
+    "organization": "Nanshan Entrepreneur Star Contest, China",
+    "year": "2019",
+    "link": "https://sites.google.com/view/sleepx/home",
+    "details": "Selected among the top 15 international hardware innovations in Shenzhen for the SleepX smart ergonomic travel pillow."
+  },
+  {
+    "_id": "ach_sleepx_makermela_2018",
+    "title": "\"SleepX\": Top 30 Finalist",
+    "organization": "MakerMela by Riidl (Mumbai)",
+    "year": "2018",
+    "link": "https://sites.google.com/view/sleepx/home",
+    "details": "Selected in the Top 30 maker hardware inventions across Asia."
+  },
+  {
+    "_id": "ach_toch_2017",
+    "title": "Best Student of First Year Endowment Award",
+    "organization": "Toc H Institute of Science and Technology",
+    "year": "2017",
+    "link": "",
+    "details": "Awarded for exceptional overall academic and extracurricular excellence in the first year of engineering."
+  }
+]

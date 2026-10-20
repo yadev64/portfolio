@@ -2,23 +2,33 @@ import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion';
 import { NeuCard, NeuButton, NeuToggle, NeuProgress, NeuLED, NeuIconButton, NeuThemeSlider } from '../components/ui/NeumorphicPrimitives';
 import DotMatrixDisplay from '../components/ui/DotMatrixDisplay';
+import ConwaysGameOfLife from '../components/ui/ConwaysGameOfLife';
 import HyperHome from '../components/hyper/HyperHome';
-import { ExternalLink, Github, Linkedin, Mail, ChevronDown, ArrowUpRight, BookOpen, Briefcase, GraduationCap, Award, Sun, Moon, Snowflake, FolderOpen, Layers, MapPin, Clock, Coffee, Calendar, Camera, CameraOff, Aperture } from 'lucide-react';
+import { ExternalLink, Github, Linkedin, Mail, ChevronDown, ArrowUpRight, BookOpen, Briefcase, GraduationCap, Award, Sun, Moon, Snowflake, FolderOpen, Layers, MapPin, Clock, Coffee, Calendar, Camera, CameraOff, Aperture, Trophy, Star, BadgeCheck, CheckCircle2, Users } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import useAppStore from '../store/useAppStore';
 
 /* ──────────────────────── DATA FROM LOCAL CMS ──────────────────────── */
 import PROJECTS_DATA from '../data/projects.json';
 import CAREER_DATA from '../data/career.json';
+import ACHIEVEMENTS_DATA from '../data/achievements.json';
+import CERTIFICATIONS_DATA from '../data/certifications.json';
 import SKILLS_DATA from '../data/skills.json';
 import WRITING_DATA from '../data/writing.json';
 
+// Authentic Behance Bē vector icon
+const BehanceIcon = ({ size = 16, className = '' }) => (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" className={className}>
+        <path d="M22 7h-7v-2h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-4.357 0-6.625-2.909-6.625-6.785 0-4.069 2.508-6.965 6.551-6.965 4.394 0 6.275 3.256 5.86 6.965h-9.582c.083 1.944 1.344 3.528 3.654 3.528 1.637 0 2.754-.732 3.243-1.743h2.001zm-5.789-5.918c-.033-1.477-.92-2.582-2.508-2.582-1.638 0-2.607 1.085-2.734 2.582h5.242zm-12.937-6.082h5.503c2.473 0 4.225.882 4.225 3.018 0 1.309-.765 2.193-1.895 2.637 1.542.433 2.378 1.597 2.378 3.167 0 2.457-1.956 3.928-4.708 3.928h-5.503v-12.75zm3.176 4.965h1.921c1.077 0 1.838-.415 1.838-1.396 0-.898-.693-1.307-1.737-1.307h-2.022v2.703zm0 5.48h2.083c1.233 0 2.052-.513 2.052-1.585 0-1.073-.834-1.572-2.062-1.572h-2.073v3.157z" />
+    </svg>
+);
+
 const ROLES = [
-    'Leading R&D @ Tricog Health_',
-    'AI & Agentic Systems Architect_',
-    'Agentic SDLC & Tooling Builder_',
-    'Railway CI/CD & Cloud Engineer_',
-    'Full-Stack & Systems Craftsman_',
+    'Senior Software Engineer @ Tricog Health_',
+    'Full-Stack & AI-Native Engineering_',
+    'CoreTech Team & Platform Lead_',
+    'AI Cybersecurity & Agentic Engineering_',
+    'Developer Tools & Systems Architect_',
 ];
 
 // Map JSON data to the shapes this component expects
@@ -30,12 +40,32 @@ const PROJECTS = PROJECTS_DATA.map(p => ({
     slug: p.slug || p._id,
 }));
 
-// Map skills — normalize category to lowercase for filtering
+// Map skills from resume
 const SKILLS = SKILLS_DATA.map(s => ({
+    _id: s._id,
     name: s.name,
-    category: (s.category || '').toLowerCase().trim(),
-    proficiency: s.proficiency || 80,
+    category: s.category || 'Other',
+    categoryKey: (s.category || '').toLowerCase().trim(),
+    iconClass: s.iconClass || '',
 }));
+
+const SKILL_CATEGORIES = [
+    { label: 'All', key: 'all' },
+    { label: 'AI & Agentic', key: 'ai and agentic engineering' },
+    { label: 'Backend', key: 'backend' },
+    { label: 'Frontend & Design', key: 'frontend and design' },
+    { label: 'Data', key: 'data' },
+    { label: 'Cloud & DevOps', key: 'cloud and devops' },
+    { label: 'Healthcare & Security', key: 'healthcare, security and quality' },
+    { label: 'Leadership', key: 'leadership' },
+];
+
+const EXP_CATEGORIES = [
+    { label: 'All', key: 'all' },
+    { label: 'Work Experience', key: 'job' },
+    { label: 'Communities & Fellowships', key: 'community' },
+    { label: 'Formal Education', key: 'education' },
+];
 
 // Map career/journey
 const JOURNEY = CAREER_DATA.map(c => ({
@@ -44,6 +74,7 @@ const JOURNEY = CAREER_DATA.map(c => ({
     org: c.company,
     period: c.isPresent ? `${c.fromDate} — Present` : `${c.fromDate} — ${c.toDate}`,
     description: c.details,
+    stack: c.stack ? c.stack.split(',').map(s => s.trim()) : [],
     highlight: c.highlight ?? false,
 }));
 
@@ -59,8 +90,9 @@ const BLOG_POSTS = WRITING_DATA.map(w => ({
 const NAV_ITEMS = [
     { label: 'Projects', icon: <FolderOpen size={14} />, href: '#projects' },
     { label: 'Experience', icon: <Briefcase size={14} />, href: '#experience' },
+    { label: 'Honors & Certs', icon: <Trophy size={14} />, href: '#achievements' },
     { label: 'Skills', icon: <Layers size={14} />, href: '#skills' },
-    { label: 'Blog', icon: <BookOpen size={14} />, href: '#blog' },
+    { label: 'Writing', icon: <BookOpen size={14} />, href: '#blog' },
 ];
 
 /* ──────────────────────── HOOKS ──────────────────────── */
@@ -321,10 +353,29 @@ const NeumorphicDashboard = () => {
     const typedRole = useTypingEffect(ROLES);
     const clock = useLiveClock();
     const [activeSkillCategory, setActiveSkillCategory] = useState('all');
+    const [activeExpCategory, setActiveExpCategory] = useState('all');
 
-    const filteredSkills = activeSkillCategory === 'all'
-        ? SKILLS
-        : SKILLS.filter(s => s.category === activeSkillCategory);
+    const filteredJourney = activeExpCategory === 'all'
+        ? JOURNEY
+        : JOURNEY.filter(j => j.type === activeExpCategory);
+
+    // Group skills by category
+    const groupedSkills = useMemo(() => {
+        const groups = {};
+        SKILLS.forEach(skill => {
+            const cat = skill.category;
+            if (!groups[cat]) groups[cat] = [];
+            groups[cat].push(skill);
+        });
+        return groups;
+    }, []);
+
+    const visibleCategories = useMemo(() => {
+        if (activeSkillCategory === 'all') {
+            return Object.entries(groupedSkills);
+        }
+        return Object.entries(groupedSkills).filter(([cat]) => cat.toLowerCase().trim() === activeSkillCategory);
+    }, [activeSkillCategory, groupedSkills]);
 
     // Current date info for the calendar card
     const dayName = clock.toLocaleDateString('en-US', { weekday: 'short' });
@@ -351,10 +402,6 @@ const NeumorphicDashboard = () => {
                                 <span className="text-2xl md:text-4xl lg:text-5xl font-light tracking-widest text-textMuted uppercase font-body">
                                     Jayachandran
                                 </span>
-                                {/* <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full neu-pressed text-primary font-mono text-xs md:text-sm tracking-wider w-fit shadow-sm border border-border/10">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                                    <span>yadev.cc</span>
-                                </div> */}
                             </div>
                         </div>
 
@@ -362,16 +409,16 @@ const NeumorphicDashboard = () => {
                             {typedRole}<span className="animate-pulse">|</span>
                         </h2>
                         <p className="text-textMuted text-sm md:text-base max-w-lg mt-6 leading-relaxed">
-                            Leading the R&D team at <span className="text-primary font-semibold">Tricog Health</span> · ex-Founding Engineer. Pioneering <span className="text-textMain font-medium">Agentic SDLC</span>, autonomous AI agents, multi-agent workflows, and production deployments on Railway.
+                            Full-stack engineer with 6+ years of experience. Senior Software Engineer on the CoreTech team at <span className="text-primary font-semibold">Tricog Health</span> with tech-lead scope, co-leading <span className="text-textMain font-medium">AI-driven cybersecurity</span> and <span className="text-textMain font-medium">agentic engineering</span>. Building developer tools, high-scale platforms, and mentoring engineers.
                         </p>
                         <div className="flex flex-wrap gap-4 mt-10">
                             <a href="#projects"><NeuButton variant="primary">View My Work</NeuButton></a>
-                            <a href="mailto:hello@yadev.cc"><NeuButton>Say Hello</NeuButton></a>
+                            <a href="mailto:yadev64@gmail.com"><NeuButton>Say Hello</NeuButton></a>
                         </div>
                         <div className="flex gap-4 mt-8 social-links">
                             <a href="https://github.com/yadev64" target="_blank" rel="noopener noreferrer"><NeuIconButton size="sm" icon={<Github size={16} />} /></a>
                             <a href="https://www.linkedin.com/in/yadev-jayachandran/" target="_blank" rel="noopener noreferrer"><NeuIconButton size="sm" icon={<Linkedin size={16} />} /></a>
-                            <a href="https://www.behance.net/yadev64" target="_blank" rel="noopener noreferrer"><NeuIconButton size="sm" icon={<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12.5a5 5 0 0 1 5-5h1a5 5 0 0 1 0 10H1V4h6a4 4 0 0 1 0 8" /><path d="M14 13h7" /><path d="M14 8.5h7" /><ellipse cx="17.5" cy="13" rx="3.5" ry="4.5" /></svg>} /></a>
+                            <a href="https://www.behance.net/yadev64" target="_blank" rel="noopener noreferrer" title="Behance"><NeuIconButton size="sm" hoverColor="#1769FF" icon={<BehanceIcon size={16} />} /></a>
                         </div>
                     </div>
 
@@ -381,12 +428,14 @@ const NeumorphicDashboard = () => {
                         {/* CARD 1: Quick Navigation (Pressed IN) */}
                         <NeuCard className="w-full !p-5 neu-pressed border-none quick-jump-container relative overflow-hidden">
                             <p className="font-mono text-[10px] uppercase tracking-[0.3em] font-bold mb-4 pb-3 border-b border-border/10">Quick Jump</p>
-                            <div className="grid grid-cols-2 gap-3">
-                                {NAV_ITEMS.map(item => (
+                            <div className="grid grid-cols-2 gap-2.5">
+                                {NAV_ITEMS.map((item, idx) => (
                                     <a key={item.label} href={item.href}
-                                        className="flex items-center gap-2.5 px-4 py-3 rounded-xl neu-flat text-textMuted hover:text-primary font-mono text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer quick-jump-item">
+                                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl neu-flat text-textMuted hover:text-primary font-mono text-xs uppercase tracking-wider transition-all duration-300 cursor-pointer quick-jump-item ${
+                                            idx === NAV_ITEMS.length - 1 ? 'col-span-2' : ''
+                                        }`}>
                                         {item.icon}
-                                        <span className="font-semibold">{item.label}</span>
+                                        <span className="font-semibold truncate">{item.label}</span>
                                     </a>
                                 ))}
                             </div>
@@ -450,28 +499,9 @@ const NeumorphicDashboard = () => {
                                 </div>
                             </NeuCard>
 
-                            {/* Right: Location + Calendar — flex-1 takes exact remaining width, perfectly bounded */}
-                            <NeuCard className="hidden sm:flex !p-4 flex-col justify-between flex-1 min-w-0 overflow-hidden">
-                                <p className="font-mono text-[10px] uppercase tracking-[0.3em] text-textMuted mb-2">Location</p>
-
-                                <div className="flex items-center gap-2 mb-2">
-                                    <MapPin size={14} className="text-primary shrink-0" />
-                                    <span className="font-mono text-xs text-textMain font-medium truncate">Bangalore, IN</span>
-                                </div>
-
-                                {/* Mini Calendar */}
-                                <div className="neu-pressed rounded-xl p-2.5 flex items-center gap-2.5 my-1">
-                                    <Calendar size={15} className="text-primary shrink-0" />
-                                    <div className="flex flex-col min-w-0">
-                                        <span className="font-mono text-[9px] text-textMuted uppercase">{dayName}</span>
-                                        <span className="font-display text-base font-bold text-textMain leading-tight truncate">{monthName} {dayNum}</span>
-                                    </div>
-                                </div>
-
-                                <div className="flex items-center gap-1.5 mt-1">
-                                    <Coffee size={11} className="text-textMuted shrink-0" />
-                                    <span className="font-mono text-[9px] text-textMuted uppercase truncate">Open to collab</span>
-                                </div>
+                            {/* Right: Conway's Game of Life Widget — flex-1 takes exact remaining width, perfectly bounded */}
+                            <NeuCard className="hidden sm:flex !p-3 flex-col justify-between flex-1 min-w-0 overflow-hidden">
+                                <ConwaysGameOfLife />
                             </NeuCard>
                         </div>
 
@@ -567,14 +597,30 @@ const NeumorphicDashboard = () => {
             {/* ═══════════════ EXPERIENCE ═══════════════ */}
             <section id="experience" className="px-6 md:px-16 lg:px-24 py-20 max-w-[1600px] mx-auto">
                 <SectionHeader label="Experience" number={2} />
+                
+                {/* Category Filter Pills for Experience */}
+                <div className="flex flex-wrap gap-2.5 mb-10">
+                    {EXP_CATEGORIES.map(cat => (
+                        <button
+                            key={cat.key}
+                            onClick={() => setActiveExpCategory(cat.key)}
+                            className={`px-4 py-2 rounded-full font-mono text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer ${
+                                activeExpCategory === cat.key ? 'neu-pressed text-primary' : 'neu-flat text-textMuted hover:text-textMain'
+                            }`}
+                        >
+                            {cat.label}
+                        </button>
+                    ))}
+                </div>
+
                 <div className="relative">
                     <div className="absolute left-6 top-0 bottom-0 w-px bg-border/50" />
                     <motion.div variants={stagger} initial="hidden" animate="show" className="flex flex-col gap-8">
-                        {JOURNEY.map((node, i) => (
+                        {filteredJourney.map((node, i) => (
                             <motion.div key={i} variants={fadeUp} className="flex gap-6 items-start">
                                 <div className={`w-12 h-12 rounded-full flex items-center justify-center shrink-0 relative z-10 ${node.highlight ? 'neu-convex text-primary' : 'neu-flat text-textMuted'}`}>
                                     {node.type === 'job' && <Briefcase size={18} />}
-                                    {node.type === 'milestone' && <Award size={18} />}
+                                    {node.type === 'community' && <Users size={18} />}
                                     {node.type === 'education' && <GraduationCap size={18} />}
                                 </div>
                                 <NeuCard className="flex-1">
@@ -582,8 +628,18 @@ const NeumorphicDashboard = () => {
                                         <h4 className="text-lg font-display font-bold text-textMain">{node.title}</h4>
                                         <span className="font-mono text-xs text-primary">{node.period}</span>
                                     </div>
-                                    <p className="text-sm font-semibold text-textMuted mb-1">{node.org}</p>
-                                    <p className="text-sm text-textMuted leading-relaxed">{node.description}</p>
+                                    <p className="text-sm font-semibold text-textMuted mb-2">{node.org}</p>
+                                    <p className="text-sm text-textMuted leading-relaxed whitespace-pre-line">{node.description}</p>
+                                    {node.stack && node.stack.length > 0 && (
+                                        <div className="flex flex-wrap gap-1.5 mt-4 pt-3 border-t border-border/20 items-center">
+                                            <span className="font-mono text-[10px] text-textMuted uppercase tracking-wider mr-1">Stack:</span>
+                                            {node.stack.map(st => (
+                                                <span key={st} className="text-[9px] font-mono uppercase px-2 py-0.5 rounded-full neu-pressed tracking-wider text-textMuted">
+                                                    {st}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
                                 </NeuCard>
                             </motion.div>
                         ))}
@@ -591,22 +647,176 @@ const NeumorphicDashboard = () => {
                 </div>
             </section>
 
+            {/* ═══════════════ ACHIEVEMENTS & CERTIFICATIONS ═══════════════ */}
+            <section id="achievements" className="px-6 md:px-16 lg:px-24 py-20 max-w-[1600px] mx-auto">
+                <SectionHeader label="Achievements & Certifications" number={3} />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                    
+                    {/* Left: Achievements */}
+                    <NeuCard className="flex flex-col justify-between h-full">
+                        <div>
+                            <div className="flex items-center justify-between pb-4 mb-6 border-b border-border/20">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-9 h-9 rounded-full neu-pressed flex items-center justify-center text-primary">
+                                        <Trophy size={18} />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-mono text-sm uppercase tracking-wider text-textMain font-bold">
+                                            Achievements
+                                        </h3>
+                                        <span className="font-mono text-[10px] text-textMuted">Honors, Hackathons & Awards</span>
+                                    </div>
+                                </div>
+                                <span className="font-mono text-[10px] text-textMuted uppercase px-2.5 py-0.5 rounded-full neu-pressed">
+                                    {ACHIEVEMENTS_DATA.length} Honors
+                                </span>
+                            </div>
+
+                            <div className="space-y-3.5">
+                                {ACHIEVEMENTS_DATA.map(ach => (
+                                    <div key={ach._id} className="p-4 rounded-2xl neu-flat hover:neu-pressed transition-all duration-200 group">
+                                        <div className="flex items-start justify-between gap-3 mb-1">
+                                            <div className="flex items-center gap-2">
+                                                <Star size={14} className="text-amber-500 shrink-0 fill-amber-500/20" />
+                                                <h4 className="font-display font-bold text-sm text-textMain group-hover:text-primary transition-colors">
+                                                    {ach.title}
+                                                </h4>
+                                            </div>
+                                            <span className="font-mono text-xs text-primary font-semibold shrink-0 px-2 py-0.5 rounded-md neu-pressed">
+                                                {ach.year}
+                                            </span>
+                                        </div>
+                                        <p className="font-mono text-xs text-textMuted mb-1 ml-5">
+                                            {ach.organization}
+                                        </p>
+                                        {ach.details && (
+                                            <p className="text-xs text-textMuted/80 leading-relaxed ml-5">
+                                                {ach.details}
+                                            </p>
+                                        )}
+                                        {ach.link && (
+                                            <a
+                                                href={ach.link}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center gap-1 text-[11px] font-mono text-primary hover:underline ml-5 mt-2"
+                                            >
+                                                <span>View Project</span>
+                                                <ArrowUpRight size={12} />
+                                            </a>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </NeuCard>
+
+                    {/* Right: Certifications */}
+                    <NeuCard className="flex flex-col justify-between h-full">
+                        <div>
+                            <div className="flex items-center justify-between pb-4 mb-6 border-b border-border/20">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-9 h-9 rounded-full neu-pressed flex items-center justify-center text-primary">
+                                        <BadgeCheck size={18} />
+                                    </div>
+                                    <div>
+                                        <h3 className="font-mono text-sm uppercase tracking-wider text-textMain font-bold">
+                                            Certifications
+                                        </h3>
+                                        <span className="font-mono text-[10px] text-textMuted">Professional Credentials</span>
+                                    </div>
+                                </div>
+                                <span className="font-mono text-[10px] text-textMuted uppercase px-2.5 py-0.5 rounded-full neu-pressed">
+                                    {CERTIFICATIONS_DATA.length} Credentials
+                                </span>
+                            </div>
+
+                            <div className="space-y-3.5">
+                                {CERTIFICATIONS_DATA.map(cert => (
+                                    <div key={cert._id} className="p-4 rounded-2xl neu-flat hover:neu-pressed transition-all duration-200 group flex items-center justify-between gap-4">
+                                        <div className="flex items-center gap-3 min-w-0">
+                                            <div className="w-8 h-8 rounded-xl neu-pressed flex items-center justify-center text-primary shrink-0">
+                                                <CheckCircle2 size={15} />
+                                            </div>
+                                            <div className="min-w-0">
+                                                <h4 className="font-display font-bold text-sm text-textMain group-hover:text-primary transition-colors truncate">
+                                                    {cert.title}
+                                                </h4>
+                                                <p className="font-mono text-xs text-textMuted">
+                                                    {cert.issuer}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <span className="font-mono text-xs text-primary font-semibold shrink-0 px-2.5 py-1 rounded-md neu-pressed">
+                                            {cert.year}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </NeuCard>
+                </div>
+            </section>
+
             {/* ═══════════════ SKILLS ═══════════════ */}
             <section id="skills" className="px-6 md:px-16 lg:px-24 py-20 max-w-[1600px] mx-auto">
-                <SectionHeader label="Technical Skills" number={3} />
-                <div className="flex flex-wrap gap-3 mb-10">
-                    {['all', 'ai & agents', 'devops & cloud', 'frontend', 'backend', 'architecture'].map(cat => (
-                        <button key={cat} onClick={() => setActiveSkillCategory(cat)}
-                            className={`px-4 py-2 rounded-full font-mono text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer ${activeSkillCategory === cat ? 'neu-pressed text-primary' : 'neu-flat text-textMuted hover:text-textMain'}`}>
-                            {cat}
+                <SectionHeader label="Technical Skills" number={4} />
+                
+                {/* Category Filter Pills */}
+                <div className="flex flex-wrap gap-2.5 mb-10">
+                    {SKILL_CATEGORIES.map(cat => (
+                        <button
+                            key={cat.key}
+                            onClick={() => setActiveSkillCategory(cat.key)}
+                            className={`px-4 py-2 rounded-full font-mono text-xs uppercase tracking-widest transition-all duration-300 cursor-pointer ${
+                                activeSkillCategory === cat.key ? 'neu-pressed text-primary' : 'neu-flat text-textMuted hover:text-textMain'
+                            }`}
+                        >
+                            {cat.label}
                         </button>
                     ))}
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+
+                {/* Categorized Skills Tags Grid (No Percentage Meters) */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <AnimatePresence mode="wait">
-                        {filteredSkills.map(skill => (
-                            <motion.div key={skill.name} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }}>
-                                <NeuProgress progress={skill.proficiency} label={skill.name} />
+                        {visibleCategories.map(([categoryName, items]) => (
+                            <motion.div
+                                key={categoryName}
+                                initial={{ opacity: 0, y: 15 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -15 }}
+                                transition={{ duration: 0.3 }}
+                            >
+                                <NeuCard className="h-full flex flex-col justify-between">
+                                    <div>
+                                        <div className="flex items-center justify-between mb-4 pb-3 border-b border-border/20">
+                                            <h3 className="font-mono text-xs uppercase tracking-widest text-primary font-bold flex items-center gap-2">
+                                                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                                                {categoryName}
+                                            </h3>
+                                            <span className="font-mono text-[10px] text-textMuted uppercase px-2.5 py-0.5 rounded-full neu-pressed">
+                                                {items.length} {items.length === 1 ? 'tag' : 'tags'}
+                                            </span>
+                                        </div>
+
+                                        <div className="flex flex-wrap gap-2.5 pt-1">
+                                            {items.map(skill => (
+                                                <span
+                                                    key={skill._id || skill.name}
+                                                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl neu-flat hover:neu-pressed text-xs font-mono text-textMain hover:text-primary transition-all duration-200 cursor-default select-none group"
+                                                >
+                                                    {skill.iconClass ? (
+                                                        <i className={`${skill.iconClass} text-sm text-primary opacity-80 group-hover:opacity-100 shrink-0`} />
+                                                    ) : (
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-primary/70 shrink-0" />
+                                                    )}
+                                                    <span>{skill.name}</span>
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </NeuCard>
                             </motion.div>
                         ))}
                     </AnimatePresence>
@@ -615,7 +825,7 @@ const NeumorphicDashboard = () => {
 
             {/* ═══════════════ BLOG ═══════════════ */}
             <section id="blog" className="px-6 md:px-16 lg:px-24 py-20 max-w-[1600px] mx-auto">
-                <SectionHeader label="Writing" number={4} />
+                <SectionHeader label="Writing" number={5} />
                 <motion.div variants={stagger} initial="hidden" animate="show" className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
                     {BLOG_POSTS.map(post => (
                         <motion.div key={post.slug} variants={fadeUp}>
@@ -650,7 +860,7 @@ const NeumorphicDashboard = () => {
                     <div className="flex gap-4">
                         <a href="https://github.com/yadev64" target="_blank" rel="noopener noreferrer"><NeuIconButton hoverColor="#8B5CF6" icon={<Github size={18} />} /></a>
                         <a href="https://www.linkedin.com/in/yadev-jayachandran/" target="_blank" rel="noopener noreferrer"><NeuIconButton hoverColor="#0A66C2" icon={<Linkedin size={18} />} /></a>
-                        <a href="https://www.behance.net/yadev64" target="_blank" rel="noopener noreferrer"><NeuIconButton hoverColor="#1769FF" icon={<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12.5a5 5 0 0 1 5-5h1a5 5 0 0 1 0 10H1V4h6a4 4 0 0 1 0 8" /><path d="M14 13h7" /><path d="M14 8.5h7" /><ellipse cx="17.5" cy="13" rx="3.5" ry="4.5" /></svg>} /></a>
+                        <a href="https://www.behance.net/yadev64" target="_blank" rel="noopener noreferrer" title="Behance"><NeuIconButton hoverColor="#1769FF" icon={<BehanceIcon size={18} />} /></a>
                         <a href="mailto:yadev64@gmail.com" target="_blank" rel="noopener noreferrer">
                             <NeuIconButton hoverColor="#995d5dff" icon={<Mail size={18} />} />
                         </a>                    </div>

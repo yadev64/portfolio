@@ -49,9 +49,9 @@ const HyperHero = () => {
                     transition={{ delay: 0.8 }}
                     className="absolute -bottom-16 left-1/2 -translate-x-1/2 flex items-center gap-8 w-full max-w-lg justify-center whitespace-nowrap"
                 >
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-[#df4418]">Full-Stack Engineer</span>
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-[#df4418]">Senior Software Engineer</span>
                     <div className="w-12 h-[1px] bg-white/20" />
-                    <span className="font-mono text-[10px] uppercase tracking-widest text-white/40">UI/UX Craftsman</span>
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-white/40">Full-Stack & AI-Native</span>
                 </motion.div>
             </div>
 

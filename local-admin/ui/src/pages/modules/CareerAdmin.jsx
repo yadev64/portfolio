@@ -4,7 +4,7 @@ import { Edit2, Trash2, X } from 'lucide-react';
 
 const API = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
-const CAREER_TYPES = ['job', 'milestone', 'education'];
+const CAREER_TYPES = ['job', 'community', 'education', 'milestone'];
 
 const CareerAdmin = () => {
     const [nodes, setNodes] = useState([]);

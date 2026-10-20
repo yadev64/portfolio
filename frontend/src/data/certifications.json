@@ -1,0 +1,37 @@
+[
+  {
+    "_id": "cert_ux_2021",
+    "title": "Foundations of UX Design",
+    "issuer": "Coursera",
+    "year": "2021",
+    "link": ""
+  },
+  {
+    "_id": "cert_aiml_2021",
+    "title": "AI-Machine Learning Development",
+    "issuer": "ASAP Kerala",
+    "year": "2021",
+    "link": ""
+  },
+  {
+    "_id": "cert_pm_2020",
+    "title": "Product Management",
+    "issuer": "Udemy",
+    "year": "2020",
+    "link": ""
+  },
+  {
+    "_id": "cert_ibm_2020",
+    "title": "Enterprise Design Thinking Practitioner",
+    "issuer": "IBM",
+    "year": "2020",
+    "link": ""
+  },
+  {
+    "_id": "cert_gcp_2018",
+    "title": "Google Cloud Platform Fundamentals",
+    "issuer": "Coursera",
+    "year": "2018",
+    "link": ""
+  }
+]

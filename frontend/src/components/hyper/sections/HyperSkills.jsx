@@ -2,10 +2,10 @@ import React from 'react';
 import { motion } from 'framer-motion';
 
 const SKILLS = [
-    { category: "Architect", items: ["System Design", "Microservices", "Cloud Native"] },
-    { category: "Frontend", items: ["React", "Three.js", "GSAP", "Tailwind"] },
-    { category: "Backend", items: ["Node.js", "Go", "PostgreSQL", "Redis"] },
-    { category: "DevOps", items: ["Docker", "K8s", "AWS", "CI/CD"] }
+    { category: "AI & Agentic", items: ["Claude Code", "LLM APIs", "MCP", "AI Agents", "Multi-Agent"] },
+    { category: "Backend", items: ["Node.js", "TypeScript", "NestJS", "FastAPI", "Python", "System Design"] },
+    { category: "Frontend & Design", items: ["React", "Vue", "Vite", "Tailwind CSS", "Three.js", "Figma"] },
+    { category: "Cloud & DevOps", items: ["AWS", "Docker", "GitHub Actions", "CI/CD", "Railway"] }
 ];
 
 const HyperSkills = () => {
