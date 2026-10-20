@@ -47,8 +47,8 @@ export const BlogPost = () => {
                 </div>
             )}
 
-            {/* Content */}
-            <div className={`max-w-3xl mx-auto px-6 md:px-12 ${coverSrc ? '-mt-20 relative z-10' : 'pt-24'}`}>
+            {/* Content — max-w-2xl / 672px column width provides optimal typographic line-length and long-form editorial feel */}
+            <div className={`max-w-2xl mx-auto px-6 md:px-8 ${coverSrc ? '-mt-20 relative z-10' : 'pt-24'}`}>
                 {/* Back button */}
                 <button
                     onClick={() => navigate(-1)}
